@@ -162,13 +162,19 @@ test('index.html includes the reviewed accessibility and navigation polish', () 
 
 test('styles.css applies reviewed typography without dead declarations', () => {
   const css = read('styles.css').replace(/\/\*[^]*?\*\//g, '');
-  const heroSubtitleBlocks = blocksFollowing(css, /\.hero__content\s*>\s*\.hero__subtitle\s*\{/gi);
+  const heroSubtitleBlocks = blocksFollowing(
+    css,
+    /\.hero__content\s*>\s*p\.hero__subtitle\s*\{/gi,
+  );
   const softwareDescriptionBlocks = blocksFollowing(
     css,
     /\.section--software\s+\.section__heading\s*>\s*p:not\(\.eyebrow\)\s*\{/gi,
   );
 
-  assert.ok(heroSubtitleBlocks.length > 0, 'hero subtitle should use a matching-specificity selector');
+  assert.ok(
+    heroSubtitleBlocks.length > 0,
+    'hero subtitle selector should match or exceed the competing paragraph selector specificity',
+  );
   assert.ok(
     heroSubtitleBlocks.some((body) => /\bfont-size\s*:/i.test(body) && !/!important/i.test(body)),
     'hero subtitle typography should not require !important',

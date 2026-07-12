@@ -312,7 +312,7 @@ main {
   font-size: clamp(1.05rem, 1.5vw, 1.2rem);
 }
 
-.hero__content > .hero__subtitle {
+.hero__content > p.hero__subtitle {
   margin-bottom: 0.75rem;
   color: var(--color-text);
   font-size: clamp(1.15rem, 2vw, 1.5rem);
