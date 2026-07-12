@@ -36,7 +36,7 @@ py -m http.server 8000
 node --test tests/site.test.mjs
 ```
 
-项目完成后应显示全部 11 项测试通过。
+运行后，当前测试应全部通过。
 
 ## 部署到 GitHub Pages
 
