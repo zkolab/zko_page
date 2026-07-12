@@ -20,9 +20,17 @@
 python -m http.server 8000
 ```
 
-然后访问 <http://localhost:8000>。如果没有 `python` 命令，可使用环境随附或本机安装的任意 Python 3 来运行同一模块。
+然后访问 <http://localhost:8000>。Windows 用户也可以使用 Python Launcher：
+
+```bash
+py -m http.server 8000
+```
+
+如果没有 `python` 或 `py` 命令，可使用环境随附或本机安装的任意 Python 3 来运行同一模块。
 
 ## 自动化测试
+
+测试需要 Node.js 18 或更高版本；如果没有 `node` 命令，请先安装当前的 Node.js LTS 版本。
 
 ```bash
 node --test tests/site.test.mjs
@@ -35,11 +43,20 @@ node --test tests/site.test.mjs
 以下步骤从当前本地仓库开始：
 
 1. 在 GitHub 新建一个空的公开仓库，不要初始化 README、License 或 `.gitignore`。
-2. 确保本地分支名为 `main`：
+2. 在改动分支名前，先查看当前分支和工作区状态：
 
    ```bash
-   git branch -M main
+   git branch --show-current
+   git status
    ```
+
+   本项目的工作整合完成后，如果当前分支就是准备首次部署的分支，并且本地尚不存在 `main`，可用非强制方式将当前分支改名：
+
+   ```bash
+   git branch -m main
+   ```
+
+   如果 `main` 已存在，不要改名或覆盖它；应先有意识地切换到 `main`，或将本项目分支合并进去。以下步骤假定最终要部署的完整内容已经位于 `main`。
 
 3. 添加远程仓库：
 
@@ -59,19 +76,24 @@ node --test tests/site.test.mjs
 后续更新时运行：
 
 ```bash
-git add .
+git status --short
+git add README.md
+# 或按实际修改明确暂存，例如：
+git add index.html styles.css script.js
+git add assets/images/要更新的图片.webp
+git diff --cached
 git commit -m "描述本次更新"
 git push
 ```
 
-推送后 GitHub Pages 会自动重新部署。
+只暂存本次确实要发布的路径；不要无意中加入项目根目录下的编号源图片或文案文本。确认 `git diff --cached` 内容正确后再提交。推送后 GitHub Pages 会自动重新部署。
 
 ## 维护说明
 
 - 当前购买地址为 <https://m.tb.cn/h.802lN7o?tk=phNwgK0gm5B>。修改购买地址时，必须同时更新 `script.js` 中的 `PURCHASE_URL` 和 `index.html` 中各购买按钮的备用 `href`，保持两处一致。
 - 页面文案在 `index.html` 中维护，图片放在 `assets/images/`，样式在 `styles.css` 中维护。
 - 页面明确不展示价格；维护时不要添加价格信息。
-- 外部闲鱼移动端购买链接可能因设备和浏览器不同而跳转，或尝试打开对应 App。
+- `m.tb.cn` 是短链接域名；当前外链会根据设备、浏览器和 App 状态打开或重定向到闲鱼商品页面，也可能尝试唤起闲鱼 App。
 
 ## 常见问题
 
