@@ -497,18 +497,20 @@ test('mobile CSS keeps navigation usable until menu enhancement initializes', ()
   const rules = [...mobileBlocks[0].matchAll(/([^{}]+)\{([^{}]*)\}/g)].map(
     ([, selector, body]) => ({ selector: selector.trim(), body }),
   );
+  const hasMenuEnhancedClass = (selector) =>
+    /\.menu-enhanced(?=$|[\s>+~.#:\[\],{])/.test(selector);
   const defaultMenuRules = rules.filter(({ selector }) =>
-    /\.menu-button\b/.test(selector) && !/\.menu-enhanced\b/.test(selector),
+    /\.menu-button\b/.test(selector) && !hasMenuEnhancedClass(selector),
   );
   const defaultNavRules = rules.filter(({ selector }) =>
     (/\.site-nav\b/.test(selector) || /\[data-site-nav\]/.test(selector))
-      && !/\.menu-enhanced\b/.test(selector),
+      && !hasMenuEnhancedClass(selector),
   );
   const enhancedMenuRules = rules.filter(({ selector }) =>
-    /\.menu-enhanced\b/.test(selector) && /\.menu-button\b/.test(selector),
+    hasMenuEnhancedClass(selector) && /\.menu-button\b/.test(selector),
   );
   const enhancedNavRules = rules.filter(({ selector }) =>
-    /\.menu-enhanced\b/.test(selector)
+    hasMenuEnhancedClass(selector)
       && (/\.site-nav\b/.test(selector) || /\[data-site-nav\]/.test(selector)),
   );
 
