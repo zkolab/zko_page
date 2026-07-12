@@ -445,13 +445,53 @@ test('mobile menu progressively enhances when hooks are missing', () => {
   }
 });
 
+test('mobile menu enhancement stays disabled when listener hooks are missing', () => {
+  for (const missingListener of ['menu button', 'document']) {
+    const root = createVmElement();
+    const menuButton = createVmElement();
+    const siteNav = createVmElement();
+    const document = {
+      documentElement: root,
+      querySelector(selector) {
+        if (selector === '[data-menu-button]') return menuButton;
+        if (selector === '[data-site-nav]') return siteNav;
+        return null;
+      },
+      querySelectorAll() { return []; },
+      addEventListener() {},
+    };
+
+    if (missingListener === 'menu button') delete menuButton.addEventListener;
+    if (missingListener === 'document') delete document.addEventListener;
+
+    assert.doesNotThrow(() => {
+      runScriptInVm({ document, matchMedia: () => ({ matches: true }) });
+    });
+    assert.equal(
+      root.classList.contains('menu-enhanced'),
+      false,
+      `missing ${missingListener} listener API should keep the no-JavaScript navigation CSS active`,
+    );
+  }
+});
+
 test('mobile CSS keeps navigation usable until menu enhancement initializes', () => {
   const css = read('styles.css').replace(/\/\*[^]*?\*\//g, '');
+  const baseMenuButtonBlocks = blocksFollowing(
+    css,
+    /(?:^|\})\s*\.menu-button\s*\{/gi,
+  );
   const mobileBlocks = blocksFollowing(
     css,
     /@media\b[^{}]*\(\s*max-width\s*:\s*900px\s*\)[^{}]*\{/gi,
   );
 
+  assert.equal(baseMenuButtonBlocks.length, 1, 'expected one base .menu-button rule');
+  assert.match(
+    baseMenuButtonBlocks[0],
+    /\bdisplay\s*:\s*none\b/i,
+    'the no-JavaScript default must hide the inert menu button',
+  );
   assert.equal(mobileBlocks.length, 1, 'expected one 900px mobile breakpoint');
 
   const rules = [...mobileBlocks[0].matchAll(/([^{}]+)\{([^{}]*)\}/g)].map(
