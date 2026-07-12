@@ -12,12 +12,12 @@
   <link rel="stylesheet" href="styles.css">
   <script src="script.js" defer></script>
 </head>
-<body>
+<body id="top">
   <a class="skip-link" href="#main-content">跳到主要内容</a>
 
   <header class="site-header">
     <div class="site-header__inner">
-      <a class="brand" href="#main-content" aria-label="苍虬 AI 编程手柄首页">
+      <a class="brand" href="#top" aria-label="苍虬 AI 编程手柄首页">
         <span class="brand__name">苍虬</span>
         <span class="brand__category">AI 编程手柄</span>
       </a>
@@ -156,7 +156,7 @@
           <li>设置自定义屏幕图标、屏幕亮度与显示模式</li>
           <li>调整灯环亮度与主题色，以及蜂鸣器音量</li>
           <li>查看 BLE、电量与设备状态，并清除蓝牙配对</li>
-          <li>检查软件更新，通过 Type-C 完成固件更新与配置</li>
+          <li>检查软件更新，并通过 Type-C 完成固件更新</li>
         </ul>
       </div>
       <div class="software-gallery">
@@ -178,8 +178,8 @@
       </div>
       <div class="spec-layout">
         <div data-reveal>
-          <h3>硬件与连接</h3>
-          <table>
+          <h3 id="hardware-specs-title">硬件与连接</h3>
+          <table aria-labelledby="hardware-specs-title">
             <tbody>
               <tr><th scope="row">主控</th><td>ESP32</td></tr>
               <tr><th scope="row">连接</th><td>Bluetooth + Type-C</td></tr>
@@ -257,7 +257,7 @@
 
   <footer class="site-footer">
     <p>苍虬 · AI 编程手柄</p>
-    <a href="#main-content">返回顶部</a>
+    <a href="#top">返回顶部</a>
   </footer>
 </body>
 </html>

@@ -312,10 +312,10 @@ main {
   font-size: clamp(1.05rem, 1.5vw, 1.2rem);
 }
 
-.hero__subtitle {
+.hero__content > .hero__subtitle {
   margin-bottom: 0.75rem;
   color: var(--color-text);
-  font-size: clamp(1.15rem, 2vw, 1.5rem) !important;
+  font-size: clamp(1.15rem, 2vw, 1.5rem);
   font-weight: 700;
 }
 
@@ -445,7 +445,7 @@ main {
   padding: clamp(1.5rem, 3vw, 2.25rem);
   overflow: hidden;
   border-radius: var(--radius-md);
-  transition: border-color 220ms ease, transform 220ms ease, background-color 220ms ease;
+  transition: border-color 220ms ease, transform 220ms ease;
 }
 
 .card::before {
@@ -638,6 +638,11 @@ main {
 .section--software .section__heading > p:not(.eyebrow),
 .software-capabilities {
   grid-column: 2;
+}
+
+.section--software .section__heading > p:not(.eyebrow) {
+  max-width: 65ch;
+  font-size: 1.06rem;
 }
 
 .software-capabilities {

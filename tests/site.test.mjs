@@ -128,6 +128,62 @@ test('index.html exposes the required sections and purchase-link fallbacks', () 
   }
 });
 
+test('index.html includes the reviewed accessibility and navigation polish', () => {
+  const html = stripHtmlComments(read('index.html'));
+  const openingTags = html.match(/<[\w-]+\b[^>]*>/gi) ?? [];
+  const purchaseAnchors = (html.match(/<a\b[^>]*>/gi) ?? []).filter((tag) =>
+    hasAttribute(tag, 'data-purchase-link'),
+  );
+  const tableTag = openingTags.find((tag) => /^<table\b/i.test(tag));
+
+  assert.match(
+    html,
+    /检查软件更新，并通过 Type-C 完成固件更新/,
+    'software copy should accurately separate software and firmware updates',
+  );
+  assert.ok(
+    tableTag && (hasAttribute(tableTag, 'aria-labelledby') || /<caption\b/i.test(html)),
+    'the specs table should have an accessible name',
+  );
+  assert.ok(
+    openingTags.some((tag) => attributeValue(tag, 'id') === 'top'),
+    'the document should expose a real #top target',
+  );
+  assert.match(html, /<a\b[^>]*class="brand"[^>]*href="#top"/i);
+  assert.match(html, /<a\b[^>]*href="#top"[^>]*>返回顶部<\/a>/i);
+  assert.match(html, /<a\b[^>]*class="skip-link"[^>]*href="#main-content"/i);
+  assert.equal(purchaseAnchors.length, 3, 'the page should expose exactly three purchase CTAs');
+  for (const anchor of purchaseAnchors) {
+    assert.equal(attributeValue(anchor, 'target'), '_blank');
+    assert.match(attributeValue(anchor, 'rel') ?? '', /(?:^|\s)noopener(?:\s|$)/);
+    assert.match(attributeValue(anchor, 'rel') ?? '', /(?:^|\s)noreferrer(?:\s|$)/);
+  }
+});
+
+test('styles.css applies reviewed typography without dead declarations', () => {
+  const css = read('styles.css').replace(/\/\*[^]*?\*\//g, '');
+  const heroSubtitleBlocks = blocksFollowing(css, /\.hero__content\s*>\s*\.hero__subtitle\s*\{/gi);
+  const softwareDescriptionBlocks = blocksFollowing(
+    css,
+    /\.section--software\s+\.section__heading\s*>\s*p:not\(\.eyebrow\)\s*\{/gi,
+  );
+
+  assert.ok(heroSubtitleBlocks.length > 0, 'hero subtitle should use a matching-specificity selector');
+  assert.ok(
+    heroSubtitleBlocks.some((body) => /\bfont-size\s*:/i.test(body) && !/!important/i.test(body)),
+    'hero subtitle typography should not require !important',
+  );
+  assert.ok(
+    softwareDescriptionBlocks.some((body) => /\bfont-size\s*:/i.test(body)),
+    'software description should receive heading-description typography',
+  );
+  assert.doesNotMatch(
+    css,
+    /\.card\s*\{[^}]*\btransition\s*:[^;}]*background-color/si,
+    'cards should not transition an unchanged background-color',
+  );
+});
+
 test('index.html does not display pricing', () => {
   requireFile('index.html');
   const rawHtml = read('index.html');
