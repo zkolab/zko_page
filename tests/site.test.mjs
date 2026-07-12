@@ -18,18 +18,56 @@ function requireFile(path) {
 
 function attributeValue(tag, name) {
   const match = tag.match(
-    new RegExp(`\\b${name}\\s*=\\s*(?:"([^"]*)"|'([^']*)'|([^\\s>]+))`, 'i'),
+    new RegExp(`(?:^|\\s)${name}\\s*=\\s*(?:"([^"]*)"|'([^']*)'|([^\\s>]+))`, 'i'),
   );
   return match ? (match[1] ?? match[2] ?? match[3]) : undefined;
 }
 
-test('required site files exist', () => {
-  for (const path of ['index.html', 'styles.css', 'script.js', 'README.md']) {
-    requireFile(path);
+function hasAttribute(tag, name) {
+  return new RegExp(`(?:^|\\s)${name}(?:\\s*=|(?=\\s|/?>))`, 'i').test(tag);
+}
+
+function visibleText(html) {
+  return html
+    .replace(/<!--[^]*?-->/g, '')
+    .replace(/<(?:script|style)\b[^>]*>[^]*?<\/(?:script|style)\s*>/gi, '')
+    .replace(/<[^>]+>/g, ' ');
+}
+
+function blocksFollowing(source, headerPattern) {
+  const blocks = [];
+
+  for (const match of source.matchAll(headerPattern)) {
+    const openBrace = match.index + match[0].lastIndexOf('{');
+    let depth = 0;
+
+    for (let index = openBrace; index < source.length; index += 1) {
+      if (source[index] === '{') depth += 1;
+      if (source[index] !== '}') continue;
+
+      depth -= 1;
+      if (depth === 0) {
+        blocks.push(source.slice(openBrace + 1, index));
+        break;
+      }
+    }
   }
+
+  return blocks;
+}
+
+function ruleBodies(block) {
+  return blocksFollowing(block, /[^{}]+\{/g);
+}
+
+test('required site files exist', () => {
+  const requiredPaths = ['index.html', 'styles.css', 'script.js', 'README.md'];
+  const missingPaths = requiredPaths.filter((path) => !existsSync(fileUrl(path)));
+
+  assert.deepEqual(missingPaths, [], `missing required files: ${missingPaths.join(', ')}`);
 });
 
-test('index.html exposes the required sections and purchase link without prices', () => {
+test('index.html exposes the required sections and purchase-link fallbacks', () => {
   requireFile('index.html');
   const html = read('index.html');
 
@@ -37,8 +75,31 @@ test('index.html exposes the required sections and purchase link without prices'
     assert.match(html, new RegExp(`\\bid\\s*=\\s*["']${id}["']`, 'i'), `missing #${id}`);
   }
 
-  assert.ok(html.includes(purchaseUrl), 'index.html should contain the exact purchase URL');
-  assert.doesNotMatch(html, /[¥￥]|售价|价格\s*[:：]/, 'index.html should not display pricing');
+  const purchaseAnchors = (html.match(/<a\b[^>]*>/gi) ?? []).filter((tag) =>
+    hasAttribute(tag, 'data-purchase-link'),
+  );
+
+  assert.ok(purchaseAnchors.length > 0, 'expected an anchor with data-purchase-link');
+  for (const [index, anchor] of purchaseAnchors.entries()) {
+    assert.equal(
+      attributeValue(anchor, 'href'),
+      purchaseUrl,
+      `purchase anchor ${index + 1} should have the exact fallback href`,
+    );
+  }
+});
+
+test('index.html does not display pricing', () => {
+  requireFile('index.html');
+  const html = read('index.html');
+  const text = visibleText(html);
+
+  assert.doesNotMatch(html, /[¥￥]|售价|价格\s*[:：]/, 'index.html should not contain price markers');
+  assert.doesNotMatch(
+    text,
+    /(?:\d+(?:\.\d+)?\s*元(?!器件|数据|素)|价格\s*(?:为|是)?\s*\d+(?:\.\d+)?)/,
+    'index.html should not display a numeric price',
+  );
 });
 
 test('index.html has at least six accessible, dimensioned images', () => {
@@ -60,11 +121,43 @@ test('index.html has at least six accessible, dimensioned images', () => {
 
 test('styles.css includes responsive, reduced-motion, and keyboard-focus rules', () => {
   requireFile('styles.css');
-  const css = read('styles.css');
+  const css = read('styles.css').replace(/\/\*[^]*?\*\//g, '');
+  const responsiveBlocks = blocksFollowing(
+    css,
+    /@media\b[^{}]*\(\s*max-width\s*:[^)]+\)[^{}]*\{/gi,
+  );
+  const reducedMotionBlocks = blocksFollowing(
+    css,
+    /@media\b[^{}]*\(\s*prefers-reduced-motion\s*:\s*reduce\s*\)[^{}]*\{/gi,
+  );
+  const focusVisibleBlocks = blocksFollowing(css, /[^{}]*:focus-visible[^{}]*\{/gi);
 
-  assert.match(css, /@media[^{}]*\(\s*max-width\s*:[^)]+\)/i);
-  assert.match(css, /@media[^{}]*\(\s*prefers-reduced-motion\s*:\s*reduce\s*\)/i);
-  assert.match(css, /:focus-visible\b/i);
+  assert.ok(
+    responsiveBlocks.some((block) =>
+      ruleBodies(block).some((body) => /\b[-\w]+\s*:\s*[^;{}]+/.test(body)),
+    ),
+    'a max-width media query should contain a CSS rule',
+  );
+  assert.ok(
+    reducedMotionBlocks.some((block) =>
+      ruleBodies(block).some((body) =>
+        /\b(?:animation(?:-[-\w]+)?|transition(?:-[-\w]+)?|scroll-behavior)\s*:\s*[^;{}]+/.test(
+          body,
+        ),
+      ),
+    ),
+    'reduced-motion media query should override motion behavior',
+  );
+  assert.ok(
+    focusVisibleBlocks.some((block) =>
+      [...block.matchAll(/\b(?:outline|box-shadow)\s*:\s*([^;{}]+)/gi)].some((match) => {
+        const value = match[1].trim();
+        return !/^(?:none|0(?:[a-z%]+)?|initial|inherit|unset)$/i.test(value)
+          && !/\btransparent\b/i.test(value);
+      }),
+    ),
+    ':focus-visible should define a visible outline or box-shadow',
+  );
 });
 
 test('script.js defines and applies the exact purchase URL', () => {
@@ -76,5 +169,14 @@ test('script.js defines and applies the exact purchase URL', () => {
     script,
     new RegExp(`\\bconst\\s+PURCHASE_URL\\s*=\\s*["']${escapedPurchaseUrl}["']`),
   );
-  assert.match(script, /data-purchase-link/);
+  assert.match(
+    script,
+    /\.querySelector(?:All)?\s*\(\s*(["'`])\[data-purchase-link\]\1\s*\)/,
+    'script.js should select elements by [data-purchase-link]',
+  );
+  assert.match(
+    script,
+    /(?:(?:\.\s*href|\[\s*["']href["']\s*\])\s*=\s*PURCHASE_URL\b|\.setAttribute\s*\(\s*["']href["']\s*,\s*PURCHASE_URL\b)/,
+    'script.js should assign PURCHASE_URL to href',
+  );
 });
