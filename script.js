@@ -31,7 +31,11 @@ if (menuButton && siteNav) {
   }
 
   document.addEventListener?.('keydown', (event) => {
-    if (event.key === 'Escape') setMenuOpen(false);
+    const isOpen = menuButton.getAttribute?.('aria-expanded') === 'true';
+    if (event.key !== 'Escape' || !isOpen) return;
+
+    setMenuOpen(false);
+    menuButton.focus?.();
   });
 }
 
@@ -44,21 +48,27 @@ if (
   && !prefersReducedMotion
   && typeof IntersectionObserver === 'function'
 ) {
-  document.documentElement?.classList?.add?.('js');
+  let revealObserver;
 
-  const revealObserver = new IntersectionObserver((entries, observer) => {
-    for (const entry of entries) {
-      if (!entry.isIntersecting) continue;
+  try {
+    revealObserver = new IntersectionObserver((entries, observer) => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
 
-      entry.target.classList?.add?.('is-visible');
-      observer.unobserve?.(entry.target);
+        entry.target.classList?.add?.('is-visible');
+        observer.unobserve?.(entry.target);
+      }
+    }, {
+      rootMargin: '0px 0px -10% 0px',
+      threshold: 0.1,
+    });
+
+    document.documentElement?.classList?.add?.('js');
+    for (const element of revealElements) {
+      revealObserver.observe?.(element);
     }
-  }, {
-    rootMargin: '0px 0px -10% 0px',
-    threshold: 0.1,
-  });
-
-  for (const element of revealElements) {
-    revealObserver.observe?.(element);
+  } catch {
+    document.documentElement?.classList?.remove?.('js');
+    revealObserver?.disconnect?.();
   }
 }

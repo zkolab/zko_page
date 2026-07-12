@@ -280,3 +280,174 @@ test('script.js defines and applies the exact purchase URL', () => {
     'script.js should apply PURCHASE_URL to every purchase link',
   );
 });
+
+function createVmElement() {
+  const attributes = new Map();
+  const listeners = new Map();
+  const classes = new Set();
+
+  return {
+    attributes,
+    listeners,
+    classList: {
+      add(value) { classes.add(value); },
+      remove(value) { classes.delete(value); },
+      contains(value) { return classes.has(value); },
+    },
+    setAttribute(name, value) { attributes.set(name, value); },
+    removeAttribute(name) { attributes.delete(name); },
+    getAttribute(name) { return attributes.get(name) ?? null; },
+    addEventListener(type, callback) { listeners.set(type, callback); },
+    querySelectorAll() { return []; },
+  };
+}
+
+function runScriptInVm(context) {
+  context.globalThis = context;
+  context.window = context;
+  context.self = context;
+  runInNewContext(read('script.js'), context, { timeout: 1_000 });
+}
+
+test('mobile menu toggles, closes, and restores focus after Escape', () => {
+  const menuButton = createVmElement();
+  const siteNav = createVmElement();
+  const navLink = createVmElement();
+  const documentListeners = new Map();
+  let focusCount = 0;
+
+  menuButton.setAttribute('aria-expanded', 'false');
+  menuButton.focus = () => { focusCount += 1; };
+  siteNav.querySelectorAll = (selector) => selector === 'a' ? [navLink] : [];
+
+  const document = {
+    documentElement: createVmElement(),
+    querySelector(selector) {
+      if (selector === '[data-menu-button]') return menuButton;
+      if (selector === '[data-site-nav]') return siteNav;
+      return null;
+    },
+    querySelectorAll() { return []; },
+    addEventListener(type, callback) { documentListeners.set(type, callback); },
+  };
+
+  runScriptInVm({ document, matchMedia: () => ({ matches: true }) });
+
+  menuButton.listeners.get('click')();
+  assert.equal(menuButton.getAttribute('aria-expanded'), 'true');
+  assert.ok(siteNav.attributes.has('data-open'));
+
+  navLink.listeners.get('click')();
+  assert.equal(menuButton.getAttribute('aria-expanded'), 'false');
+  assert.ok(!siteNav.attributes.has('data-open'));
+
+  menuButton.listeners.get('click')();
+  documentListeners.get('keydown')({ key: 'Escape' });
+  assert.equal(menuButton.getAttribute('aria-expanded'), 'false');
+  assert.ok(!siteNav.attributes.has('data-open'));
+  assert.equal(focusCount, 1, 'Escape should restore focus when closing an open menu');
+
+  documentListeners.get('keydown')({ key: 'Escape' });
+  assert.equal(focusCount, 1, 'Escape should not move focus when the menu is already closed');
+});
+
+test('mobile menu progressively enhances when hooks are missing', () => {
+  const document = {
+    documentElement: createVmElement(),
+    querySelector() { return null; },
+    querySelectorAll() { return []; },
+  };
+
+  assert.doesNotThrow(() => {
+    runScriptInVm({ document, matchMedia: () => ({ matches: true }) });
+  });
+});
+
+test('reveal enhancement stays disabled for reduced motion or missing observer support', () => {
+  for (const contextOverrides of [
+    { matchMedia: () => ({ matches: true }), IntersectionObserver: class {} },
+    { matchMedia: () => ({ matches: false }) },
+  ]) {
+    const root = createVmElement();
+    const reveal = createVmElement();
+    let observerCount = 0;
+    const Observer = contextOverrides.IntersectionObserver;
+    if (Observer) {
+      contextOverrides.IntersectionObserver = class extends Observer {
+        constructor(...args) {
+          super(...args);
+          observerCount += 1;
+        }
+      };
+    }
+    const document = {
+      documentElement: root,
+      querySelector() { return null; },
+      querySelectorAll(selector) { return selector === '[data-reveal]' ? [reveal] : []; },
+    };
+
+    runScriptInVm({ document, ...contextOverrides });
+
+    assert.equal(root.classList.contains('js'), false);
+    assert.equal(observerCount, 0);
+  }
+});
+
+test('reveal enhancement observes and reveals intersecting elements', () => {
+  const root = createVmElement();
+  const reveals = [createVmElement(), createVmElement()];
+  const observed = [];
+  const unobserved = [];
+  let observerCallback;
+
+  class IntersectionObserver {
+    constructor(callback) { observerCallback = callback; }
+    observe(element) { observed.push(element); }
+    unobserve(element) { unobserved.push(element); }
+  }
+  const document = {
+    documentElement: root,
+    querySelector() { return null; },
+    querySelectorAll(selector) { return selector === '[data-reveal]' ? reveals : []; },
+  };
+
+  runScriptInVm({
+    document,
+    matchMedia: () => ({ matches: false }),
+    IntersectionObserver,
+  });
+
+  assert.ok(root.classList.contains('js'));
+  assert.deepEqual(observed, reveals);
+
+  observerCallback([
+    { isIntersecting: false, target: reveals[0] },
+    { isIntersecting: true, target: reveals[1] },
+  ], { unobserve(element) { unobserved.push(element); } });
+
+  assert.equal(reveals[0].classList.contains('is-visible'), false);
+  assert.ok(reveals[1].classList.contains('is-visible'));
+  assert.deepEqual(unobserved, [reveals[1]]);
+});
+
+test('reveal enhancement leaves content visible if observer registration fails', () => {
+  const root = createVmElement();
+  const reveal = createVmElement();
+  class IntersectionObserver {
+    observe() { throw new Error('observer registration failed'); }
+  }
+  const document = {
+    documentElement: root,
+    querySelector() { return null; },
+    querySelectorAll(selector) { return selector === '[data-reveal]' ? [reveal] : []; },
+  };
+
+  assert.doesNotThrow(() => {
+    runScriptInVm({
+      document,
+      matchMedia: () => ({ matches: false }),
+      IntersectionObserver,
+    });
+  });
+  assert.equal(root.classList.contains('js'), false);
+});
