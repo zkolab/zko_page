@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
 import { existsSync, readFileSync, statSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
 
@@ -11,6 +12,14 @@ const expectedImageDimensions = new Map([
   ['assets/images/status.webp', [1122, 1402]],
   ['assets/images/autoclipboard-main.webp', [1311, 1062]],
   ['assets/images/autoclipboard-settings.webp', [2082, 1527]],
+]);
+const expectedImageSha256 = new Map([
+  ['assets/images/hero.webp', '67611ffcdc432ac834acfdaa4787ff93eb675efb7869e32cc6b53b84b04c8eef'],
+  ['assets/images/workflow.webp', 'e3ae1fb7f035f9c197101a7c2df2d8a030eeb6784869ad559149ca86d08130d4'],
+  ['assets/images/macros.webp', '1730346e2f9af0ad2032828fc6adada2a36d8b17657c0becbf59a3ca67fc6731'],
+  ['assets/images/status.webp', '259dc5d1ea4fda183c34262b3c7f6331445d33019c6fea84bc606ddbdd40319b'],
+  ['assets/images/autoclipboard-main.webp', 'd913aae5a7568935d00e079f7b3cae99718be4506760447a796b0509f57f7965'],
+  ['assets/images/autoclipboard-settings.webp', 'd21cd8e23b3978ca31aca47db89c5ad0fa685006568a5077a516f76591202f6f'],
 ]);
 
 function fileUrl(path) {
@@ -52,6 +61,13 @@ function assertExactImageSources(sources) {
 
   assert.equal(sources.length, expectedSources.length, 'expected exactly six image references');
   assert.deepEqual(uniqueSources, expectedSources, 'image src values should match the reviewed set');
+}
+
+function assertExpectedImageIntegrity(src, buffer) {
+  const expectedHash = expectedImageSha256.get(src);
+  assert.ok(expectedHash, `${src} should have a reviewed SHA-256 digest`);
+  const actualHash = createHash('sha256').update(buffer).digest('hex');
+  assert.equal(actualHash, expectedHash, `${src} SHA-256 should match the reviewed image`);
 }
 
 function readUint24LE(buffer, offset) {
@@ -365,6 +381,31 @@ test('WebP dimension parsing supports lossy, lossless, and extended headers', ()
   assert.deepEqual(parseWebPDimensions(container('VP8X', extended)), { width: 1311, height: 1062 });
 });
 
+test('image integrity rejects a dimension-correct header-only replacement', () => {
+  const headerOnly = Buffer.alloc(30);
+  headerOnly.write('RIFF', 0, 'ascii');
+  headerOnly.writeUInt32LE(headerOnly.length - 8, 4);
+  headerOnly.write('WEBP', 8, 'ascii');
+  headerOnly.write('VP8X', 12, 'ascii');
+  headerOnly.writeUInt32LE(10, 16);
+  const width = 1122 - 1;
+  const height = 1402 - 1;
+  headerOnly.set([width & 0xff, (width >>> 8) & 0xff, (width >>> 16) & 0xff], 24);
+  headerOnly.set([height & 0xff, (height >>> 8) & 0xff, (height >>> 16) & 0xff], 27);
+
+  assert.equal(headerOnly.length, 30);
+  assert.deepEqual(parseWebPDimensions(headerOnly), { width: 1122, height: 1402 });
+  assert.equal(
+    typeof assertExpectedImageIntegrity,
+    'function',
+    'an exact image integrity validator should exist',
+  );
+  assert.throws(
+    () => assertExpectedImageIntegrity('assets/images/hero.webp', headerOnly),
+    /SHA-256/,
+  );
+});
+
 test('local images exist and use a modern optimized format', () => {
   const imageTags = stripHtmlComments(read('index.html')).match(/<img\b[^>]*>/gi) ?? [];
   const localSources = imageTags
@@ -375,7 +416,9 @@ test('local images exist and use a modern optimized format', () => {
   for (const [index, src] of localSources.entries()) {
     assert.ok(existsSync(fileUrl(src)), `${src} should exist on disk`);
     assert.match(src, /\.webp(?:[?#].*)?$/i, `${src} should use WebP`);
-    const actualDimensions = parseWebPDimensions(readFileSync(fileUrl(src)));
+    const imageData = readFileSync(fileUrl(src));
+    assertExpectedImageIntegrity(src, imageData);
+    const actualDimensions = parseWebPDimensions(imageData);
     const expectedDimensions = expectedImageDimensions.get(src);
     assert.deepEqual(
       [actualDimensions.width, actualDimensions.height],
