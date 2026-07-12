@@ -4,6 +4,14 @@ import { existsSync, readFileSync, statSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
 
 const purchaseUrl = 'https://m.tb.cn/h.802lN7o?tk=phNwgK0gm5B';
+const expectedImageDimensions = new Map([
+  ['assets/images/hero.webp', [1122, 1402]],
+  ['assets/images/workflow.webp', [1122, 1402]],
+  ['assets/images/macros.webp', [1122, 1402]],
+  ['assets/images/status.webp', [1122, 1402]],
+  ['assets/images/autoclipboard-main.webp', [1311, 1062]],
+  ['assets/images/autoclipboard-settings.webp', [2082, 1527]],
+]);
 
 function fileUrl(path) {
   return new URL(`../${path}`, import.meta.url);
@@ -36,6 +44,69 @@ function visibleText(html) {
   return stripHtmlComments(html)
     .replace(/<(?:script|style)\b[^>]*>[^]*?<\/(?:script|style)\s*>/gi, '')
     .replace(/<[^>]+>/g, ' ');
+}
+
+function assertExactImageSources(sources) {
+  const expectedSources = [...expectedImageDimensions.keys()].sort();
+  const uniqueSources = [...new Set(sources)].sort();
+
+  assert.equal(sources.length, expectedSources.length, 'expected exactly six image references');
+  assert.deepEqual(uniqueSources, expectedSources, 'image src values should match the reviewed set');
+}
+
+function readUint24LE(buffer, offset) {
+  return buffer[offset] | (buffer[offset + 1] << 8) | (buffer[offset + 2] << 16);
+}
+
+function parseWebPDimensions(buffer) {
+  assert.ok(Buffer.isBuffer(buffer), 'WebP data should be a Buffer');
+  assert.ok(buffer.length >= 12, 'WebP data is too short for a RIFF header');
+  assert.equal(buffer.toString('ascii', 0, 4), 'RIFF', 'missing RIFF signature');
+  assert.equal(buffer.toString('ascii', 8, 12), 'WEBP', 'missing WEBP signature');
+  assert.equal(buffer.readUInt32LE(4) + 8, buffer.length, 'RIFF size does not match file length');
+
+  for (let chunkOffset = 12; chunkOffset + 8 <= buffer.length;) {
+    const chunkType = buffer.toString('ascii', chunkOffset, chunkOffset + 4);
+    const chunkSize = buffer.readUInt32LE(chunkOffset + 4);
+    const payloadOffset = chunkOffset + 8;
+    const payloadEnd = payloadOffset + chunkSize;
+    assert.ok(payloadEnd <= buffer.length, `${chunkType} chunk exceeds file length`);
+
+    if (chunkType === 'VP8 ') {
+      assert.ok(chunkSize >= 10, 'VP8 frame header is incomplete');
+      assert.deepEqual(
+        [...buffer.subarray(payloadOffset + 3, payloadOffset + 6)],
+        [0x9d, 0x01, 0x2a],
+        'VP8 frame sync code is invalid',
+      );
+      return {
+        width: buffer.readUInt16LE(payloadOffset + 6) & 0x3fff,
+        height: buffer.readUInt16LE(payloadOffset + 8) & 0x3fff,
+      };
+    }
+
+    if (chunkType === 'VP8L') {
+      assert.ok(chunkSize >= 5, 'VP8L frame header is incomplete');
+      assert.equal(buffer[payloadOffset], 0x2f, 'VP8L signature is invalid');
+      const dimensionBits = buffer.readUInt32LE(payloadOffset + 1);
+      return {
+        width: (dimensionBits & 0x3fff) + 1,
+        height: ((dimensionBits >>> 14) & 0x3fff) + 1,
+      };
+    }
+
+    if (chunkType === 'VP8X') {
+      assert.ok(chunkSize >= 10, 'VP8X header is incomplete');
+      return {
+        width: readUint24LE(buffer, payloadOffset + 4) + 1,
+        height: readUint24LE(buffer, payloadOffset + 7) + 1,
+      };
+    }
+
+    chunkOffset = payloadEnd + (chunkSize % 2);
+  }
+
+  assert.fail('WebP contains no VP8, VP8L, or VP8X canvas header');
 }
 
 function blocksFollowing(source, headerPattern) {
@@ -225,16 +296,102 @@ test('index.html has exactly six accessible, dimensioned images', () => {
   }
 });
 
+test('image source validation rejects duplicate or missing references', () => {
+  assert.equal(
+    typeof assertExactImageSources,
+    'function',
+    'an exact image source validator should exist',
+  );
+  const expectedSources = [...expectedImageDimensions.keys()];
+  const missing = expectedSources.slice(0, -1);
+  const duplicateAndMissing = [...missing, expectedSources[0]];
+
+  assert.throws(() => assertExactImageSources(missing));
+  assert.throws(() => assertExactImageSources(duplicateAndMissing));
+});
+
+test('WebP dimension parsing rejects corrupt or fake image data', () => {
+  assert.equal(
+    typeof parseWebPDimensions,
+    'function',
+    'a WebP dimension parser should exist',
+  );
+  const validImage = readFileSync(fileUrl('assets/images/hero.webp'));
+  const corruptMagic = Buffer.from(validImage);
+  corruptMagic.write('FAIL', 8, 'ascii');
+  const tinyFake = Buffer.from('RIFF\u0004\u0000\u0000\u0000WEBP', 'binary');
+
+  assert.throws(() => parseWebPDimensions(corruptMagic));
+  assert.throws(() => parseWebPDimensions(tinyFake));
+});
+
+test('WebP dimension parsing supports lossy, lossless, and extended headers', () => {
+  function container(chunkType, payload) {
+    const buffer = Buffer.alloc(20 + payload.length + (payload.length % 2));
+    buffer.write('RIFF', 0, 'ascii');
+    buffer.writeUInt32LE(buffer.length - 8, 4);
+    buffer.write('WEBP', 8, 'ascii');
+    buffer.write(chunkType, 12, 'ascii');
+    buffer.writeUInt32LE(payload.length, 16);
+    payload.copy(buffer, 20);
+    return buffer;
+  }
+
+  const lossy = Buffer.alloc(10);
+  lossy.set([0x9d, 0x01, 0x2a], 3);
+  lossy.writeUInt16LE(1122, 6);
+  lossy.writeUInt16LE(1402, 8);
+
+  const lossless = Buffer.alloc(5);
+  lossless[0] = 0x2f;
+  lossless.writeUInt32LE(((1527 - 1) << 14 | (2082 - 1)) >>> 0, 1);
+
+  const extended = Buffer.alloc(10);
+  const extendedWidth = 1311 - 1;
+  const extendedHeight = 1062 - 1;
+  extended.set([
+    extendedWidth & 0xff,
+    (extendedWidth >>> 8) & 0xff,
+    (extendedWidth >>> 16) & 0xff,
+  ], 4);
+  extended.set([
+    extendedHeight & 0xff,
+    (extendedHeight >>> 8) & 0xff,
+    (extendedHeight >>> 16) & 0xff,
+  ], 7);
+
+  assert.deepEqual(parseWebPDimensions(container('VP8 ', lossy)), { width: 1122, height: 1402 });
+  assert.deepEqual(parseWebPDimensions(container('VP8L', lossless)), { width: 2082, height: 1527 });
+  assert.deepEqual(parseWebPDimensions(container('VP8X', extended)), { width: 1311, height: 1062 });
+});
+
 test('local images exist and use a modern optimized format', () => {
   const imageTags = stripHtmlComments(read('index.html')).match(/<img\b[^>]*>/gi) ?? [];
   const localSources = imageTags
     .map((tag) => attributeValue(tag, 'src'))
     .filter((src) => src && !/^(?:[a-z]+:)?\/\//i.test(src) && !/^data:/i.test(src));
 
-  assert.equal(localSources.length, 6, 'all six images should use local assets');
-  for (const src of localSources) {
+  assertExactImageSources(localSources);
+  for (const [index, src] of localSources.entries()) {
     assert.ok(existsSync(fileUrl(src)), `${src} should exist on disk`);
     assert.match(src, /\.webp(?:[?#].*)?$/i, `${src} should use WebP`);
+    const actualDimensions = parseWebPDimensions(readFileSync(fileUrl(src)));
+    const expectedDimensions = expectedImageDimensions.get(src);
+    assert.deepEqual(
+      [actualDimensions.width, actualDimensions.height],
+      expectedDimensions,
+      `${src} should retain its reviewed canvas dimensions`,
+    );
+    assert.deepEqual(
+      [Number(attributeValue(imageTags[index], 'width')), Number(attributeValue(imageTags[index], 'height'))],
+      expectedDimensions,
+      `${src} HTML dimensions should match its WebP canvas`,
+    );
+  }
+
+  for (const src of expectedImageDimensions.keys()) {
+    const oldPngPath = src.replace(/\.webp$/, '.png');
+    assert.equal(existsSync(fileUrl(oldPngPath)), false, `${oldPngPath} should not be deployed`);
   }
 });
 
