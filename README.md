@@ -68,7 +68,7 @@ git push
 
 ## 维护说明
 
-- 修改购买地址时，必须同时更新 `script.js` 中的 `PURCHASE_URL` 和 `index.html` 中各购买按钮的备用 `href`，保持两处一致。
+- 当前购买地址为 <https://m.tb.cn/h.802lN7o?tk=phNwgK0gm5B>。修改购买地址时，必须同时更新 `script.js` 中的 `PURCHASE_URL` 和 `index.html` 中各购买按钮的备用 `href`，保持两处一致。
 - 页面文案在 `index.html` 中维护，图片放在 `assets/images/`，样式在 `styles.css` 中维护。
 - 页面明确不展示价格；维护时不要添加价格信息。
 - 外部闲鱼移动端购买链接可能因设备和浏览器不同而跳转，或尝试打开对应 App。
