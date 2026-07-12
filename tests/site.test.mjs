@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync } from 'node:fs';
+import { runInNewContext } from 'node:vm';
 
 const purchaseUrl = 'https://m.tb.cn/h.802lN7o?tk=phNwgK0gm5B';
 
@@ -27,9 +28,12 @@ function hasAttribute(tag, name) {
   return new RegExp(`(?:^|\\s)${name}(?:\\s*=|(?=\\s|/?>))`, 'i').test(tag);
 }
 
+function stripHtmlComments(html) {
+  return html.replace(/<!--[^]*?-->/g, '');
+}
+
 function visibleText(html) {
-  return html
-    .replace(/<!--[^]*?-->/g, '')
+  return stripHtmlComments(html)
     .replace(/<(?:script|style)\b[^>]*>[^]*?<\/(?:script|style)\s*>/gi, '')
     .replace(/<[^>]+>/g, ' ');
 }
@@ -60,6 +64,37 @@ function ruleBodies(block) {
   return blocksFollowing(block, /[^{}]+\{/g);
 }
 
+function isDisablingDuration(value) {
+  const durations = value.replace(/\s*!important\s*$/i, '').split(',');
+
+  return durations.every((duration) => {
+    const match = duration.trim().match(/^(\d*\.?\d+)(ms|s)$/i);
+    if (!match) return false;
+
+    const amount = Number(match[1]);
+    return match[2].toLowerCase() === 'ms' ? amount <= 0.01 : amount === 0;
+  });
+}
+
+function disablesMotion(body) {
+  return [...body.matchAll(
+    /\b(animation(?:-name|-duration)?|transition(?:-duration)?|scroll-behavior)\s*:\s*([^;{}]+)/gi,
+  )].some(([, property, rawValue]) => {
+    const value = rawValue.trim();
+    const normalizedProperty = property.toLowerCase();
+
+    if (normalizedProperty === 'scroll-behavior') return /^auto\b/i.test(value);
+    if (normalizedProperty === 'animation' || normalizedProperty === 'animation-name') {
+      return /^none\b/i.test(value);
+    }
+    if (normalizedProperty.endsWith('-duration')) return isDisablingDuration(value);
+    if (normalizedProperty === 'transition') {
+      return /^none\b/i.test(value) || /(?:^|\s)0(?:\.0+)?m?s\b/i.test(value);
+    }
+    return false;
+  });
+}
+
 test('required site files exist', () => {
   const requiredPaths = ['index.html', 'styles.css', 'script.js', 'README.md'];
   const missingPaths = requiredPaths.filter((path) => !existsSync(fileUrl(path)));
@@ -69,10 +104,14 @@ test('required site files exist', () => {
 
 test('index.html exposes the required sections and purchase-link fallbacks', () => {
   requireFile('index.html');
-  const html = read('index.html');
+  const html = stripHtmlComments(read('index.html'));
+  const openingTags = html.match(/<[\w-]+\b[^>]*>/gi) ?? [];
 
   for (const id of ['pain-points', 'workflow', 'features', 'software', 'specs', 'buy']) {
-    assert.match(html, new RegExp(`\\bid\\s*=\\s*["']${id}["']`, 'i'), `missing #${id}`);
+    assert.ok(
+      openingTags.some((tag) => attributeValue(tag, 'id') === id),
+      `missing #${id}`,
+    );
   }
 
   const purchaseAnchors = (html.match(/<a\b[^>]*>/gi) ?? []).filter((tag) =>
@@ -91,7 +130,7 @@ test('index.html exposes the required sections and purchase-link fallbacks', () 
 
 test('index.html does not display pricing', () => {
   requireFile('index.html');
-  const html = read('index.html');
+  const html = stripHtmlComments(read('index.html'));
   const text = visibleText(html);
 
   assert.doesNotMatch(html, /[¥￥]|售价|价格\s*[:：]/, 'index.html should not contain price markers');
@@ -104,7 +143,7 @@ test('index.html does not display pricing', () => {
 
 test('index.html has at least six accessible, dimensioned images', () => {
   requireFile('index.html');
-  const imageTags = read('index.html').match(/<img\b[^>]*>/gi) ?? [];
+  const imageTags = stripHtmlComments(read('index.html')).match(/<img\b[^>]*>/gi) ?? [];
 
   assert.ok(imageTags.length >= 6, `expected at least 6 images, found ${imageTags.length}`);
 
@@ -140,13 +179,9 @@ test('styles.css includes responsive, reduced-motion, and keyboard-focus rules',
   );
   assert.ok(
     reducedMotionBlocks.some((block) =>
-      ruleBodies(block).some((body) =>
-        /\b(?:animation(?:-[-\w]+)?|transition(?:-[-\w]+)?|scroll-behavior)\s*:\s*[^;{}]+/.test(
-          body,
-        ),
-      ),
+      ruleBodies(block).some((body) => disablesMotion(body)),
     ),
-    'reduced-motion media query should override motion behavior',
+    'reduced-motion media query should disable animation, transition, or smooth scrolling',
   );
   assert.ok(
     focusVisibleBlocks.some((block) =>
@@ -163,20 +198,74 @@ test('styles.css includes responsive, reduced-motion, and keyboard-focus rules',
 test('script.js defines and applies the exact purchase URL', () => {
   requireFile('script.js');
   const script = read('script.js');
-  const escapedPurchaseUrl = purchaseUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const purchaseLinks = [{ href: 'wrong://first' }, { href: 'wrong://second' }];
+  const classList = {
+    add() {},
+    remove() {},
+    toggle() {},
+    contains() { return false; },
+  };
+  const mediaQuery = {
+    matches: true,
+    addEventListener() {},
+    removeEventListener() {},
+    addListener() {},
+    removeListener() {},
+  };
+  const document = {
+    readyState: 'complete',
+    documentElement: { classList, dataset: {}, style: { setProperty() {} } },
+    body: { classList, dataset: {}, style: { setProperty() {} } },
+    querySelectorAll(selector) {
+      return selector === '[data-purchase-link]' ? purchaseLinks : [];
+    },
+    querySelector() { return null; },
+    getElementById() { return null; },
+    createElement() { return { classList, dataset: {}, style: {}, setAttribute() {} }; },
+    addEventListener(type, callback) {
+      if (type === 'DOMContentLoaded') callback();
+    },
+  };
+  const context = {
+    document,
+    matchMedia() { return mediaQuery; },
+    addEventListener(type, callback) {
+      if (type === 'load') callback();
+    },
+    removeEventListener() {},
+    setTimeout() { return 1; },
+    clearTimeout() {},
+    requestAnimationFrame() { return 1; },
+    cancelAnimationFrame() {},
+    localStorage: { getItem() { return null; }, setItem() {}, removeItem() {} },
+    navigator: { userAgent: 'node:test' },
+    location: { href: 'https://example.test/' },
+    console,
+    URL,
+    IntersectionObserver: class {
+      observe() {}
+      unobserve() {}
+      disconnect() {}
+    },
+    MutationObserver: class {
+      observe() {}
+      disconnect() {}
+    },
+  };
+  context.window = context;
+  context.self = context;
+  context.globalThis = context;
 
-  assert.match(
-    script,
-    new RegExp(`\\bconst\\s+PURCHASE_URL\\s*=\\s*["']${escapedPurchaseUrl}["']`),
+  runInNewContext(
+    `${script}\n;globalThis.__purchaseUrlForTest = PURCHASE_URL;`,
+    context,
+    { timeout: 1_000 },
   );
-  assert.match(
-    script,
-    /\.querySelector(?:All)?\s*\(\s*(["'`])\[data-purchase-link\]\1\s*\)/,
-    'script.js should select elements by [data-purchase-link]',
-  );
-  assert.match(
-    script,
-    /(?:(?:\.\s*href|\[\s*["']href["']\s*\])\s*=\s*PURCHASE_URL\b|\.setAttribute\s*\(\s*["']href["']\s*,\s*PURCHASE_URL\b)/,
-    'script.js should assign PURCHASE_URL to href',
+
+  assert.equal(context.__purchaseUrlForTest, purchaseUrl, 'PURCHASE_URL should equal the exact URL');
+  assert.deepEqual(
+    purchaseLinks.map((link) => link.href),
+    [purchaseUrl, purchaseUrl],
+    'script.js should apply PURCHASE_URL to every purchase link',
   );
 });
