@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readFileSync, statSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
 
 const purchaseUrl = 'https://m.tb.cn/h.802lN7o?tk=phNwgK0gm5B';
@@ -208,11 +208,11 @@ test('index.html does not display pricing', () => {
   );
 });
 
-test('index.html has at least six accessible, dimensioned images', () => {
+test('index.html has exactly six accessible, dimensioned images', () => {
   requireFile('index.html');
   const imageTags = stripHtmlComments(read('index.html')).match(/<img\b[^>]*>/gi) ?? [];
 
-  assert.ok(imageTags.length >= 6, `expected at least 6 images, found ${imageTags.length}`);
+  assert.equal(imageTags.length, 6, `expected exactly 6 images, found ${imageTags.length}`);
 
   for (const [index, tag] of imageTags.entries()) {
     const alt = attributeValue(tag, 'alt');
@@ -223,6 +223,46 @@ test('index.html has at least six accessible, dimensioned images', () => {
     assert.match(width ?? '', /^\d+$/, `image ${index + 1} should have a numeric width`);
     assert.match(height ?? '', /^\d+$/, `image ${index + 1} should have a numeric height`);
   }
+});
+
+test('local images exist and use a modern optimized format', () => {
+  const imageTags = stripHtmlComments(read('index.html')).match(/<img\b[^>]*>/gi) ?? [];
+  const localSources = imageTags
+    .map((tag) => attributeValue(tag, 'src'))
+    .filter((src) => src && !/^(?:[a-z]+:)?\/\//i.test(src) && !/^data:/i.test(src));
+
+  assert.equal(localSources.length, 6, 'all six images should use local assets');
+  for (const src of localSources) {
+    assert.ok(existsSync(fileUrl(src)), `${src} should exist on disk`);
+    assert.match(src, /\.webp(?:[?#].*)?$/i, `${src} should use WebP`);
+  }
+});
+
+test('referenced images stay within the page byte budget', () => {
+  const imageTags = stripHtmlComments(read('index.html')).match(/<img\b[^>]*>/gi) ?? [];
+  const localSources = imageTags
+    .map((tag) => attributeValue(tag, 'src'))
+    .filter((src) => src && !/^(?:[a-z]+:)?\/\//i.test(src) && !/^data:/i.test(src));
+  const totalBytes = localSources.reduce((sum, src) => sum + statSync(fileUrl(src)).size, 0);
+
+  assert.ok(
+    totalBytes <= 4 * 1024 * 1024,
+    `referenced images total ${totalBytes} bytes; expected at most 4 MiB`,
+  );
+});
+
+test('the eager hero image stays within its byte budget', () => {
+  const imageTags = stripHtmlComments(read('index.html')).match(/<img\b[^>]*>/gi) ?? [];
+  const eagerImages = imageTags.filter((tag) => attributeValue(tag, 'loading') === 'eager');
+
+  assert.equal(eagerImages.length, 1, 'expected exactly one eager hero image');
+  const heroSrc = attributeValue(eagerImages[0], 'src');
+  assert.ok(heroSrc, 'the eager hero image should have a src');
+  const heroBytes = statSync(fileUrl(heroSrc)).size;
+  assert.ok(
+    heroBytes <= 800 * 1024,
+    `eager hero is ${heroBytes} bytes; expected at most 800 KiB`,
+  );
 });
 
 test('styles.css includes responsive, reduced-motion, and keyboard-focus rules', () => {
