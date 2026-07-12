@@ -635,7 +635,7 @@ main {
   grid-column: 1;
 }
 
-.section--software .section__heading > p:last-child,
+.section--software .section__heading > p:not(.eyebrow),
 .software-capabilities {
   grid-column: 2;
 }
@@ -981,7 +981,7 @@ td {
   }
 
   .section--software h2,
-  .section--software .section__heading > p:last-child,
+  .section--software .section__heading > p:not(.eyebrow),
   .software-capabilities {
     grid-column: 1;
   }
