@@ -9,7 +9,12 @@ for (const link of purchaseLinks) {
 const menuButton = document.querySelector?.('[data-menu-button]');
 const siteNav = document.querySelector?.('[data-site-nav]');
 
-if (menuButton && siteNav) {
+if (
+  menuButton
+  && siteNav
+  && typeof menuButton.addEventListener === 'function'
+  && typeof document.addEventListener === 'function'
+) {
   const setMenuOpen = (isOpen) => {
     menuButton.setAttribute?.('aria-expanded', String(isOpen));
 
@@ -20,7 +25,7 @@ if (menuButton && siteNav) {
     }
   };
 
-  menuButton.addEventListener?.('click', () => {
+  menuButton.addEventListener('click', () => {
     const isOpen = menuButton.getAttribute?.('aria-expanded') === 'true';
     setMenuOpen(!isOpen);
   });
@@ -30,13 +35,15 @@ if (menuButton && siteNav) {
     link.addEventListener?.('click', () => setMenuOpen(false));
   }
 
-  document.addEventListener?.('keydown', (event) => {
+  document.addEventListener('keydown', (event) => {
     const isOpen = menuButton.getAttribute?.('aria-expanded') === 'true';
     if (event.key !== 'Escape' || !isOpen) return;
 
     setMenuOpen(false);
     menuButton.focus?.();
   });
+
+  document.documentElement?.classList?.add?.('menu-enhanced');
 }
 
 const revealElements = document.querySelectorAll?.('[data-reveal]') ?? [];

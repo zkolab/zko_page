@@ -395,6 +395,11 @@ test('mobile menu toggles, closes, and restores focus after Escape', () => {
 
   runScriptInVm({ document, matchMedia: () => ({ matches: true }) });
 
+  assert.ok(
+    document.documentElement.classList.contains('menu-enhanced'),
+    'successful menu initialization should enable the collapsed-menu CSS',
+  );
+
   menuButton.listeners.get('click')();
   assert.equal(menuButton.getAttribute('aria-expanded'), 'true');
   assert.ok(siteNav.attributes.has('data-open'));
@@ -414,15 +419,87 @@ test('mobile menu toggles, closes, and restores focus after Escape', () => {
 });
 
 test('mobile menu progressively enhances when hooks are missing', () => {
-  const document = {
-    documentElement: createVmElement(),
-    querySelector() { return null; },
-    querySelectorAll() { return []; },
-  };
+  for (const availableHook of ['neither', 'button-only', 'nav-only']) {
+    const root = createVmElement();
+    const menuButton = availableHook === 'button-only' ? createVmElement() : null;
+    const siteNav = availableHook === 'nav-only' ? createVmElement() : null;
+    const document = {
+      documentElement: root,
+      querySelector(selector) {
+        if (selector === '[data-menu-button]') return menuButton;
+        if (selector === '[data-site-nav]') return siteNav;
+        return null;
+      },
+      querySelectorAll() { return []; },
+      addEventListener() {},
+    };
 
-  assert.doesNotThrow(() => {
-    runScriptInVm({ document, matchMedia: () => ({ matches: true }) });
-  });
+    assert.doesNotThrow(() => {
+      runScriptInVm({ document, matchMedia: () => ({ matches: true }) });
+    });
+    assert.equal(
+      root.classList.contains('menu-enhanced'),
+      false,
+      `${availableHook} should keep the no-JavaScript navigation CSS active`,
+    );
+  }
+});
+
+test('mobile CSS keeps navigation usable until menu enhancement initializes', () => {
+  const css = read('styles.css').replace(/\/\*[^]*?\*\//g, '');
+  const mobileBlocks = blocksFollowing(
+    css,
+    /@media\b[^{}]*\(\s*max-width\s*:\s*900px\s*\)[^{}]*\{/gi,
+  );
+
+  assert.equal(mobileBlocks.length, 1, 'expected one 900px mobile breakpoint');
+
+  const rules = [...mobileBlocks[0].matchAll(/([^{}]+)\{([^{}]*)\}/g)].map(
+    ([, selector, body]) => ({ selector: selector.trim(), body }),
+  );
+  const defaultMenuRules = rules.filter(({ selector }) =>
+    /\.menu-button\b/.test(selector) && !/\.menu-enhanced\b/.test(selector),
+  );
+  const defaultNavRules = rules.filter(({ selector }) =>
+    (/\.site-nav\b/.test(selector) || /\[data-site-nav\]/.test(selector))
+      && !/\.menu-enhanced\b/.test(selector),
+  );
+  const enhancedMenuRules = rules.filter(({ selector }) =>
+    /\.menu-enhanced\b/.test(selector) && /\.menu-button\b/.test(selector),
+  );
+  const enhancedNavRules = rules.filter(({ selector }) =>
+    /\.menu-enhanced\b/.test(selector)
+      && (/\.site-nav\b/.test(selector) || /\[data-site-nav\]/.test(selector)),
+  );
+
+  assert.ok(
+    defaultMenuRules.every(({ body }) => !/\bdisplay\s*:\s*(?:inline-)?flex\b/i.test(body)),
+    'the no-JavaScript mobile default must not expose an inert menu button',
+  );
+  assert.ok(
+    defaultNavRules.some(({ body }) =>
+      /\bdisplay\s*:\s*flex\b/i.test(body) && /\bposition\s*:\s*static\b/i.test(body),
+    ),
+    'the no-JavaScript mobile default should keep section navigation in the header flow',
+  );
+  assert.ok(
+    defaultNavRules.every(({ body }) => !/\bdisplay\s*:\s*none\b/i.test(body)),
+    'the no-JavaScript mobile default must not hide section navigation',
+  );
+  assert.ok(
+    enhancedMenuRules.some(({ body }) => /\bdisplay\s*:\s*inline-flex\b/i.test(body)),
+    'menu enhancement should expose the menu button at mobile widths',
+  );
+  assert.ok(
+    enhancedNavRules.some(({ body }) => /\bdisplay\s*:\s*none\b/i.test(body)),
+    'menu enhancement should collapse mobile navigation by default',
+  );
+  assert.ok(
+    enhancedNavRules.some(({ selector, body }) =>
+      /\[data-site-nav\]\[data-open\]/.test(selector) && /\bdisplay\s*:\s*flex\b/i.test(body),
+    ),
+    'an enhanced open menu should reveal section navigation',
+  );
 });
 
 test('reveal enhancement stays disabled for reduced motion or missing observer support', () => {
