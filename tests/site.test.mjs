@@ -130,10 +130,15 @@ test('index.html exposes the required sections and purchase-link fallbacks', () 
 
 test('index.html does not display pricing', () => {
   requireFile('index.html');
-  const html = stripHtmlComments(read('index.html'));
+  const rawHtml = read('index.html');
+  const html = stripHtmlComments(rawHtml);
   const text = visibleText(html);
 
-  assert.doesNotMatch(html, /[¥￥]|售价|价格\s*[:：]/, 'index.html should not contain price markers');
+  assert.doesNotMatch(
+    rawHtml,
+    /[¥￥]|售价|价格\s*[:：]/,
+    'index.html should not contain explicit price markers',
+  );
   assert.doesNotMatch(
     text,
     /(?:\d+(?:\.\d+)?\s*元(?!器件|数据|素)|价格\s*(?:为|是)?\s*\d+(?:\.\d+)?)/,
@@ -198,6 +203,7 @@ test('styles.css includes responsive, reduced-motion, and keyboard-focus rules',
 test('script.js defines and applies the exact purchase URL', () => {
   requireFile('script.js');
   const script = read('script.js');
+  const escapedPurchaseUrl = purchaseUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   const purchaseLinks = [{ href: 'wrong://first' }, { href: 'wrong://second' }];
   const classList = {
     add() {},
@@ -256,6 +262,11 @@ test('script.js defines and applies the exact purchase URL', () => {
   context.self = context;
   context.globalThis = context;
 
+  assert.match(
+    script,
+    new RegExp(`\\bconst\\s+PURCHASE_URL\\s*=\\s*["']${escapedPurchaseUrl}["']`),
+    'script.js should explicitly declare const PURCHASE_URL with the exact URL',
+  );
   runInNewContext(
     `${script}\n;globalThis.__purchaseUrlForTest = PURCHASE_URL;`,
     context,
