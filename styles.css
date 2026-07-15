@@ -430,6 +430,7 @@ main {
 .feature,
 .split-layout > figure,
 .software-gallery figure,
+.related-files,
 .spec-layout > div,
 .package,
 .section--notes,
@@ -643,6 +644,28 @@ main {
 .section--software .section__heading > p:not(.eyebrow) {
   max-width: 65ch;
   font-size: 1.06rem;
+}
+
+.related-files {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  margin-bottom: 1.5rem;
+  padding: clamp(1.5rem, 3vw, 2.25rem);
+  border-radius: var(--radius-md);
+}
+
+.related-files h3,
+.related-files p {
+  margin-bottom: 0;
+}
+
+.related-files__actions {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 1.25rem;
 }
 
 .software-capabilities {
@@ -1020,6 +1043,11 @@ td {
     width: min(100%, 700px);
     margin-inline: auto;
   }
+
+  .related-files {
+    align-items: flex-start;
+    flex-direction: column;
+  }
 }
 
 @media (max-width: 640px) {
@@ -1095,6 +1123,12 @@ td {
   .section--software {
     width: 100%;
     padding-inline: 1rem;
+  }
+
+  .related-files__actions {
+    width: 100%;
+    align-items: stretch;
+    flex-direction: column;
   }
 
   .card-grid--three,

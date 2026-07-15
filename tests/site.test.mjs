@@ -5,6 +5,8 @@ import { existsSync, readFileSync, statSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
 
 const purchaseUrl = 'https://m.tb.cn/h.802lN7o?tk=phNwgK0gm5B';
+const releaseUrl = 'https://github.com/Lijinzh/Communist-Manifesto-Releases/releases/tag/v0.3.48';
+const officialDriverUrl = 'https://www.wch.cn/downloads/CH343SER_EXE.html';
 const expectedImageDimensions = new Map([
   ['assets/images/hero.webp', [1122, 1402]],
   ['assets/images/workflow.webp', [1122, 1402]],
@@ -212,6 +214,23 @@ test('index.html exposes the required sections and purchase-link fallbacks', () 
       purchaseUrl,
       `purchase anchor ${index + 1} should have the exact fallback href`,
     );
+  }
+});
+
+test('index.html guides users to the reviewed driver downloads', () => {
+  const html = stripHtmlComments(read('index.html'));
+  const anchors = html.match(/<a\b[^>]*>[^<]*<\/a>/gi) ?? [];
+
+  for (const [url, label] of [
+    [releaseUrl, 'GitHub Release 下载'],
+    [officialDriverUrl, '沁恒官方驱动页'],
+  ]) {
+    const anchor = anchors.find((tag) => attributeValue(tag, 'href') === url);
+    assert.ok(anchor, `missing reviewed download link: ${url}`);
+    assert.match(anchor, new RegExp(`>${label}<\\/a>`, 'i'));
+    assert.equal(attributeValue(anchor, 'target'), '_blank');
+    assert.match(attributeValue(anchor, 'rel') ?? '', /(?:^|\s)noopener(?:\s|$)/);
+    assert.match(attributeValue(anchor, 'rel') ?? '', /(?:^|\s)noreferrer(?:\s|$)/);
   }
 });
 
