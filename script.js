@@ -1,17 +1,22 @@
-const PURCHASE_URL = 'https://m.tb.cn/h.802lN7o?tk=phNwgK0gm5B';
+const PURCHASE_URL = 'https://www.goofish.com/item?spm=a21ybx.personal.feeds.2.5a4e6ac2FqZlZf&id=1065574393669&categoryId=50023914';
+const DOWNLOAD_URL = 'https://github.com/Lijinzh/Communist-Manifesto-Releases';
 
-const purchaseLinks = document.querySelectorAll?.('[data-purchase-link]') ?? [];
+const queryAll = (selector) => document.querySelectorAll?.(selector) ?? [];
 
-for (const link of purchaseLinks) {
+for (const link of queryAll('[data-purchase-link]')) {
   link.href = PURCHASE_URL;
 }
 
-const menuButton = document.querySelector?.('[data-menu-button]');
-const siteNav = document.querySelector?.('[data-site-nav]');
+for (const link of queryAll('[data-download-link]')) {
+  link.href = DOWNLOAD_URL;
+}
+
+const menuButton = document.querySelector?.('[data-menu-toggle]');
+const globalNav = document.querySelector?.('[data-global-nav]');
 
 if (
   menuButton
-  && siteNav
+  && globalNav
   && typeof menuButton.addEventListener === 'function'
   && typeof document.addEventListener === 'function'
 ) {
@@ -19,26 +24,22 @@ if (
     menuButton.setAttribute?.('aria-expanded', String(isOpen));
 
     if (isOpen) {
-      siteNav.setAttribute?.('data-open', '');
+      globalNav.setAttribute?.('data-open', '');
     } else {
-      siteNav.removeAttribute?.('data-open');
+      globalNav.removeAttribute?.('data-open');
     }
   };
 
   menuButton.addEventListener('click', () => {
-    const isOpen = menuButton.getAttribute?.('aria-expanded') === 'true';
-    setMenuOpen(!isOpen);
+    setMenuOpen(menuButton.getAttribute?.('aria-expanded') !== 'true');
   });
 
-  const navLinks = siteNav.querySelectorAll?.('a') ?? [];
-  for (const link of navLinks) {
+  for (const link of globalNav.querySelectorAll?.('a') ?? []) {
     link.addEventListener?.('click', () => setMenuOpen(false));
   }
 
   document.addEventListener('keydown', (event) => {
-    const isOpen = menuButton.getAttribute?.('aria-expanded') === 'true';
-    if (event.key !== 'Escape' || !isOpen) return;
-
+    if (event.key !== 'Escape' || menuButton.getAttribute?.('aria-expanded') !== 'true') return;
     setMenuOpen(false);
     menuButton.focus?.();
   });
@@ -46,7 +47,46 @@ if (
   document.documentElement?.classList?.add?.('menu-enhanced');
 }
 
-const revealElements = document.querySelectorAll?.('[data-reveal]') ?? [];
+const header = document.querySelector?.('[data-header]');
+
+if (header && typeof addEventListener === 'function') {
+  let scrollFrame = 0;
+  const updateHeader = () => {
+    scrollFrame = 0;
+    const isScrolled = (globalThis.scrollY ?? 0) > 12;
+    if (isScrolled) {
+      header.setAttribute?.('data-scrolled', '');
+    } else {
+      header.removeAttribute?.('data-scrolled');
+    }
+  };
+
+  addEventListener('scroll', () => {
+    if (scrollFrame) return;
+    scrollFrame = typeof requestAnimationFrame === 'function'
+      ? requestAnimationFrame(updateHeader)
+      : 1;
+    if (typeof requestAnimationFrame !== 'function') updateHeader();
+  }, { passive: true });
+  updateHeader();
+}
+
+const colorOptions = [...queryAll('[data-color-option]')];
+const selectedColor = document.querySelector?.('[data-selected-color]');
+
+for (const option of colorOptions) {
+  option.addEventListener?.('click', () => {
+    for (const item of colorOptions) {
+      const isSelected = item === option;
+      item.setAttribute?.('aria-pressed', String(isSelected));
+      item.classList?.toggle?.('is-selected', isSelected);
+    }
+
+    if (selectedColor) selectedColor.textContent = option.dataset?.colorOption ?? '';
+  });
+}
+
+const revealElements = queryAll('[data-reveal]');
 const prefersReducedMotion = typeof matchMedia === 'function'
   && matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -61,7 +101,6 @@ if (
     revealObserver = new IntersectionObserver((entries, observer) => {
       for (const entry of entries) {
         if (!entry.isIntersecting) continue;
-
         entry.target.classList?.add?.('is-visible');
         observer.unobserve?.(entry.target);
       }
@@ -71,9 +110,7 @@ if (
     });
 
     document.documentElement?.classList?.add?.('js');
-    for (const element of revealElements) {
-      revealObserver.observe?.(element);
-    }
+    for (const element of revealElements) revealObserver.observe?.(element);
   } catch {
     document.documentElement?.classList?.remove?.('js');
     revealObserver?.disconnect?.();
