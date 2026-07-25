@@ -1,5 +1,6 @@
 const PURCHASE_URL = 'https://www.goofish.com/item?spm=a21ybx.personal.feeds.2.5a4e6ac2FqZlZf&id=1065574393669&categoryId=50023914';
 const DOWNLOAD_URL = 'https://github.com/Lijinzh/Communist-Manifesto-Releases';
+const GITEE_RELEASE_URL = 'https://gitee.com/shan-yujun/Communist-Manifesto-Releases';
 
 const queryAll = (selector) => document.querySelectorAll?.(selector) ?? [];
 
@@ -9,6 +10,10 @@ for (const link of queryAll('[data-purchase-link]')) {
 
 for (const link of queryAll('[data-download-link]')) {
   link.href = DOWNLOAD_URL;
+}
+
+for (const link of queryAll('[data-gitee-release-link]')) {
+  link.href = GITEE_RELEASE_URL;
 }
 
 const menuButton = document.querySelector?.('[data-menu-toggle]');

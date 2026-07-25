@@ -5,6 +5,8 @@ import { runInNewContext } from 'node:vm';
 
 const purchaseUrl = 'https://www.goofish.com/item?spm=a21ybx.personal.feeds.2.5a4e6ac2FqZlZf&id=1065574393669&categoryId=50023914';
 const downloadUrl = 'https://github.com/Lijinzh/Communist-Manifesto-Releases';
+const giteeReleaseUrl = 'https://gitee.com/shan-yujun/Communist-Manifesto-Releases';
+const feedbackUrl = 'https://docs.qq.com/sheet/DQUFjTktqTmF0d1FG?tab=BB08J2';
 const djiMicUrl = 'https://www.dji.com/cn/mic';
 const djiMic2Url = 'https://www.dji.com/cn/mic-2';
 const officialDriverUrl = 'https://www.wch.cn/downloads/CH343SER_EXE.html';
@@ -19,6 +21,10 @@ const requiredProductImages = [
   'assets/images/software-settings.webp',
   'assets/images/guide-hardware.jpg',
 ];
+const replacementImages = new Map([
+  ['assets/images/software-main.webp', { width: '1180', height: '620', bytes: 58_292 }],
+  ['assets/images/software-settings.webp', { width: '1442', height: '852', bytes: 110_614 }],
+]);
 
 function fileUrl(path) {
   return new URL(`../${path}`, import.meta.url);
@@ -69,7 +75,6 @@ test('all pages expose the shared navigation and reviewed destinations', () => {
     ['产品', 'index.html'],
     ['商城', 'shop.html'],
     ['使用说明', 'guide.html'],
-    ['下载', downloadUrl],
   ];
 
   for (const page of pageFiles) {
@@ -90,6 +95,25 @@ test('all pages expose the shared navigation and reviewed destinations', () => {
       assert.equal(attributeValue(anchor, 'href'), purchaseUrl);
     }
   }
+});
+
+test('all pages expose equal-priority Gitee and GitHub release links', () => {
+  for (const page of pageFiles) {
+    const html = stripHtmlComments(read(page));
+    assert.match(html, new RegExp(escapeRegExp(giteeReleaseUrl)), `${page} should link Gitee`);
+    assert.match(html, new RegExp(escapeRegExp(downloadUrl)), `${page} should link GitHub`);
+  }
+
+  const home = stripHtmlComments(read('index.html'));
+  assert.match(home, /id=["']release-downloads["']/);
+  const releaseButtons = openingTags(home, 'a').filter((tag) =>
+    /(?:^|\s)release-button(?:\s|$)/.test(attributeValue(tag, 'class') ?? ''),
+  );
+  assert.equal(releaseButtons.length, 2, 'homepage should expose two equal release buttons');
+  assert.deepEqual(
+    new Set(releaseButtons.map((tag) => attributeValue(tag, 'href'))),
+    new Set([giteeReleaseUrl, downloadUrl]),
+  );
 });
 
 test('external links use safe new-window attributes', () => {
@@ -138,10 +162,11 @@ test('homepage presents flagship product storytelling', () => {
 
 test('shop presents preorder colors and reviewed microphone compatibility', () => {
   const html = stripHtmlComments(read('shop.html'));
-  for (const color of ['灰色', '红色', '白色', '黑色', '紫色']) {
+  for (const color of ['灰色', '红色', '白色', '黑色', '紫色', '其他自选颜色']) {
     assert.match(html, new RegExp(color), `shop should mention ${color}`);
   }
-  assert.match(html, /默认灰色/);
+  assert.match(html, /灰色为默认交付颜色/);
+  assert.match(html, /仅支持提前预订/);
   assert.match(html, /价格与库存以闲鱼商品页为准/);
   assert.match(html, new RegExp(escapeRegExp(djiMicUrl)));
   assert.match(html, new RegExp(escapeRegExp(djiMic2Url)));
@@ -149,7 +174,7 @@ test('shop presents preorder colors and reviewed microphone compatibility', () =
   assert.match(html, /麦克风不包含在包装内/);
 
   const colorButtons = openingTags(html, 'button').filter((tag) => hasAttribute(tag, 'data-color-option'));
-  assert.equal(colorButtons.length, 5, 'shop should expose five color choices');
+  assert.equal(colorButtons.length, 6, 'shop should expose six color choices');
   assert.equal(
     colorButtons.filter((tag) => attributeValue(tag, 'aria-pressed') === 'true').length,
     1,
@@ -161,6 +186,14 @@ test('shop presents preorder colors and reviewed microphone compatibility', () =
         && attributeValue(tag, 'aria-pressed') === 'true'),
     'gray should be the default color',
   );
+});
+
+test('shop links the Tencent Docs feedback area without claiming direct submission', () => {
+  const html = stripHtmlComments(read('shop.html'));
+  assert.match(html, /告诉我们你想要的搭配/);
+  assert.match(html, new RegExp(escapeRegExp(feedbackUrl)));
+  assert.match(html, /实际编辑与保存能力由腾讯文档权限控制/);
+  assert.doesNotMatch(html, /提交成功|已保存到腾讯文档/);
 });
 
 test('guide covers first use, Bluetooth hosts, controls, and troubleshooting', () => {
@@ -191,6 +224,20 @@ test('authorized product and guide images are local and web optimized', () => {
     const bytes = statSync(fileUrl(path)).size;
     assert.ok(bytes > 1_000, `${path} should contain real image data`);
     assert.ok(bytes <= 900 * 1024, `${path} is ${bytes} bytes; expected at most 900 KiB`);
+  }
+});
+
+test('numbered software screenshots use the approved files and dimensions', () => {
+  const pageHtml = pageFiles.map((page) => stripHtmlComments(read(page))).join('\n');
+
+  for (const [src, expected] of replacementImages) {
+    assert.equal(statSync(fileUrl(src)).size, expected.bytes, `${src} should match the approved file`);
+    const imageTags = openingTags(pageHtml, 'img').filter((tag) => attributeValue(tag, 'src') === src);
+    assert.ok(imageTags.length >= 1, `${src} should be used on a public page`);
+    for (const tag of imageTags) {
+      assert.equal(attributeValue(tag, 'width'), expected.width);
+      assert.equal(attributeValue(tag, 'height'), expected.height);
+    }
   }
 });
 
@@ -243,15 +290,21 @@ test('script defines reviewed URLs and applies the purchase destination', () => 
     script,
     new RegExp(`\\bconst\\s+DOWNLOAD_URL\\s*=\\s*["']${escapeRegExp(downloadUrl)}["']`),
   );
+  assert.match(
+    script,
+    new RegExp(`\\bconst\\s+GITEE_RELEASE_URL\\s*=\\s*["']${escapeRegExp(giteeReleaseUrl)}["']`),
+  );
 
   const purchaseLinks = [{ href: 'old://one' }, { href: 'old://two' }];
   const downloadLinks = [{ href: 'old://download' }];
+  const giteeLinks = [{ href: 'old://gitee' }];
   const classList = { add() {}, remove() {}, toggle() {}, contains() { return false; } };
   const document = {
     documentElement: { classList },
     querySelectorAll(selector) {
       if (selector === '[data-purchase-link]') return purchaseLinks;
       if (selector === '[data-download-link]') return downloadLinks;
+      if (selector === '[data-gitee-release-link]') return giteeLinks;
       return [];
     },
     querySelector() { return null; },
@@ -267,12 +320,14 @@ test('script defines reviewed URLs and applies the purchase destination', () => 
   };
   context.window = context;
   context.globalThis = context;
-  runInNewContext(`${script}\n;globalThis.__urls = { PURCHASE_URL, DOWNLOAD_URL };`, context);
+  runInNewContext(`${script}\n;globalThis.__urls = { PURCHASE_URL, DOWNLOAD_URL, GITEE_RELEASE_URL };`, context);
 
   assert.equal(context.__urls.PURCHASE_URL, purchaseUrl);
   assert.equal(context.__urls.DOWNLOAD_URL, downloadUrl);
+  assert.equal(context.__urls.GITEE_RELEASE_URL, giteeReleaseUrl);
   assert.deepEqual(purchaseLinks.map((link) => link.href), [purchaseUrl, purchaseUrl]);
   assert.deepEqual(downloadLinks.map((link) => link.href), [downloadUrl]);
+  assert.deepEqual(giteeLinks.map((link) => link.href), [giteeReleaseUrl]);
 });
 
 test('script color selector updates pressed state and selected label', () => {

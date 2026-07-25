@@ -20,14 +20,14 @@
         <a href="index.html">产品</a>
         <a href="shop.html" aria-current="page">商城</a>
         <a href="guide.html">使用说明</a>
-        <a data-download-link href="https://github.com/Lijinzh/Communist-Manifesto-Releases" target="_blank" rel="noopener noreferrer">下载</a>
+        <a href="index.html#release-downloads">发布下载</a>
       </nav>
       <a class="button button--header" data-purchase-link href="https://www.goofish.com/item?spm=a21ybx.personal.feeds.2.5a4e6ac2FqZlZf&amp;id=1065574393669&amp;categoryId=50023914" target="_blank" rel="noopener noreferrer">立即购买</a>
     </div>
   </header>
 
   <div class="product-subnav" data-product-subnav>
-    <div><strong>苍虬 AI 编程手柄</strong><nav aria-label="商城页面导航"><a href="#gallery">产品图</a><a href="#colors">颜色</a><a href="#microphones">麦克风适配</a><a href="#package">包装内容</a></nav><a class="button button--small" data-purchase-link href="https://www.goofish.com/item?spm=a21ybx.personal.feeds.2.5a4e6ac2FqZlZf&amp;id=1065574393669&amp;categoryId=50023914" target="_blank" rel="noopener noreferrer">闲鱼购买</a></div>
+    <div><strong>苍虬 AI 编程手柄</strong><nav aria-label="商城页面导航"><a href="#gallery">产品图</a><a href="#colors">颜色</a><a href="#feedback">搭配建议</a><a href="#microphones">麦克风适配</a><a href="#package">包装内容</a></nav><a class="button button--small" data-purchase-link href="https://www.goofish.com/item?spm=a21ybx.personal.feeds.2.5a4e6ac2FqZlZf&amp;id=1065574393669&amp;categoryId=50023914" target="_blank" rel="noopener noreferrer">闲鱼购买</a></div>
   </div>
 
   <main id="main-content">
@@ -36,7 +36,7 @@
         <p class="kicker">ZKO FLAGSHIP PRODUCT</p>
         <h1 id="shop-title">苍虬<br>AI 编程手柄</h1>
         <p>实体宏键、Agent 状态灯、彩色小屏、三主机蓝牙与 AutoClipboard 软件协同，一套交付。</p>
-        <div class="shop-hero__meta"><span>默认灰色</span><span>支持颜色预订</span><span>小批量持续迭代</span></div>
+        <div class="shop-hero__meta"><span>灰色默认交付</span><span>其他颜色仅预订</span><span>小批量持续迭代</span></div>
         <a class="button" data-purchase-link href="https://www.goofish.com/item?spm=a21ybx.personal.feeds.2.5a4e6ac2FqZlZf&amp;id=1065574393669&amp;categoryId=50023914" target="_blank" rel="noopener noreferrer">前往闲鱼购买</a>
         <p class="commerce-note">价格与库存以闲鱼商品页为准。</p>
       </div>
@@ -59,19 +59,38 @@
       <div class="configuration-section__intro" data-reveal>
         <p class="kicker">PREORDER COLORS</p>
         <h2 id="colors-title">提前预订，选择你的颜色</h2>
-        <p>默认交付为灰色。红色、白色、黑色、紫色可在购买前沟通预订；颜色为意向选项，最终可用性以闲鱼沟通和实际生产为准。</p>
+        <p>灰色为默认交付颜色。红色、白色、黑色、紫色以及其他自选颜色均仅支持提前预订；任何非灰色方案都需在闲鱼沟通并确认生产可行性。</p>
       </div>
       <div class="color-configurator" data-reveal>
         <p>当前选择：<strong data-selected-color>灰色</strong></p>
         <div class="color-options" role="group" aria-label="预订颜色">
-          <button class="color-swatch is-selected" type="button" data-color-option="灰色" aria-pressed="true"><span class="swatch swatch--gray" aria-hidden="true"></span>灰色</button>
-          <button class="color-swatch" type="button" data-color-option="红色" aria-pressed="false"><span class="swatch swatch--red" aria-hidden="true"></span>红色</button>
-          <button class="color-swatch" type="button" data-color-option="白色" aria-pressed="false"><span class="swatch swatch--white" aria-hidden="true"></span>白色</button>
-          <button class="color-swatch" type="button" data-color-option="黑色" aria-pressed="false"><span class="swatch swatch--black" aria-hidden="true"></span>黑色</button>
-          <button class="color-swatch" type="button" data-color-option="紫色" aria-pressed="false"><span class="swatch swatch--purple" aria-hidden="true"></span>紫色</button>
+          <button class="color-swatch is-selected" type="button" data-color-option="灰色" aria-pressed="true"><span class="swatch swatch--gray" aria-hidden="true"></span>灰色<small>默认</small></button>
+          <button class="color-swatch" type="button" data-color-option="红色" aria-pressed="false"><span class="swatch swatch--red" aria-hidden="true"></span>红色<small>仅预订</small></button>
+          <button class="color-swatch" type="button" data-color-option="白色" aria-pressed="false"><span class="swatch swatch--white" aria-hidden="true"></span>白色<small>仅预订</small></button>
+          <button class="color-swatch" type="button" data-color-option="黑色" aria-pressed="false"><span class="swatch swatch--black" aria-hidden="true"></span>黑色<small>仅预订</small></button>
+          <button class="color-swatch" type="button" data-color-option="紫色" aria-pressed="false"><span class="swatch swatch--purple" aria-hidden="true"></span>紫色<small>仅预订</small></button>
+          <button class="color-swatch color-swatch--custom" type="button" data-color-option="其他自选颜色" aria-pressed="false"><span class="swatch swatch--custom" aria-hidden="true"></span>其他自选颜色<small>仅预订</small></button>
         </div>
-        <p class="configuration-hint">下单后请在闲鱼聊天中确认颜色。未特别说明时按默认灰色准备。</p>
+        <p class="configuration-hint">未特别说明时按默认灰色准备。所有非灰色方案均不承诺现货或固定交付时间，请先在闲鱼确认。</p>
         <a class="button" data-purchase-link href="https://www.goofish.com/item?spm=a21ybx.personal.feeds.2.5a4e6ac2FqZlZf&amp;id=1065574393669&amp;categoryId=50023914" target="_blank" rel="noopener noreferrer">带着颜色意向去购买</a>
+      </div>
+    </section>
+
+    <section class="feedback-section" id="feedback" aria-labelledby="feedback-title">
+      <div class="feedback-section__intro" data-reveal>
+        <p class="kicker">COMMUNITY IDEAS</p>
+        <h2 id="feedback-title">告诉我们你想要的搭配</h2>
+        <p>欢迎提出手柄颜色、麦克风型号、固定方式、使用场景或其他组合建议。设计成熟、反馈良好的搭配，后续可能作为正式版本上线。</p>
+      </div>
+      <div class="feedback-section__card" data-reveal>
+        <div class="feedback-prompt-grid" aria-label="搭配建议示例">
+          <div><span>颜色组合</span><strong>紫色手柄 + 白色麦克风</strong></div>
+          <div><span>设备型号</span><strong>DJI Mic / DJI Mic 2 / 其他型号</strong></div>
+          <div><span>使用场景</span><strong>语音编程、演讲、录课或移动创作</strong></div>
+          <div><span>结构建议</span><strong>支架方向、固定位置与握持方式</strong></div>
+        </div>
+        <a class="button button--dark" href="https://docs.qq.com/sheet/DQUFjTktqTmF0d1FG?tab=BB08J2" target="_blank" rel="noopener noreferrer">前往腾讯文档提交搭配建议</a>
+        <p class="feedback-section__notice">建议将在腾讯文档中查看；实际编辑与保存能力由腾讯文档权限控制。</p>
       </div>
     </section>
 
@@ -86,7 +105,7 @@
     </section>
 
     <section class="package-section" id="package" aria-labelledby="package-title">
-      <div class="package-section__media" data-reveal><img src="assets/images/software-settings.webp" alt="AutoClipboard 设备设置和个性化配置界面" width="1800" height="1320" loading="lazy"></div>
+      <div class="package-section__media" data-reveal><img src="assets/images/software-settings.webp" alt="带编号说明的 AutoClipboard 设备设置和个性化配置界面" width="1442" height="852" loading="lazy"></div>
       <div class="package-section__copy" data-reveal>
         <p class="kicker">WHAT YOU GET</p>
         <h2 id="package-title">不止是手柄，<br>也是一套 AI 工作流</h2>
@@ -100,7 +119,7 @@
   <footer class="site-footer">
     <div class="site-footer__lead"><strong>ZKO 苍虬</strong><p>实体输入、状态反馈和软件配置，一起交付。</p></div>
     <div><h2>产品</h2><a href="index.html">产品首页</a><a href="shop.html#gallery">商品图</a><a href="shop.html#colors">预订颜色</a></div>
-    <div><h2>购买与下载</h2><a data-purchase-link href="https://www.goofish.com/item?spm=a21ybx.personal.feeds.2.5a4e6ac2FqZlZf&amp;id=1065574393669&amp;categoryId=50023914" target="_blank" rel="noopener noreferrer">闲鱼商品页</a><a data-download-link href="https://github.com/Lijinzh/Communist-Manifesto-Releases" target="_blank" rel="noopener noreferrer">GitHub 下载仓库</a></div>
+    <div><h2>购买与下载</h2><a data-purchase-link href="https://www.goofish.com/item?spm=a21ybx.personal.feeds.2.5a4e6ac2FqZlZf&amp;id=1065574393669&amp;categoryId=50023914" target="_blank" rel="noopener noreferrer">闲鱼商品页</a><a data-gitee-release-link href="https://gitee.com/shan-yujun/Communist-Manifesto-Releases" target="_blank" rel="noopener noreferrer">Gitee 发布仓库</a><a data-download-link href="https://github.com/Lijinzh/Communist-Manifesto-Releases" target="_blank" rel="noopener noreferrer">GitHub 发布仓库</a></div>
     <div><h2>使用支持</h2><a href="guide.html#quick-start">首次使用</a><a href="guide.html#bluetooth">蓝牙连接</a><a href="guide.html#troubleshooting">常见问题</a></div>
     <div class="site-footer__bottom"><span>© 2026 ZKO 苍虬</span><span>价格、库存和交付版本以闲鱼沟通为准。</span></div>
   </footer>

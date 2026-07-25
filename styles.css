@@ -371,6 +371,57 @@ code {
   margin-top: 2rem;
 }
 
+.hero-release {
+  width: min(100%, 38rem);
+  margin-top: 2.2rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.055);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 1.15rem;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.hero-release > span {
+  display: block;
+  margin-bottom: 0.7rem;
+  color: #aeb7c2;
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+
+.hero-release__actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.release-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 3.25rem;
+  padding: 0.8rem 1rem;
+  color: #001114;
+  background: linear-gradient(135deg, #8af4ff, var(--cyan));
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  border-radius: 999px;
+  box-shadow: 0 12px 28px rgba(32, 204, 228, 0.22);
+  font-size: 0.9rem;
+  font-weight: 800;
+  line-height: 1.2;
+  text-align: center;
+  transition: transform 180ms ease, box-shadow 180ms ease, filter 180ms ease;
+}
+
+.release-button:hover {
+  box-shadow: 0 18px 40px rgba(32, 204, 228, 0.32);
+  filter: brightness(1.05);
+  transform: translateY(-2px);
+}
+
 .hero__product {
   position: relative;
   align-self: end;
@@ -560,6 +611,7 @@ code {
 
 .software-showcase,
 .shop-section,
+.feedback-section,
 .mic-section,
 .support-hub {
   padding: clamp(5rem, 9vw, 9rem) max(1.5rem, calc((100vw - var(--content)) / 2));
@@ -917,7 +969,7 @@ code {
 
 .color-options {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 0.75rem;
   margin: 1.5rem 0;
 }
@@ -934,6 +986,7 @@ code {
   border: 2px solid transparent;
   border-radius: var(--radius-sm);
   cursor: pointer;
+  transition: color 160ms ease, background-color 160ms ease, border-color 160ms ease, transform 160ms ease;
 }
 
 .color-swatch:hover,
@@ -941,6 +994,21 @@ code {
   color: var(--ink);
   background: #fff;
   border-color: var(--cyan-deep);
+}
+
+.color-swatch:hover {
+  transform: translateY(-2px);
+}
+
+.color-swatch small {
+  color: #747a82;
+  font-size: 0.68rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.color-swatch[aria-pressed="true"] small {
+  color: var(--cyan-deep);
 }
 
 .swatch {
@@ -956,9 +1024,74 @@ code {
 .swatch--white { background: #f6f6f1; }
 .swatch--black { background: #17181a; }
 .swatch--purple { background: #6e49a5; }
+.swatch--custom {
+  background: conic-gradient(from 35deg, #6e49a5, #20cce4, #f6f6f1, #ffca55, #c73331, #6e49a5);
+}
+
+.color-swatch--custom {
+  border-style: dashed;
+}
 
 .configuration-hint {
   font-size: 0.82rem;
+}
+
+.feedback-section {
+  display: grid;
+  grid-template-columns: minmax(0, 0.78fr) minmax(420px, 1.22fr);
+  align-items: center;
+  gap: clamp(2rem, 6vw, 7rem);
+  background: #fff;
+}
+
+.feedback-section__intro h2 {
+  max-width: 10ch;
+}
+
+.feedback-section__card {
+  padding: clamp(1.5rem, 4vw, 3rem);
+  background: var(--mist);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+}
+
+.feedback-prompt-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.feedback-prompt-grid > div {
+  min-height: 8rem;
+  padding: 1.15rem;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+}
+
+.feedback-prompt-grid span,
+.feedback-prompt-grid strong {
+  display: block;
+}
+
+.feedback-prompt-grid span {
+  margin-bottom: 0.65rem;
+  color: var(--cyan-deep);
+  font-size: 0.7rem;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+}
+
+.feedback-prompt-grid strong {
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+
+.feedback-section__notice {
+  margin: 1rem 0 0;
+  font-size: 0.78rem;
 }
 
 .mic-section {
@@ -1329,6 +1462,7 @@ details p {
   .guide-hero,
   .story-panel,
   .configuration-section,
+  .feedback-section,
   .package-section {
     grid-template-columns: 1fr;
   }
@@ -1342,6 +1476,7 @@ details p {
 
   .hero__content h1,
   .hero__lead,
+  .hero-release,
   .shop-hero h1,
   .shop-hero__copy > p,
   .guide-hero h1,
@@ -1488,10 +1623,6 @@ details p {
     grid-column: auto;
   }
 
-  .color-options {
-    grid-template-columns: repeat(3, 1fr);
-  }
-
   .site-footer {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -1529,6 +1660,7 @@ details p {
   .story-panel,
   .software-showcase,
   .shop-section,
+  .feedback-section,
   .mic-section,
   .support-hub,
   .configuration-section,
@@ -1555,6 +1687,15 @@ details p {
 
   .color-options {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .hero-release__actions,
+  .feedback-prompt-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .release-button {
+    width: 100%;
   }
 
   .download-panel,
