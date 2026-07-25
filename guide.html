@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="苍虬 AI 编程手柄使用说明：首次使用、蓝牙配对、三主机切换、宏键、AutoClipboard 与故障排查。">
+  <meta name="description" content="苍虬 AI 编程手柄新手使用说明：Windows、Ubuntu 与 macOS 安装，蓝牙配对、三台电脑切换、宏键、AutoClipboard 与故障排查。">
   <meta name="theme-color" content="#0a0b0d">
   <title>使用说明 · 苍虬 ZKO AI 编程手柄</title>
   <link rel="stylesheet" href="styles.css">
@@ -28,85 +28,122 @@
 
   <main id="main-content">
     <section class="guide-hero" aria-labelledby="guide-title">
-      <div data-reveal><p class="kicker">USER GUIDE</p><h1 id="guide-title">从第一次连接，<br>到完整 AI 工作流</h1><p>这份快速说明根据正式发布仓库 README 整理。完整文档、软件、固件和驱动以 Gitee 与 GitHub 两个正式发布仓库为准。</p><div class="inline-actions"><a class="button" href="#quick-start">5 分钟开始使用</a><a class="button" data-gitee-release-link href="https://gitee.com/shan-yujun/Communist-Manifesto-Releases" target="_blank" rel="noopener noreferrer">Gitee 发布仓库</a><a class="button" data-download-link href="https://github.com/Lijinzh/Communist-Manifesto-Releases" target="_blank" rel="noopener noreferrer">GitHub 发布仓库</a></div></div>
+      <div data-reveal><p class="kicker">BEGINNER GUIDE</p><h1 id="guide-title">第一次使用，从这里开始</h1><p>先选对安装包，再完成蓝牙配对，最后在纯文本输入框里测试一次宏键。Windows 和 Ubuntu 已成熟测试；macOS 已提供安装包，目前仍在测试中。</p><div class="inline-actions"><a class="button" href="#quick-start">6 步开始使用</a><a class="button" data-gitee-release-link href="https://gitee.com/shan-yujun/Communist-Manifesto-Releases" target="_blank" rel="noopener noreferrer">Gitee 发布仓库</a><a class="button" data-download-link href="https://github.com/Lijinzh/Communist-Manifesto-Releases" target="_blank" rel="noopener noreferrer">GitHub 发布仓库</a></div></div>
       <figure data-reveal><img src="assets/images/hero.webp" alt="苍虬 AI 编程手柄使用说明产品概览" width="1122" height="1402" loading="eager" fetchpriority="high"></figure>
     </section>
 
     <div class="guide-layout">
       <aside class="guide-toc" aria-label="使用说明目录">
         <strong>目录</strong>
-        <a href="#quick-start">5 分钟首次使用</a>
-        <a href="#hardware">接口与硬件</a>
-        <a href="#bluetooth">蓝牙首次配对</a>
-        <a href="#multi-host">三主机切换</a>
-        <a href="#controls">波轮与宏按键</a>
+        <a href="#platforms">选择系统</a>
+        <a href="#quick-start">6 步首次使用</a>
+        <a href="#hardware">认识手柄</a>
+        <a href="#bluetooth">蓝牙连接</a>
+        <a href="#multi-host">三台电脑</a>
+        <a href="#controls">常用操作</a>
         <a href="#software">AutoClipboard</a>
-        <a href="#troubleshooting">常见问题</a>
+        <a href="#troubleshooting">遇到问题</a>
       </aside>
 
       <article class="guide-content">
+        <section id="platforms" data-reveal>
+          <p class="kicker">SUPPORTED SYSTEMS</p>
+          <h2>选择你的系统</h2>
+          <p>三个系统都可以下载 AutoClipboard，但测试成熟度不同。请只下载与你的电脑系统对应的桌面软件安装包。</p>
+          <div class="platform-status-grid">
+            <article class="platform-status-card">
+              <h3>Windows</h3>
+              <span class="support-badge support-badge--stable">成熟测试</span>
+              <p>下载 <code>AutoClipboardSetup-&lt;version&gt;.exe</code>，双击后按安装向导完成安装。</p>
+            </article>
+            <article class="platform-status-card">
+              <h3>Ubuntu</h3>
+              <span class="support-badge support-badge--stable">成熟测试</span>
+              <p>下载 <code>auto-clipboard_&lt;version&gt;_&lt;arch&gt;.deb</code>，使用系统软件安装器安装。</p>
+            </article>
+            <article class="platform-status-card">
+              <h3>macOS</h3>
+              <span class="support-badge support-badge--testing">测试中</span>
+              <p>下载 <code>AutoClipboard-&lt;version&gt;-macOS.dmg</code>。安装包已经提供，但兼容性仍在继续测试。</p>
+            </article>
+          </div>
+          <div class="platform-guide-grid">
+            <article class="platform-guide-card"><h3>Windows 怎么装</h3><ol><li>下载 EXE 安装包。</li><li>双击运行并完成安装。</li><li>确认应用列表里出现 AutoClipboard；先按下方首次使用流程测试蓝牙宏键，再启动软件使用完整功能。</li></ol></article>
+            <article class="platform-guide-card"><h3>Ubuntu 怎么装</h3><ol><li>下载与你架构相符的 DEB 安装包。</li><li>使用系统软件安装器打开并安装。</li><li>先用图形化蓝牙设置连接手柄；只有看不到设备名称时再查阅仓库中的 Ubuntu 进阶排障。</li></ol></article>
+            <article class="platform-guide-card"><h3>macOS 怎么装</h3><ol><li>打开 DMG 安装包。</li><li>把 AutoClipboard 放入“应用程序”。</li><li>首次启动和连接仍属于测试范围；遇到问题时请记录 macOS 版本、软件版本和错误截图。</li></ol></article>
+          </div>
+          <div class="guide-table-wrap"><table><thead><tr><th>文件类型</th><th>是什么</th><th>普通用户是否需要</th></tr></thead><tbody><tr><td><code>.exe</code> / <code>.deb</code> / <code>.dmg</code></td><td>AutoClipboard 桌面软件</td><td>根据自己的系统选择一个</td></tr><tr><td>固件 ZIP</td><td>手柄内部程序</td><td>首次使用不需要</td></tr><tr><td>Skill ZIP</td><td>给支持 Agent Skills 的大模型使用</td><td>可选</td></tr></tbody></table></div>
+          <p class="plain-language-note"><strong>CH343 是 Windows 串口驱动。</strong>日常蓝牙配对不需要安装它；只有 Windows 插入数据 Type-C 线后仍没有出现 COM 端口时，才需要查看驱动说明。</p>
+        </section>
+
         <section id="quick-start" data-reveal>
           <p class="kicker">QUICK START</p>
-          <h2>5 分钟完成首次使用</h2>
+          <h2>6 步完成首次使用</h2>
+          <p>下面六步只做第一次连接需要的事情。先不要更新固件，也不要急着删除蓝牙记录。</p>
           <ol class="step-list">
-            <li><span>1</span><div><h3>下载 AutoClipboard</h3><p>Windows 是当前主要支持平台。前往 Gitee 或 GitHub 正式发布仓库选择与你系统相符的安装包。</p></div></li>
-            <li><span>2</span><div><h3>先给手柄充电</h3><p>使用 USB Type-C 线连接。串口诊断和固件更新必须使用支持数据传输的线。</p></div></li>
-            <li><span>3</span><div><h3>打开或唤醒手柄</h3><p>全新设备或已清除配对的设备会开放约 120 秒蓝牙配对窗口。</p></div></li>
-            <li><span>4</span><div><h3>连接 CommunistKB-XXXX</h3><p>在电脑蓝牙设置中选择扫描到的完整名称，末尾编号不需要手动输入。</p></div></li>
-            <li><span>5</span><div><h3>运行软件并测试</h3><p>让 AutoClipboard 在后台运行，拨动波轮切换 Profile，按一下宏键，再双击中键进入 Settings。</p></div></li>
+            <li><span>1</span><div><h3>下载正确的桌面软件</h3><p>Windows 选择 EXE，Ubuntu 选择 DEB，macOS 选择 DMG。浏览器显示下载完成，并且文件后缀与你的系统一致，就可以继续。</p></div></li>
+            <li><span>2</span><div><h3>安装 AutoClipboard</h3><p>按照系统安装向导完成安装。能在应用列表里看到 AutoClipboard 就算成功；暂时不用打开，也不要进入固件更新。</p></div></li>
+            <li><span>3</span><div><h3>给手柄充电并唤醒</h3><p>接上 USB Type-C 供电，打开或拿起手柄。小屏亮起并显示蓝牙状态就可以继续；只有需要串口诊断时，才必须使用支持数据传输的线。</p></div></li>
+            <li><span>4</span><div><h3>连接 CommunistKB-XXXX</h3><p>打开电脑的蓝牙设置，选择扫描到的完整名称。系统显示“已连接”或“已配对”就算成功；末尾四位编号不需要自己输入。</p></div></li>
+            <li><span>5</span><div><h3>确认从 PAIR 变成 LINK</h3><p>小屏显示 <code>PAIR</code> 表示可以配对；连接成功后会显示 <code>LINK</code>。如果显示 <code>WAIT</code>，手柄正在等待已经保存的电脑。</p></div></li>
+            <li><span>6</span><div><h3>在纯文本输入框中测试，再打开完整功能</h3><p>打开记事本或其他纯文本编辑器，按一下 <code>Enter</code> 或 <code>Ctrl+V</code> 对应的宏键。能产生输入，说明蓝牙键盘功能已经正常；再启动 AutoClipboard 使用状态显示、配置和其他完整功能。</p></div></li>
           </ol>
         </section>
 
         <section id="hardware" data-reveal>
           <p class="kicker">HARDWARE</p>
-          <h2>接口、开关与波轮</h2>
-          <figure class="guide-figure"><img src="assets/images/guide-hardware.jpg" alt="苍虬手柄 USB Type-C 接口、开关、波轮和中键标注" width="1672" height="941" loading="lazy"><figcaption>Type-C 接口用于充电、串口诊断和固件更新；中间开关控制手柄；波轮和中键用于菜单与 Profile。</figcaption></figure>
-          <div class="guide-table-wrap"><table><thead><tr><th>部件</th><th>作用</th></tr></thead><tbody><tr><td>USB Type-C</td><td>充电；使用数据线进行串口诊断、图标传输和固件更新</td></tr><tr><td>1.14 英寸彩色小屏</td><td>显示 Profile、蓝牙、电量、时间、Agent 状态和设备提示</td></tr><tr><td>波轮和中键</td><td>切换 Profile、移动菜单、确认选项、进入或退出 Settings</td></tr><tr><td>侧面 4 枚宏按键</td><td>执行当前 Profile 保存的快捷键宏</td></tr><tr><td>正面灯环</td><td>显示 Agent 状态、Profile、输入反馈和警告</td></tr></tbody></table></div>
+          <h2>先认识最常用的部件</h2>
+          <figure class="guide-figure"><img src="assets/images/guide-hardware.jpg" alt="苍虬手柄 USB Type-C 接口、开关、波轮和中键标注" width="1672" height="941" loading="lazy"><figcaption>Type-C 负责供电和有线诊断；波轮负责切换和移动；中键负责进入、确认和返回。</figcaption></figure>
+          <div class="guide-table-wrap"><table><thead><tr><th>部件</th><th>用最简单的话说明</th></tr></thead><tbody><tr><td>USB Type-C</td><td>充电；使用数据线时还可以诊断设备和更新固件</td></tr><tr><td>彩色小屏</td><td>告诉你当前使用场景、蓝牙、电量和 Agent 状态（编程助手当前处于工作、等待或完成等状态）</td></tr><tr><td>波轮</td><td>平时切换使用场景配置（Profile），在菜单里上下移动</td></tr><tr><td>波轮中键</td><td>单击确认，双击进入 Settings，长按返回或退出</td></tr><tr><td>侧面 4 枚宏按键</td><td>发送当前 Profile 保存的四个快捷键宏</td></tr><tr><td>正面灯环</td><td>用颜色和动画提示输入、工作、等待、完成或警告</td></tr></tbody></table></div>
         </section>
 
         <section id="bluetooth" data-reveal>
           <p class="kicker">BLUETOOTH</p>
-          <h2>第一次蓝牙配对</h2>
-          <p>当前固件的蓝牙广播名称固定为 <code>CommunistKB-XXXX</code>。<code>XXXX</code> 是设备自动生成的四位编号，已经包含在完整名称中。</p>
-          <div class="state-row"><div><strong>PAIR</strong><span>临时开放，可添加新的蓝牙主机</span></div><div><strong>LINK</strong><span>已经连接当前选择的电脑</span></div><div><strong>WAIT</strong><span>等待已保存的电脑重新连接</span></div></div>
-          <ol><li>打开 Windows、Linux 或 macOS 蓝牙设置，选择添加设备。</li><li>打开或唤醒手柄，等待小屏显示 <code>PAIR</code>。</li><li>在电脑上选择完整的 <code>CommunistKB-XXXX</code>。</li><li>配对并连接后，小屏显示 <code>LINK</code>。</li></ol>
+          <h2>看懂三个蓝牙状态</h2>
+          <p>手柄的完整蓝牙名称是 <code>CommunistKB-XXXX</code>。<code>XXXX</code> 是每台手柄自己的四位编号，系统扫描时已经包含在名称里。</p>
+          <div class="state-row"><div><strong>PAIR</strong><span>现在可以添加新的电脑</span></div><div><strong>LINK</strong><span>已经连接当前电脑，可以测试宏键</span></div><div><strong>WAIT</strong><span>正在等待某台已保存的电脑重新连接</span></div></div>
+          <ol><li>打开 Windows、Ubuntu 或 macOS 的系统蓝牙设置。</li><li>选择“添加设备”，等待手柄显示 <code>PAIR</code>。</li><li>选择完整的 <code>CommunistKB-XXXX</code>。</li><li>配对后等待小屏显示 <code>LINK</code>，再去纯文本输入框测试宏键。</li></ol>
         </section>
 
         <section id="multi-host" data-reveal>
           <p class="kicker">MULTI HOST</p>
-          <h2>保存和切换 3 个主机槽位</h2>
+          <h2>一只手柄可以记住三台电脑</h2>
           <ol><li>双击波轮中键进入 <code>Settings</code>。</li><li>拨动到 <code>BLE Hosts</code>，单击进入。</li><li>选择一个 <code>EMPTY</code> 空槽位并单击。</li><li>看到 <code>PAIR</code> 后，在新电脑的蓝牙设置中添加 <code>CommunistKB-XXXX</code>。</li></ol>
-          <p>手柄可以保存 3 个主机槽位。在 <code>BLE Hosts</code> 中，单击已有槽位切换电脑，长按已有槽位删除该主机记录。</p>
+          <p>手柄提供 3 个主机槽位。在 <code>BLE Hosts</code> 中，单击已有槽位就是切换电脑；长按已有槽位会删除那台电脑的记录，操作前先确认不再需要它。</p>
         </section>
 
         <section id="controls" data-reveal>
           <p class="kicker">CONTROLS</p>
-          <h2>波轮、中键与 4 枚宏按键</h2>
+          <h2>波轮和中键，在两个界面里作用不同</h2>
           <figure class="guide-figure guide-figure--portrait"><img src="assets/images/macros.webp" alt="苍虬手柄四枚可编程宏按键" width="1122" height="1402" loading="lazy"><figcaption>默认 Vibe Coding Profile：Right Alt、Enter、Ctrl+V、Ctrl+Alt+0。</figcaption></figure>
-          <div class="guide-table-wrap"><table><thead><tr><th>操作</th><th>正常状态页</th><th>Settings</th></tr></thead><tbody><tr><td>向上或向下拨动</td><td>切换 Profile</td><td>移动选项或调整数值</td></tr><tr><td>单击中键</td><td>打开 Profile 绑定的应用、快捷方式或网页</td><td>进入、编辑、确认或保存</td></tr><tr><td>双击中键</td><td>进入 Settings</td><td>—</td></tr><tr><td>长按中键</td><td>进入 Settings</td><td>取消、返回或退出</td></tr></tbody></table></div>
+          <div class="guide-table-wrap"><table><thead><tr><th>操作</th><th>平时看到主界面时</th><th>进入 Settings 后</th></tr></thead><tbody><tr><td>向上或向下拨动</td><td>切换 Profile</td><td>移动选项或调整数值</td></tr><tr><td>单击中键</td><td>打开 Profile 绑定的应用、快捷方式或网页</td><td>进入项目、开始编辑、确认或保存</td></tr><tr><td>双击中键</td><td>进入 Settings</td><td>通常不需要</td></tr><tr><td>长按中键</td><td>也可以进入 Settings</td><td>取消、返回上一页或退出</td></tr></tbody></table></div>
           <p class="notice">不要尝试按住中键同时拨动波轮；机械结构不支持这种组合动作。</p>
         </section>
 
         <section id="software" data-reveal>
           <p class="kicker">AUTOCLIPBOARD</p>
-          <h2>基础宏可独立使用，深度能力需要软件</h2>
-          <p>AutoClipboard 可以配置 Profile 名称和图标、录制宏按键、调整小屏、灯环和蜂鸣器、查看 IMU 三维姿态、配置演讲光圈，并在受控流程中更新固件。</p>
+          <h2>宏键能用，不代表软件已经连接</h2>
+          <p>系统把手柄当作蓝牙键盘后，四枚宏键就可以发送快捷键。AutoClipboard 使用另一条软件连接来读取状态、修改设置和显示 Agent 信息，所以两者可能一条正常、另一条还没有就绪。</p>
           <div class="guide-image-grid"><img src="assets/images/autoclipboard-main.webp" alt="AutoClipboard 主界面" width="1311" height="1062" loading="lazy"><img src="assets/images/autoclipboard-settings.webp" alt="AutoClipboard 设备设置界面" width="2082" height="1527" loading="lazy"></div>
-          <p>Agent 状态同步、Profile 快开、IMU 预览或演讲光圈需要 AutoClipboard 保持后台运行。基础蓝牙键盘宏不依赖软件。</p>
-          <div class="download-panel"><div><h3>软件下载与驱动</h3><p>Gitee 与 GitHub 仓库提供 Windows 安装包、Linux 包、固件、AI Coding Handle Skill 和随 Release 发布的 CH343 Windows 驱动；也可前往沁恒官方页面获取驱动。</p></div><div class="inline-actions"><a class="button button--dark" data-gitee-release-link href="https://gitee.com/shan-yujun/Communist-Manifesto-Releases" target="_blank" rel="noopener noreferrer">Gitee 发布仓库</a><a class="button button--dark" data-download-link href="https://github.com/Lijinzh/Communist-Manifesto-Releases" target="_blank" rel="noopener noreferrer">GitHub 发布仓库</a><a class="text-link" href="https://www.wch.cn/downloads/CH343SER_EXE.html" target="_blank" rel="noopener noreferrer">沁恒 CH343 官方驱动</a></div></div>
+          <p class="plain-language-note"><strong>基础蓝牙宏不依赖 AutoClipboard。</strong>Agent 状态、Profile 快开、惯性测量单元（IMU）姿态预览、演讲光圈和深度设置需要 AutoClipboard 保持运行。这里的 Agent 状态连接配置，就是把编程助手的工作状态发送给 AutoClipboard，再显示到手柄上。</p>
+          <div class="download-panel"><div><h3>软件、完整说明和 Windows 驱动</h3><p>两个发布仓库提供三种系统的桌面软件、完整使用指南和固件。沁恒 CH343 官方驱动只用于 Windows Type-C 串口识别问题。</p></div><div class="inline-actions"><a class="button button--dark" data-gitee-release-link href="https://gitee.com/shan-yujun/Communist-Manifesto-Releases" target="_blank" rel="noopener noreferrer">Gitee 发布仓库</a><a class="button button--dark" data-download-link href="https://github.com/Lijinzh/Communist-Manifesto-Releases" target="_blank" rel="noopener noreferrer">GitHub 发布仓库</a><a class="text-link" href="https://www.wch.cn/downloads/CH343SER_EXE.html" target="_blank" rel="noopener noreferrer">Windows CH343 官方驱动</a></div></div>
         </section>
 
         <section id="troubleshooting" data-reveal>
           <p class="kicker">TROUBLESHOOTING</p>
-          <h2>常见问题</h2>
-          <details><summary>系统里找不到 CommunistKB-XXXX</summary><p>唤醒手柄，进入 <code>Settings &gt; BLE Hosts</code>，选择 <code>EMPTY</code>，等小屏出现 <code>PAIR</code> 后重新扫描。</p></details>
-          <details><summary>已经配对，但 AutoClipboard 没有就绪</summary><p>保持手柄唤醒，启动 AutoClipboard，再检查蓝牙设备与软件状态。</p></details>
-          <details><summary>宏按键能用，但没有 Agent 状态</summary><p>说明蓝牙键盘连接正常；还需要配置 Agent Hook/Bridge，并保持 AutoClipboard 运行。</p></details>
-          <details><summary>Type-C 连接后没有 COM 端口</summary><p>更换支持数据传输的线和 USB 接口，并从下载仓库安装 CH343 驱动。</p></details>
-          <details><summary>软件提示更新固件</summary><p>先确认设备板型与更新方案，再执行固件更新。不要刷入不对应的固件包。</p></details>
+          <h2>先按现象排查，不要急着重置</h2>
+          <p>删除配对、重置蓝牙和更新固件都不应该是第一步。先找到属于你的现象，再做下面的低风险检查。</p>
+          <details><summary>系统里搜不到 CommunistKB-XXXX</summary><p>先唤醒手柄并靠近电脑。进入 <code>Settings &gt; BLE Hosts</code>，选择 <code>EMPTY</code>，确认小屏出现 <code>PAIR</code> 后再重新扫描。如果三个槽位都已占用，先确认哪台电脑不再需要，再删除对应槽位。</p></details>
+          <details><summary>已经配对，但宏键不能输入</summary><p>确认小屏显示 <code>LINK</code>，然后在记事本等纯文本编辑器里测试 <code>Enter</code> 或 <code>Ctrl+V</code>。先不要删除配对；也要确认当前 Profile 确实配置了这些宏。</p></details>
+          <details><summary>宏键能输入，但 AutoClipboard 显示未连接</summary><p>这通常表示系统蓝牙键盘已经正常，但软件连接还没有就绪。启动或重启 AutoClipboard，保持手柄唤醒，并确认软件查找的是同一个 <code>CommunistKB-XXXX</code>。</p></details>
+          <details><summary>宏键能用，但没有 Agent 状态</summary><p>蓝牙键盘功能已经正常。还需要让 AutoClipboard 保持运行，并完成“把编程助手状态发送给软件”的 Agent 连接配置。可以使用发布仓库中的 AI Coding Handle Skill 进行只读检查。</p></details>
+          <details><summary>Windows 插入 Type-C 后没有 COM 端口</summary><p>先更换确认支持数据传输的线，再尝试电脑上的直连 USB 接口。如果 Windows 设备管理器仍显示未知设备或 CH343/WCH 设备，再安装 CH343 官方驱动。</p></details>
+          <details><summary>Ubuntu 蓝牙列表只显示无名地址</summary><p>先确认手柄正在显示 <code>PAIR</code>，并优先重试系统图形蓝牙设置。按地址识别设备需要额外核对，不要随便选择一个无名地址；请按照正式发布仓库完整指南中的 Ubuntu / BlueZ 流程操作。</p></details>
+          <details><summary>macOS 测试版无法启动或连接</summary><p>确认下载的是 DMG，而不是 Windows 或 Ubuntu 安装包。重新记录 macOS 版本、AutoClipboard 版本、完整蓝牙名称和错误截图，再通过发布仓库反馈；macOS 当前仍处于测试阶段。</p></details>
+          <details><summary>软件提示可以更新固件</summary><p>首次使用不需要更新固件。只有确认实体手柄板型、目标版本和固件包完全匹配后，才按照正式发布仓库的受控流程操作；不要尝试其他板型固件或整片擦除。</p></details>
         </section>
 
-        <section class="guide-ending" data-reveal><h2>需要完整细节？</h2><p>两个正式发布仓库持续维护完整说明书、驱动指南、Agent 状态同步配置与最新发布文件。</p><div class="inline-actions"><a class="button" data-gitee-release-link href="https://gitee.com/shan-yujun/Communist-Manifesto-Releases" target="_blank" rel="noopener noreferrer">Gitee 发布仓库</a><a class="button" data-download-link href="https://github.com/Lijinzh/Communist-Manifesto-Releases" target="_blank" rel="noopener noreferrer">GitHub 发布仓库</a><a class="text-link" data-purchase-link href="https://www.goofish.com/item?spm=a21ybx.personal.feeds.2.5a4e6ac2FqZlZf&amp;id=1065574393669&amp;categoryId=50023914" target="_blank" rel="noopener noreferrer">前往购买</a></div></section>
+        <section class="guide-ending" data-reveal><h2>需要更详细的步骤？</h2><p>官网说明负责帮助你快速开始；发布仓库继续维护完整用户指南、Ubuntu 进阶蓝牙排障、Agent 状态配置、驱动和固件维护说明。</p><div class="inline-actions"><a class="button" data-gitee-release-link href="https://gitee.com/shan-yujun/Communist-Manifesto-Releases" target="_blank" rel="noopener noreferrer">Gitee 完整说明</a><a class="button" data-download-link href="https://github.com/Lijinzh/Communist-Manifesto-Releases" target="_blank" rel="noopener noreferrer">GitHub 完整说明</a><a class="text-link" data-purchase-link href="https://www.goofish.com/item?spm=a21ybx.personal.feeds.2.5a4e6ac2FqZlZf&amp;id=1065574393669&amp;categoryId=50023914" target="_blank" rel="noopener noreferrer">前往购买</a></div></section>
       </article>
     </div>
   </main>
@@ -114,8 +151,8 @@
   <footer class="site-footer">
     <div class="site-footer__lead"><strong>ZKO 苍虬</strong><p>先连接，再配置，最后把 AI 工作流变成肌肉记忆。</p></div>
     <div><h2>产品</h2><a href="index.html">产品首页</a><a href="shop.html">商城</a><a href="index.html#software">AutoClipboard</a></div>
-    <div><h2>购买与下载</h2><a data-purchase-link href="https://www.goofish.com/item?spm=a21ybx.personal.feeds.2.5a4e6ac2FqZlZf&amp;id=1065574393669&amp;categoryId=50023914" target="_blank" rel="noopener noreferrer">闲鱼商品页</a><a data-gitee-release-link href="https://gitee.com/shan-yujun/Communist-Manifesto-Releases" target="_blank" rel="noopener noreferrer">Gitee 发布仓库</a><a data-download-link href="https://github.com/Lijinzh/Communist-Manifesto-Releases" target="_blank" rel="noopener noreferrer">GitHub 发布仓库</a><a href="https://www.wch.cn/downloads/CH343SER_EXE.html" target="_blank" rel="noopener noreferrer">CH343 官方驱动</a></div>
-    <div><h2>使用支持</h2><a href="#quick-start">首次使用</a><a href="#bluetooth">蓝牙连接</a><a href="#troubleshooting">常见问题</a></div>
+    <div><h2>购买与下载</h2><a data-purchase-link href="https://www.goofish.com/item?spm=a21ybx.personal.feeds.2.5a4e6ac2FqZlZf&amp;id=1065574393669&amp;categoryId=50023914" target="_blank" rel="noopener noreferrer">闲鱼商品页</a><a data-gitee-release-link href="https://gitee.com/shan-yujun/Communist-Manifesto-Releases" target="_blank" rel="noopener noreferrer">Gitee 发布仓库</a><a data-download-link href="https://github.com/Lijinzh/Communist-Manifesto-Releases" target="_blank" rel="noopener noreferrer">GitHub 发布仓库</a><a href="https://www.wch.cn/downloads/CH343SER_EXE.html" target="_blank" rel="noopener noreferrer">Windows CH343 官方驱动</a></div>
+    <div><h2>使用支持</h2><a href="#platforms">选择系统</a><a href="#quick-start">首次使用</a><a href="#bluetooth">蓝牙连接</a><a href="#troubleshooting">遇到问题</a></div>
     <div class="site-footer__bottom"><span>© 2026 ZKO 苍虬</span><span>本页为快速说明，完整信息以正式发布仓库为准。</span></div>
   </footer>
 </body>

@@ -196,23 +196,67 @@ test('shop links the Tencent Docs feedback area without claiming direct submissi
   assert.doesNotMatch(html, /提交成功|已保存到腾讯文档/);
 });
 
-test('guide covers first use, Bluetooth hosts, controls, and troubleshooting', () => {
+test('guide explains supported operating systems and package choices', () => {
   const html = stripHtmlComments(read('guide.html'));
+  const platformCards = html.match(/<article class=["']platform-status-card["'][^>]*>[\s\S]*?<\/article>/gi) ?? [];
+  assert.equal(platformCards.length, 3, 'guide should expose one status card per platform');
+
+  const windowsCard = platformCards.find((card) => /<h3>Windows<\/h3>/i.test(card));
+  const ubuntuCard = platformCards.find((card) => /<h3>Ubuntu<\/h3>/i.test(card));
+  const macCard = platformCards.find((card) => /<h3>macOS<\/h3>/i.test(card));
+  assert.ok(windowsCard, 'guide should expose a Windows status card');
+  assert.ok(ubuntuCard, 'guide should expose an Ubuntu status card');
+  assert.ok(macCard, 'guide should expose a macOS status card');
+  assert.match(windowsCard, /support-badge--stable[^>]*>成熟测试/);
+  assert.match(ubuntuCard, /support-badge--stable[^>]*>成熟测试/);
+  assert.match(macCard, /support-badge--testing[^>]*>测试中/);
+  assert.doesNotMatch(macCard, /成熟测试/, 'macOS must not be described as mature');
+  assert.match(html, /AutoClipboardSetup-&lt;version&gt;\.exe/);
+  assert.match(html, /auto-clipboard_&lt;version&gt;_&lt;arch&gt;\.deb/);
+  assert.match(html, /AutoClipboard-&lt;version&gt;-macOS\.dmg/);
+  assert.match(html, /CH343[\s\S]{0,220}Windows/);
+});
+
+test('guide presents a plain-language beginner flow and symptom-first help', () => {
+  const html = stripHtmlComments(read('guide.html'));
+  const quickStart = html.match(/<ol class=["']step-list["'][^>]*>([\s\S]*?)<\/ol>/i)?.[1] ?? '';
+  const steps = quickStart.match(/<li><span>\d<\/span>[\s\S]*?<\/li>/gi) ?? [];
+  assert.equal(steps.length, 6, 'quick start should contain exactly six steps');
+  const successSignals = [
+    '下载完成',
+    '应用列表里看到 AutoClipboard',
+    '小屏亮起',
+    '已连接',
+    'LINK',
+    '能产生输入',
+  ];
+  for (const [index, signal] of successSignals.entries()) {
+    assert.match(steps[index], new RegExp(escapeRegExp(signal)), `step ${index + 1} should explain what success looks like`);
+  }
+  assert.doesNotMatch(steps[1], /启动 AutoClipboard/);
+  assert.match(steps[5], /能产生输入[\s\S]*再启动 AutoClipboard/);
   for (const phrase of [
-    '5 分钟完成首次使用',
+    '第一次使用，从这里开始',
+    '选择你的系统',
+    '6 步完成首次使用',
     'CommunistKB-XXXX',
     'BLE Hosts',
     '3 个主机槽位',
     'PAIR',
     'LINK',
     'WAIT',
-    'CH343',
+    '在纯文本输入框中测试',
+    '基础蓝牙宏不依赖 AutoClipboard',
+    '宏键能输入，但 AutoClipboard 显示未连接',
     'Right Alt',
     'Ctrl+V',
+    'Agent 状态（编程助手当前处于工作、等待或完成等状态）',
+    '惯性测量单元（IMU）',
+    'Windows CH343 官方驱动',
   ]) {
     assert.match(html, new RegExp(escapeRegExp(phrase)), `guide should mention ${phrase}`);
   }
-  for (const id of ['quick-start', 'hardware', 'bluetooth', 'multi-host', 'controls', 'software', 'troubleshooting']) {
+  for (const id of ['platforms', 'quick-start', 'hardware', 'bluetooth', 'multi-host', 'controls', 'software', 'troubleshooting']) {
     assert.match(html, new RegExp(`id=["']${id}["']`), `guide should expose #${id}`);
   }
   assert.match(html, new RegExp(escapeRegExp(officialDriverUrl)));

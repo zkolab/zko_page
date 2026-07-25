@@ -1259,6 +1259,86 @@ code {
   font-size: 1.04rem;
 }
 
+.platform-status-grid,
+.platform-guide-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  margin: 2rem 0;
+}
+
+.platform-status-card,
+.platform-guide-card {
+  padding: 1.4rem;
+  background: var(--mist);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+}
+
+.platform-status-card h3,
+.platform-guide-card h3 {
+  margin-bottom: 0.7rem;
+  letter-spacing: -0.025em;
+}
+
+.platform-status-card p,
+.platform-guide-card p,
+.platform-guide-card li {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.platform-status-card p {
+  margin: 1rem 0 0;
+}
+
+.platform-status-card code,
+.platform-guide-card code {
+  overflow-wrap: anywhere;
+}
+
+.platform-guide-card ol {
+  margin: 1rem 0 0;
+  padding-left: 1.25rem;
+}
+
+.platform-guide-card li + li {
+  margin-top: 0.55rem;
+}
+
+.support-badge {
+  display: inline-flex;
+  padding: 0.35rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 850;
+  line-height: 1.2;
+}
+
+.support-badge--stable {
+  color: #006778;
+  background: #dff9fc;
+}
+
+.support-badge--testing {
+  color: #7b4d00;
+  background: #fff0cc;
+}
+
+.plain-language-note {
+  max-width: none !important;
+  margin: 2rem 0 0;
+  padding: 1rem 1.15rem;
+  color: #415158;
+  background: #f0fbfd;
+  border-left: 4px solid var(--cyan-deep);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+
+.plain-language-note strong {
+  color: var(--ink);
+}
+
 .step-list {
   display: grid;
   gap: 1rem;
@@ -1616,6 +1696,11 @@ details p {
   }
 
   .product-gallery {
+    grid-template-columns: 1fr;
+  }
+
+  .platform-status-grid,
+  .platform-guide-grid {
     grid-template-columns: 1fr;
   }
 
