@@ -20,6 +20,7 @@ const requiredProductImages = [
   'assets/images/software-main.webp',
   'assets/images/software-settings.webp',
   'assets/images/guide-hardware.jpg',
+  'assets/images/macros.webp',
 ];
 const replacementImages = new Map([
   ['assets/images/software-main.webp', { width: '1180', height: '620', bytes: 58_292 }],
@@ -260,6 +261,22 @@ test('guide presents a plain-language beginner flow and symptom-first help', () 
     assert.match(html, new RegExp(`id=["']${id}["']`), `guide should expose #${id}`);
   }
   assert.match(html, new RegExp(escapeRegExp(officialDriverUrl)));
+});
+
+test('guide maps the approved wheel and macro figures to their matching explanations', () => {
+  const html = stripHtmlComments(read('guide.html'));
+  const controls = html.match(/<section id=["']controls["'][^>]*>([\s\S]*?)<\/section>/i)?.[1] ?? '';
+  const profileCopy = '默认的 Vibe Coding Profile 将四枚按键设置为 Right Alt、Enter、Ctrl+V 和 Ctrl+Alt+0。这四个按键都可以在 AutoClipboard 中重新配置。';
+
+  assert.match(controls, /波轮与小屏操作[\s\S]*data-source-figure=["']20\.png["'][\s\S]*assets\/images\/guide-hardware\.jpg/);
+  assert.match(controls, new RegExp(escapeRegExp(profileCopy)));
+  assert.match(controls, /data-source-figure=["']12\.png["'][\s\S]*assets\/images\/macros\.webp/);
+  assert.doesNotMatch(controls, />[^<]*figures\/(?:20|12)\.png[^<]*</, 'source filenames should not appear in visitor-facing copy');
+  assert.ok(
+    controls.indexOf('guide-hardware.jpg') < controls.indexOf(profileCopy)
+      && controls.indexOf(profileCopy) < controls.indexOf('macros.webp'),
+    'each explanation should immediately lead into its matching approved figure',
+  );
 });
 
 test('authorized product and guide images are local and web optimized', () => {
