@@ -40,7 +40,7 @@ const svg = `<?xml version="1.0" encoding="UTF-8"?>
   <rect x="1672" y="250" width="560" height="560" rx="18" fill="#FFFFFF"/>
   <image x="1714" y="292" width="476" height="476" href="data:image/svg+xml;base64,${qrData}"/>
   <text x="1952" y="920" text-anchor="middle" fill="#FFFFFF" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="58" font-weight="700" letter-spacing="8">扫码访问官网</text>
-  <text x="1952" y="995" text-anchor="middle" fill="#79DCE3" font-family="Arial, sans-serif" font-size="28">shenqiqishi.github.io/zko_page</text>
+  <text x="1952" y="995" text-anchor="middle" fill="#79DCE3" font-family="Arial, sans-serif" font-size="36" font-weight="600">shenqiqishi.github.io/zko_page</text>
 </svg>`;
 
 const packagingDir = path.join(root, 'assets/packaging');

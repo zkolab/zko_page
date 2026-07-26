@@ -26,6 +26,14 @@ test('editable sticker contains exact approved content and dimensions', () => {
   assert.match(svg, /ZKO Logo/);
 });
 
+test('homepage address uses a legible enlarged type size', () => {
+  const svg = readText('assets/packaging/zko-packaging-sticker.svg');
+  assert.match(
+    svg,
+    /font-size="36" font-weight="600">shenqiqishi\.github\.io\/zko_page<\/text>/,
+  );
+});
+
 test('delivery PNG is 2400 by 1440 pixels', () => {
   const png = read('assets/packaging/zko-packaging-sticker.png');
   assert.equal(png.toString('ascii', 1, 4), 'PNG');
