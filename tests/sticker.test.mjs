@@ -30,8 +30,16 @@ test('homepage address uses a legible enlarged type size', () => {
   const svg = readText('assets/packaging/zko-packaging-sticker.svg');
   assert.match(
     svg,
-    /font-size="36" font-weight="600">shenqiqishi\.github\.io\/zko_page<\/text>/,
+    /font-size="64" font-weight="600">\s*<tspan[^>]*>shenqiqishi\.github\.io<\/tspan>\s*<tspan[^>]*>\/zko_page<\/tspan>\s*<\/text>/,
   );
+});
+
+test('vector logo also has a transparent 1095 by 360 PNG export', () => {
+  const png = read('ZKO_logo_vector.png');
+  assert.equal(png.toString('ascii', 1, 4), 'PNG');
+  assert.equal(png.readUInt32BE(16), 1095);
+  assert.equal(png.readUInt32BE(20), 360);
+  assert.ok([4, 6].includes(png[25]), 'logo PNG should preserve an alpha channel');
 });
 
 test('delivery PNG is 2400 by 1440 pixels', () => {

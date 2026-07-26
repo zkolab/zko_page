@@ -40,17 +40,21 @@ const svg = `<?xml version="1.0" encoding="UTF-8"?>
   <rect x="1672" y="250" width="560" height="560" rx="18" fill="#FFFFFF"/>
   <image x="1714" y="292" width="476" height="476" href="data:image/svg+xml;base64,${qrData}"/>
   <text x="1952" y="920" text-anchor="middle" fill="#FFFFFF" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="58" font-weight="700" letter-spacing="8">扫码访问官网</text>
-  <text x="1952" y="995" text-anchor="middle" fill="#79DCE3" font-family="Arial, sans-serif" font-size="36" font-weight="600">shenqiqishi.github.io/zko_page</text>
+  <text x="1952" y="1005" text-anchor="middle" fill="#79DCE3" font-family="Arial, sans-serif" font-size="64" font-weight="600">
+    <tspan x="1952" textLength="520" lengthAdjust="spacingAndGlyphs">shenqiqishi.github.io</tspan>
+    <tspan x="1952" dy="78">/zko_page</tspan>
+  </text>
 </svg>`;
 
 const packagingDir = path.join(root, 'assets/packaging');
 const svgPath = path.join(packagingDir, 'zko-packaging-sticker.svg');
 const pngPath = path.join(packagingDir, 'zko-packaging-sticker.png');
+const logoPngPath = path.join(root, 'ZKO_logo_vector.png');
 
 fs.mkdirSync(packagingDir, { recursive: true });
 fs.writeFileSync(svgPath, svg);
 
-sharp(Buffer.from(svg))
-  .png()
-  .toFile(pngPath)
-  .then(() => console.log(`${svgPath}\n${pngPath}`));
+Promise.all([
+  sharp(Buffer.from(svg)).png().toFile(pngPath),
+  sharp(Buffer.from(logoSource)).png().toFile(logoPngPath),
+]).then(() => console.log(`${svgPath}\n${pngPath}\n${logoPngPath}`));
