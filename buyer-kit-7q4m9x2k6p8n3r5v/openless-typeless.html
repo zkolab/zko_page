@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow, noarchive">
+  <meta name="description" content="OpenLess、Typeless、苍虬手柄与 AutoClipboard 语音输入实操指南。">
+  <title>OpenLess / Typeless · 苍虬购买用户资料</title>
+  <link rel="stylesheet" href="buyer-guide.css">
+</head>
+<body>
+  <a class="skip-link" href="#main-content">跳到主要内容</a>
+  <header class="buyer-header">
+    <a class="buyer-brand" href="index.html"><span>ZKO</span>苍虬 · 购买用户资料</a>
+    <nav aria-label="资料导航">
+      <a href="ai-guide.html">AI 使用</a>
+      <a href="coding-workflow.html">编程工作流</a>
+      <a href="openless-typeless.html" aria-current="page">语音输入</a>
+    </nav>
+  </header>
+
+  <main id="main-content">
+    <section class="buyer-hero" aria-labelledby="page-title">
+      <div>
+        <p class="eyebrow">VOICE INPUT</p>
+        <h1 id="page-title">OpenLess / Typeless</h1>
+        <p>选择一款语音输入工具，把“按住说话、松开转写、宏键确认、Agent 工作”变成顺手的工作流。第一次只在记事本测试，不要直接对重要项目下长指令。</p>
+        <div class="hero-actions"><a class="primary-button" href="#choose">先选择工具</a><a class="secondary-button" href="#controller">配置苍虬手柄</a></div>
+      </div>
+      <aside class="hero-checklist">
+        <strong>本页完成标准</strong>
+        <ul class="check-list"><li>麦克风权限正常</li><li>第一次语音转文字成功</li><li>语音快捷键没有冲突</li><li>手柄能确认和发送文字</li></ul>
+      </aside>
+    </section>
+
+    <div class="buyer-layout">
+      <aside class="buyer-toc" aria-label="本页目录">
+        <strong>本页目录</strong>
+        <a href="#choose">1. 选择工具</a>
+        <a href="#openless">2. OpenLess</a>
+        <a href="#typeless">3. Typeless</a>
+        <a href="#first-dictation">4. 第一次语音输入</a>
+        <a href="#controller">5. 手柄联动</a>
+        <a href="#voice-troubleshooting">6. 快速排障</a>
+      </aside>
+
+      <div class="buyer-content">
+        <section class="buyer-section" id="choose" aria-labelledby="choose-title">
+          <p class="eyebrow">CHOOSE ONE</p>
+          <h2 id="choose-title">先选一款，不需要同时安装</h2>
+          <div class="comparison-grid">
+            <article class="comparison-card">
+              <div class="tag-row"><span class="status-tag status-tag--direct">开源</span><span class="status-tag">Windows / macOS</span></div>
+              <h3>OpenLess</h3>
+              <p><strong>适合：</strong>希望使用开源语音输入工具、愿意自己处理模型或系统配置的用户。</p>
+              <ul><li>源码公开，可从官方仓库查看版本和问题。</li><li>按住快捷键说话，松开后在光标位置输入。</li><li>是否需要额外模型或网络，以当前版本官方说明为准。</li></ul>
+              <div class="official-links"><a class="official-link" href="https://openless.top/" target="_blank" rel="noopener noreferrer">OpenLess 官网</a><a class="official-link" href="https://github.com/Open-Less/openless" target="_blank" rel="noopener noreferrer">官方 GitHub</a><a class="official-link" href="https://github.com/Open-Less/openless/releases/latest" target="_blank" rel="noopener noreferrer">官方 Releases</a></div>
+            </article>
+            <article class="comparison-card">
+              <div class="tag-row"><span class="status-tag status-tag--advanced">可能需要科学上网</span><span class="status-tag">商业服务</span></div>
+              <h3>Typeless</h3>
+              <p><strong>适合：</strong>希望安装后快速使用、重视自动整理口语和多平台体验的用户。</p>
+              <ul><li>提供 Windows、macOS、iOS 和 Android 下载入口。</li><li>通常需要账号，功能和费用以官网当前页面为准。</li><li>语音内容的处理方式与隐私规则以官方政策为准。</li></ul>
+              <div class="official-links"><a class="official-link" href="https://www.typeless.com/zh-cn" target="_blank" rel="noopener noreferrer">Typeless 官网</a><a class="official-link" href="https://www.typeless.com/zh-cn/downloads" target="_blank" rel="noopener noreferrer">官方下载</a></div>
+            </article>
+          </div>
+          <div class="plain-box"><strong>选择建议：</strong>想先试开源方案，选 OpenLess；想减少配置、接受商业账号和服务，选 Typeless。两款工具功能会更新，下载前以各自官网为准。</div>
+        </section>
+
+        <section class="buyer-section" id="openless" aria-labelledby="openless-title">
+          <p class="eyebrow">5-MINUTE SETUP</p>
+          <h2 id="openless-title">OpenLess 五分钟上手</h2>
+          <ol class="step-list">
+            <li><span>1</span><div><h3>从官方 Releases 下载</h3><p>打开官方仓库 Releases，选择与你的 Windows 或 macOS 对应的安装文件。不要下载源码压缩包当安装程序。</p></div></li>
+            <li><span>2</span><div><h3>安装并打开</h3><p>系统出现安全提示时，先核对开发者、文件来源和版本。macOS 如果阻止启动，按官方说明在隐私与安全中确认。</p></div></li>
+            <li><span>3</span><div><h3>授予麦克风权限</h3><p>没有麦克风权限就无法录音。需要把文字写入其他软件时，系统还可能要求辅助功能或输入控制权限。</p></div></li>
+            <li><span>4</span><div><h3>设置全局快捷键</h3><p>选择一个不与输入法、截图、游戏或 AI 工具冲突的组合键。先记下它，稍后要配置到苍虬手柄。</p></div></li>
+            <li><span>5</span><div><h3>在记事本测试</h3><p>把光标放进空白文本框，按住快捷键说“这是我的第一次语音输入”，松开并等待文字出现。</p></div></li>
+          </ol>
+          <div class="success-box"><strong>成功标志：</strong>松开快捷键后，文字出现在当前光标位置；再次测试时不用重新选择麦克风。</div>
+        </section>
+
+        <section class="buyer-section" id="typeless" aria-labelledby="typeless-title">
+          <p class="eyebrow">5-MINUTE SETUP</p>
+          <h2 id="typeless-title">Typeless 五分钟上手</h2>
+          <ol class="step-list">
+            <li><span>1</span><div><h3>打开官方下载页</h3><p>选择 Windows 或 macOS 版本。手机端可以之后再装，第一次先在与苍虬手柄配对的电脑上测试。</p></div></li>
+            <li><span>2</span><div><h3>安装并登录</h3><p>按官网当前流程创建或登录账号。订阅、试用和功能限制以账户页面显示为准。</p></div></li>
+            <li><span>3</span><div><h3>打开必要权限</h3><p>允许麦克风权限；如果文字不能写入其他应用，再检查辅助功能、输入监控或自动化权限。</p></div></li>
+            <li><span>4</span><div><h3>确认语音快捷键</h3><p>在设置中查看按住说话或开始听写的全局快捷键。若与现有软件冲突，就换成较少使用的组合。</p></div></li>
+            <li><span>5</span><div><h3>在记事本测试</h3><p>按快捷键自然说一句带停顿的话，确认输出内容已经整理，并且插入到当前光标位置。</p></div></li>
+          </ol>
+          <div class="success-box"><strong>成功标志：</strong>语音结束后能得到可读文字，切到另一个文本框后仍能正常输入。</div>
+        </section>
+
+        <section class="buyer-section" id="first-dictation" aria-labelledby="dictation-title">
+          <p class="eyebrow">FIRST DICTATION</p>
+          <h2 id="dictation-title">第一次语音转文字这样测</h2>
+          <p>依次测试短句、修改口令和 AI 指令。每次只增加一个难度。</p>
+          <ol class="step-list step-list--compact">
+            <li><span>1</span><div><h3>短句</h3><p>“这是我的第一次语音输入。”检查能否完整出现。</p></div></li>
+            <li><span>2</span><div><h3>带停顿的话</h3><p>“帮我写一个……不对，先帮我解释这个项目。”检查工具是否正确处理自我修正。</p></div></li>
+            <li><span>3</span><div><h3>技术词</h3><p>说出项目里常用的英文文件名或命令，确认识别结果是否需要手工改。</p></div></li>
+            <li><span>4</span><div><h3>AI 指令</h3><p>使用下面提示词测试，但先不要要求 AI 修改文件。</p></div></li>
+          </ol>
+          <div class="copy-block"><code>请只读查看当前项目，不要修改。告诉我它的用途、运行方式和最适合新手完成的一个小任务。</code><button type="button" data-copy-button>复制测试指令</button></div>
+          <div class="warning-box"><strong>不要把语音识别结果直接当作最终命令。</strong>发送前看一眼文件名、删除/覆盖等高风险词是否识别正确。</div>
+        </section>
+
+        <section class="buyer-section" id="controller" aria-labelledby="controller-title">
+          <p class="eyebrow">ZKO CONTROLLER</p>
+          <h2 id="controller-title">配置苍虬手柄与 AutoClipboard</h2>
+          <p>推荐保留两个清晰动作：一个键控制语音，一个键负责 Enter。具体组合必须与你在 OpenLess 或 Typeless 中设置的快捷键一致。</p>
+
+          <ol class="step-list">
+            <li><span>1</span><div><h3>确认电脑端语音快捷键</h3><p>先用实体键盘测试，确认按住、说话、松开能正常出字。快捷键本身不工作时，不要先改手柄。</p></div></li>
+            <li><span>2</span><div><h3>在 AutoClipboard 打开宏键配置</h3><p>选择当前 Vibe Coding Profile，把一枚宏键设置成语音工具的完整组合键。</p></div></li>
+            <li><span>3</span><div><h3>保留 Enter 键</h3><p>另一枚宏键继续配置为 Enter，用于确认文本或发送消息。需要粘贴时可保留 Ctrl+V。</p></div></li>
+            <li><span>4</span><div><h3>先在纯文本输入框测试</h3><p>按语音宏键说话，确认出字；再按 Enter，确认光标换行。不要一开始就在终端或重要项目中测试。</p></div></li>
+            <li><span>5</span><div><h3>进入 AI 工具</h3><p>说出指令，检查识别文字，再按 Enter 发送。AI 开始工作后，通过 AutoClipboard 同步的灯环或小屏查看 Agent 状态。</p></div></li>
+          </ol>
+
+          <div class="plain-box"><strong>一个实用配置示例：</strong><ul><li>键 1：OpenLess 或 Typeless 的语音快捷键。</li><li>键 2：Enter，确认或发送。</li><li>键 3：Ctrl+V，粘贴剪贴板内容。</li><li>键 4：保留给当前 AI 工具的常用动作。</li></ul></div>
+          <div class="warning-box"><strong>基础蓝牙宏不依赖 AutoClipboard。</strong>语音快捷键和 Enter 可以作为普通蓝牙键盘动作使用；Agent 状态灯、Profile 快开和更深配置需要 AutoClipboard 保持运行。</div>
+        </section>
+
+        <section class="buyer-section" id="voice-troubleshooting" aria-labelledby="voice-trouble-title">
+          <p class="eyebrow">QUICK FIXES</p>
+          <h2 id="voice-trouble-title">语音输入快速排障</h2>
+          <details><summary>按快捷键没有录音反应</summary><div>先用软件界面中的录音按钮测试麦克风；检查系统麦克风权限和输入设备；再确认全局快捷键是否已启用。</div></details>
+          <details><summary>能录音，但文字没有插入当前软件</summary><div>检查辅助功能、输入监控或自动化权限。先在记事本测试；如果记事本正常，说明目标软件可能阻止了模拟输入。</div></details>
+          <details><summary>出现快捷键冲突</summary><div>关闭可能占用组合键的软件，例如输入法、截图、录屏和游戏工具。为语音工具换一个组合后，同步修改 AutoClipboard 宏键。</div></details>
+          <details><summary>手柄按键有反应，但语音工具没有启动</summary><div>用实体键盘输入同一组合。如果实体键盘也失败，问题在语音工具设置；如果实体键盘成功，重新录入手柄宏并检查当前 Profile。</div></details>
+          <details><summary>文字错误很多</summary><div>靠近麦克风、降低环境噪声、把长句拆短。英文文件名和命令发送前手工核对；不要依赖语音直接执行删除、覆盖或付款操作。</div></details>
+          <details><summary>Typeless 登录或网络失败</summary><div>先打开 Typeless 官网确认当前网络能访问，再检查账号状态。商业服务的地区、订阅和可用性以官网为准。</div></details>
+
+          <nav class="page-nav" aria-label="文档翻页"><a href="coding-workflow.html"><small>上一篇</small>编程工作流心得</a><a href="index.html"><small>返回</small>资料总纲</a></nav>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <footer class="buyer-footer">
+    <div><strong>ZKO 苍虬</strong><p>先在纯文本输入框测试，再进入 AI 和终端。</p></div>
+    <p>资料核对日期：2026-07-26</p>
+  </footer>
+  <script src="buyer-guide.js" defer></script>
+</body>
+</html>
