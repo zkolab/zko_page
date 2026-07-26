@@ -147,6 +147,15 @@ test('pages have unique titles, main landmarks, and skip links', () => {
   assert.equal(new Set(titles).size, pageFiles.length, 'page titles should be unique');
 });
 
+test('all public page headers use the supplied vector ZKO logo', () => {
+  for (const file of pageFiles) {
+    const html = read(file);
+    assert.match(html, /class="brand__logo"/);
+    assert.match(html, /src="ZKO_logo_vector\.svg"/);
+    assert.doesNotMatch(html, /class="brand__mark"/);
+  }
+});
+
 test('homepage presents flagship product storytelling', () => {
   const html = stripHtmlComments(read('index.html'));
   for (const id of ['overview', 'macros', 'status', 'software', 'compatibility', 'support']) {
