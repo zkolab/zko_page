@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow, noarchive">
+  <meta name="description" content="使用 Superpowers 和常用 Skills 完成第一次可验证开发任务。">
+  <title>编程工作流心得 · 苍虬购买用户资料</title>
+  <link rel="stylesheet" href="buyer-guide.css">
+</head>
+<body>
+  <a class="skip-link" href="#main-content">跳到主要内容</a>
+  <header class="buyer-header">
+    <a class="buyer-brand" href="index.html"><span>ZKO</span>苍虬 · 购买用户资料</a>
+    <nav aria-label="资料导航">
+      <a href="ai-guide.html">AI 使用</a>
+      <a href="coding-workflow.html" aria-current="page">编程工作流</a>
+      <a href="openless-typeless.html">语音输入</a>
+    </nav>
+  </header>
+
+  <main id="main-content">
+    <section class="buyer-hero" aria-labelledby="page-title">
+      <div>
+        <p class="eyebrow">PRACTICAL WORKFLOW</p>
+        <h1 id="page-title">编程工作流心得</h1>
+        <p>AI 编程不是把一句模糊需求扔进去等结果。更稳的做法是让合适的 Skill 在合适的阶段接手：先澄清、再计划、再实现、出错就系统排查，最后拿验证证据。</p>
+        <div class="hero-actions"><a class="primary-button" href="#first-project">开始第一次开发任务</a><a class="secondary-button" href="#domain-skills">按领域选 Skill</a></div>
+      </div>
+      <aside class="hero-checklist">
+        <strong>记住这条主线</strong>
+        <ul class="check-list"><li>先读项目，不急着改</li><li>新功能先 Brainstorming</li><li>失败先 Systematic Debugging</li><li>没有验证证据不说完成</li></ul>
+      </aside>
+    </section>
+
+    <div class="buyer-layout">
+      <aside class="buyer-toc" aria-label="本页目录">
+        <strong>本页目录</strong>
+        <a href="#first-project">1. 第一次开发任务</a>
+        <a href="#superpowers">2. Superpowers</a>
+        <a href="#domain-skills">3. 不同领域 Skills</a>
+        <a href="#handle-workflow">4. 手柄工作流</a>
+        <a href="#workflow-troubleshooting">5. 常见问题</a>
+      </aside>
+
+      <div class="buyer-content">
+        <section class="buyer-section" id="first-project" aria-labelledby="project-title">
+          <p class="eyebrow">FIRST PROJECT</p>
+          <h2 id="project-title">第一次开发任务：给网页加一个小功能</h2>
+          <p>下面流程适合 Codex、Claude Code、Cursor 等能读取项目的工具。目标不是一次做大项目，而是让你掌握一套可重复的安全节奏。</p>
+
+          <ol class="step-list">
+            <li><span>1</span><div><h3>打开正确的项目目录</h3><p>不要在桌面根目录或包含私人资料的大文件夹启动 Agent。</p><div class="copy-block"><code>请只读查看当前目录，不要修改文件。告诉我这里是否是一个项目，以及最重要的说明文件在哪里。</code><button type="button" data-copy-button>复制</button></div><p><strong>你需要确认：</strong>目录里只有本次项目需要的文件，没有私人资料。</p><p><strong>成功标志：</strong>AI 引用的文件真实存在。</p><p><strong>下一步：</strong>让 AI 阅读项目说明和规则。</p></div></li>
+            <li><span>2</span><div><h3>让 AI 先读说明</h3><p>要求它阅读 <code>README.md</code>、<code>AGENTS.md</code> 和与任务相关的文件。</p><div class="copy-block"><code>请阅读 README.md、AGENTS.md 和与页面相关的文件。用简单中文说明运行方式、测试命令和必须遵守的项目规则，暂时不要修改。</code><button type="button" data-copy-button>复制</button></div><p><strong>你需要确认：</strong>它找到的启动和测试命令与你看到的说明一致。</p><p><strong>成功标志：</strong>它能说出真实的启动命令、检查命令和项目规则。</p><p><strong>下一步：</strong>用 Brainstorming 明确这次只做什么。</p></div></li>
+            <li><span>3</span><div><h3>使用 Brainstorming 明确需求</h3><p>新功能、页面改版和行为变化都先讨论成功标准。</p><div class="copy-block"><code>$superpowers:brainstorming 请帮我设计一个“回到顶部”按钮。面向手机用户，保持现有视觉风格，不增加第三方库。</code><button type="button" data-copy-button>复制</button></div><p><strong>你需要确认：</strong>按钮何时出现、放在哪里、怎样算完成。</p><p><strong>成功标志：</strong>设计写清目标、边界和验收标准，并得到你的确认。</p><p><strong>下一步：</strong>把批准的设计拆成实施计划。</p></div></li>
+            <li><span>4</span><div><h3>使用 Writing Plans 拆步骤</h3><p>设计确认后，让 AI 写出文件、测试和验证步骤。</p><div class="copy-block"><code>$superpowers:writing-plans 根据已批准的设计创建实施计划，列出准确文件、失败测试、最小实现、验证命令和提交步骤。</code><button type="button" data-copy-button>复制</button></div><p><strong>你需要确认：</strong>计划没有加入你未批准的大改动或新依赖。</p><p><strong>成功标志：</strong>每一步都有准确文件、预期结果和验证命令。</p><p><strong>下一步：</strong>从第一个失败测试开始实现。</p></div></li>
+            <li><span>5</span><div><h3>先写失败测试再实现</h3><p>使用 Test-Driven Development，让测试先证明功能尚不存在。</p><div class="copy-block"><code>$superpowers:test-driven-development 按计划实现第一个任务。先写一个会因功能缺失而失败的测试，展示失败原因后再写最小实现。</code><button type="button" data-copy-button>复制</button></div><p><strong>你需要确认：</strong>测试确实因为功能缺失而失败，不是路径或语法写错。</p><p><strong>成功标志：</strong>先看到预期 RED，再看到最小实现后的 GREEN。</p><p><strong>下一步：</strong>继续下一个小步骤；出现异常就停止猜测并调试。</p></div></li>
+            <li><span>6</span><div><h3>失败时使用 Systematic Debugging</h3><p>不要不停换命令碰运气，先收集现象和定位根因。</p><div class="copy-block"><code>$superpowers:systematic-debugging 当前测试失败。请先复现、读取完整错误、提出根因假设并用最小检查验证，不要直接大范围改代码。</code><button type="button" data-copy-button>复制</button></div><p><strong>你需要确认：</strong>AI 展示了完整错误和能验证根因的证据。</p><p><strong>成功标志：</strong>修改针对已验证的原因，修复后原失败测试通过。</p><p><strong>下一步：</strong>回到实施流程并完成剩余步骤。</p></div></li>
+            <li><span>7</span><div><h3>完成前使用 Verification Before Completion</h3><p>让 AI 重新运行完整命令，并根据最新输出汇报。</p><div class="copy-block"><code>$superpowers:verification-before-completion 请重新运行相关测试和检查，读取完整输出后再判断是否完成；列出通过数量、失败数量和仍有限制。</code><button type="button" data-copy-button>复制</button></div><p><strong>你需要确认：</strong>命令是刚刚实际运行的完整验收命令。</p><p><strong>成功标志：</strong>汇报包含通过数、失败数和仍有限制，关键检查为零失败。</p><p><strong>下一步：</strong>检查 Git 改动并请求代码审查。</p></div></li>
+            <li><span>8</span><div><h3>审查改动并完成分支</h3><p>确认只改了相关文件，再处理审查意见和保存 Git 版本。</p><div class="copy-block"><code>$superpowers:requesting-code-review 请根据批准的需求审查本次改动，优先报告会导致功能错误、安全问题或回归的具体问题。</code><button type="button" data-copy-button>复制</button></div><p><strong>你需要确认：</strong>重要审查意见已经逐条验证、修复或用证据说明不适用。</p><p><strong>成功标志：</strong>工作区没有意外文件，测试仍通过，提交内容只包含本次任务。</p><p><strong>下一步：</strong>使用 Finishing a Development Branch 选择合并、PR 或保留分支。</p></div></li>
+          </ol>
+        </section>
+
+        <section class="buyer-section" id="superpowers" aria-labelledby="superpowers-title">
+          <p class="eyebrow">DEVELOPMENT SKILLS</p>
+          <h2 id="superpowers-title">Superpowers：按阶段调用，不要全部一起叫</h2>
+          <p>Superpowers 是一组开发流程 Skills。你只需要记住当前在哪个阶段，然后调用对应 Skill。</p>
+
+          <div class="skill-grid">
+            <article class="skill-card"><span class="status-tag">需求阶段</span><h3>Brainstorming</h3><p><strong>什么时候用：</strong>增加功能、改页面、改变行为之前。</p><p><strong>怎么调用：</strong><code>$superpowers:brainstorming</code></p><p><strong>你要提供：</strong>目标用户、想实现的结果和限制。</p><p><strong>下一步：</strong>批准设计后进入 Writing Plans。</p></article>
+            <article class="skill-card"><span class="status-tag">计划阶段</span><h3>Writing Plans</h3><p><strong>什么时候用：</strong>设计已经确定，准备改代码。</p><p><strong>怎么调用：</strong><code>$superpowers:writing-plans</code></p><p><strong>你要提供：</strong>批准的设计或明确需求。</p><p><strong>下一步：</strong>按计划逐任务实施。</p></article>
+            <article class="skill-card"><span class="status-tag">实现阶段</span><h3>Test-Driven Development</h3><p><strong>什么时候用：</strong>实现功能或修复缺陷。</p><p><strong>怎么调用：</strong><code>$superpowers:test-driven-development</code></p><p><strong>你要提供：</strong>可观察的成功行为。</p><p><strong>下一步：</strong>先看 RED，再实现 GREEN。</p></article>
+            <article class="skill-card"><span class="status-tag">故障阶段</span><h3>Systematic Debugging</h3><p><strong>什么时候用：</strong>测试失败、程序异常或结果不符合预期。</p><p><strong>怎么调用：</strong><code>$superpowers:systematic-debugging</code></p><p><strong>你要提供：</strong>完整报错、复现步骤和最近改动。</p><p><strong>下一步：</strong>验证根因后才修复。</p></article>
+            <article class="skill-card"><span class="status-tag">审查阶段</span><h3>Requesting Code Review</h3><p><strong>什么时候用：</strong>重要功能完成、合并前。</p><p><strong>怎么调用：</strong><code>$superpowers:requesting-code-review</code></p><p><strong>你要提供：</strong>需求、改动范围和验证结果。</p><p><strong>下一步：</strong>按严重程度处理真实问题。</p></article>
+            <article class="skill-card"><span class="status-tag">审查阶段</span><h3>Receiving Code Review</h3><p><strong>什么时候用：</strong>收到审查意见，准备判断是否应该修改。</p><p><strong>怎么调用：</strong><code>$superpowers:receiving-code-review</code></p><p><strong>你要提供：</strong>完整评论、对应文件和当前测试证据。</p><p><strong>下一步：</strong>先验证意见是否适用于当前项目，再逐项修复和测试。</p></article>
+            <article class="skill-card"><span class="status-tag">收尾阶段</span><h3>Verification Before Completion</h3><p><strong>什么时候用：</strong>准备说“完成、修好、通过”之前。</p><p><strong>怎么调用：</strong><code>$superpowers:verification-before-completion</code></p><p><strong>你要提供：</strong>验收命令和成功标准。</p><p><strong>下一步：</strong>有最新证据后再交付。</p></article>
+            <article class="skill-card"><span class="status-tag">合并阶段</span><h3>Finishing a Development Branch</h3><p><strong>什么时候用：</strong>测试通过，准备合并、创建 PR 或保留分支。</p><p><strong>怎么调用：</strong><code>$superpowers:finishing-a-development-branch</code></p><p><strong>你要提供：</strong>目标基础分支和希望采用的收尾方式。</p><p><strong>下一步：</strong>合并后重新测试，再清理已完成的临时工作树。</p></article>
+          </div>
+
+          <div class="plain-box">
+            <p><strong>在 Codex 中怎样找到 Skills：</strong></p>
+            <ul><li><code>/skills</code>：查看或选择当前可用 Skills。</li><li><code>$skill-name</code>：明确调用某个 Skill。</li><li><code>$skill-installer</code>：安装精选 Skill 或从仓库安装 Skill。</li></ul>
+          </div>
+          <div class="official-links">
+            <a class="official-link" href="https://developers.openai.com/codex/skills" target="_blank" rel="noopener noreferrer">Codex Skills 官方指南</a>
+            <a class="official-link" href="https://github.com/openai/skills" target="_blank" rel="noopener noreferrer">OpenAI Skills 官方仓库</a>
+            <a class="official-link" href="https://agentskills.io/specification" target="_blank" rel="noopener noreferrer">Agent Skills 规范</a>
+            <a class="official-link" href="https://github.com/obra/superpowers" target="_blank" rel="noopener noreferrer">Superpowers 官方仓库</a>
+          </div>
+        </section>
+
+        <section class="buyer-section" id="domain-skills" aria-labelledby="domain-title">
+          <p class="eyebrow">MORE THAN CODE</p>
+          <h2 id="domain-title">按不同领域选择 Skills</h2>
+          <p>Skill 是针对一种任务的可复用工作流程。名称可能随安装包变化，使用前先在 Skills 列表中确认。</p>
+
+          <div class="skill-grid">
+            <article class="skill-card"><div class="tag-row"><span class="status-tag">Word</span><span class="status-tag">文档</span></div><h3>Documents</h3><p><strong>什么时候用：</strong>创建或修改 DOCX、红线修订、排版检查。</p><p><strong>调用方式：</strong>明确说“使用 Documents Skill 创建一份 Word 文档”。</p><p><strong>你要提供：</strong>内容、受众、页面格式和参考文件。</p><p><strong>下一步：</strong>要求渲染页面并检查版式。</p></article>
+            <article class="skill-card"><div class="tag-row"><span class="status-tag">PDF</span><span class="status-tag">表单</span></div><h3>PDF</h3><p><strong>什么时候用：</strong>读取、制作、合并、检查 PDF 或填写表单。</p><p><strong>调用方式：</strong>明确文件路径和最终输出。</p><p><strong>你要提供：</strong>页面尺寸、是否需要打印和表单字段。</p><p><strong>下一步：</strong>要求逐页渲染检查。</p></article>
+            <article class="skill-card"><div class="tag-row"><span class="status-tag">Excel</span><span class="status-tag">数据</span></div><h3>Spreadsheets</h3><p><strong>什么时候用：</strong>创建 XLSX/CSV、公式、表格分析和数据清洗。</p><p><strong>调用方式：</strong>说明输入文件、所需列和计算规则。</p><p><strong>你要提供：</strong>示例数据和预期结果。</p><p><strong>下一步：</strong>检查公式、数值和工作表布局。</p></article>
+            <article class="skill-card"><div class="tag-row"><span class="status-tag">PPT</span><span class="status-tag">演示</span></div><h3>Presentations</h3><p><strong>什么时候用：</strong>制作或修改 PowerPoint、讲稿和版式。</p><p><strong>调用方式：</strong>说明页数、受众、风格和现有模板。</p><p><strong>你要提供：</strong>核心信息和参考资料。</p><p><strong>下一步：</strong>渲染所有幻灯片检查溢出。</p></article>
+            <article class="skill-card"><div class="tag-row"><span class="status-tag">图片</span><span class="status-tag">创意</span></div><h3>ImageGen</h3><p><strong>什么时候用：</strong>生成照片、插图、纹理、透明背景图。</p><p><strong>调用方式：</strong>描述主体、构图、风格、比例和用途。</p><p><strong>你要提供：</strong>品牌限制和参考图。</p><p><strong>下一步：</strong>检查尺寸、文字错误和版权风险。</p></article>
+            <article class="skill-card"><div class="tag-row"><span class="status-tag">图表</span><span class="status-tag">交互</span></div><h3>Visualize</h3><p><strong>什么时候用：</strong>图表、对比、流程图、模拟器和交互解释。</p><p><strong>调用方式：</strong>说明数据、需要看懂的关系和交互控件。</p><p><strong>你要提供：</strong>准确数字或计算规则。</p><p><strong>下一步：</strong>验证图中数据与原始来源一致。</p></article>
+            <article class="skill-card"><div class="tag-row"><span class="status-tag">网页</span><span class="status-tag">测试</span></div><h3>Browser Control</h3><p><strong>什么时候用：</strong>打开网页、检查界面、填写测试表单或验证本地网站。</p><p><strong>调用方式：</strong>给出网址和允许的操作范围。</p><p><strong>你要提供：</strong>登录要求和不能提交的内容。</p><p><strong>下一步：</strong>让 AI 截取状态或报告可验证结果。</p></article>
+            <article class="skill-card"><div class="tag-row"><span class="status-tag">安装</span><span class="status-tag">制作</span></div><h3>Skill Installer / Skill Creator</h3><p><strong>什么时候用：</strong>安装别人维护的 Skill，或把自己的重复流程做成 Skill。</p><p><strong>调用方式：</strong><code>$skill-installer</code> 或 <code>$skill-creator</code>。</p><p><strong>你要提供：</strong>来源仓库、触发条件和工作流程。</p><p><strong>下一步：</strong>使用一个真实任务验证是否正确触发。</p></article>
+          </div>
+        </section>
+
+        <section class="buyer-section" id="handle-workflow" aria-labelledby="handle-title">
+          <p class="eyebrow">ZKO WORKFLOW</p>
+          <h2 id="handle-title">把语音、手柄、AutoClipboard 和 Agent 串起来</h2>
+          <ol class="step-list">
+            <li><span>1</span><div><h3>说出任务</h3><p>使用 OpenLess、Typeless 或系统语音输入，把需求说进 AI 工具。</p></div></li>
+            <li><span>2</span><div><h3>按宏键确认或发送</h3><p>将一个按键配置为语音快捷键或粘贴，另一个保留 Enter；先在记事本测试。</p></div></li>
+            <li><span>3</span><div><h3>观察 Agent 状态</h3><p>AutoClipboard 保持运行并完成 Agent 状态连接后，手柄灯环或小屏显示工作中、等待授权、完成或阻塞。</p></div></li>
+            <li><span>4</span><div><h3>需要授权时再操作</h3><p>看到等待授权，不要盲目确认。先看 AI 准备执行的命令、文件和影响范围。</p></div></li>
+            <li><span>5</span><div><h3>继续下一条指令</h3><p>任务完成后，用语音补充要求，再用宏键粘贴、确认或发送。</p></div></li>
+          </ol>
+          <div class="warning-box"><strong>基础蓝牙宏不依赖 AutoClipboard。</strong>即使软件未连接，手柄仍可发送已配置快捷键；Agent 状态、Profile 快开和深度联动才需要 AutoClipboard 保持运行。</div>
+        </section>
+
+        <section class="buyer-section" id="workflow-troubleshooting" aria-labelledby="workflow-trouble-title">
+          <p class="eyebrow">COMMON MISTAKES</p>
+          <h2 id="workflow-trouble-title">工作流常见问题</h2>
+          <details><summary>AI 一上来就改很多文件</summary><div>中止任务，先让它列出计划、影响文件和测试方法。把任务缩小成一个可验证结果，再重新开始。</div></details>
+          <details><summary>不知道该调用哪个 Skill</summary><div>需求不清用 Brainstorming；需求清楚但步骤多用 Writing Plans；实现功能用 TDD；遇到失败用 Systematic Debugging；准备交付用 Verification。</div></details>
+          <details><summary>Skill 没有自动触发</summary><div>先用 <code>/skills</code> 确认它存在，再在提示词中使用完整的 <code>$skill-name</code> 明确调用。新安装后仍看不到时，按官方说明刷新或重启 Codex。</div></details>
+          <details><summary>AI 说完成了，但我不确定</summary><div>要求它重新运行验收命令并报告通过数、失败数和完整错误。没有最新执行证据，就只把它当作“可能完成”。</div></details>
+
+          <nav class="page-nav" aria-label="文档翻页"><a href="ai-guide.html"><small>上一篇</small>AI 使用指南</a><a href="openless-typeless.html"><small>下一篇</small>OpenLess / Typeless</a></nav>
+          <a class="secondary-button back-to-top" href="#main-content">返回顶部</a>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <footer class="buyer-footer">
+    <div><strong>ZKO 苍虬</strong><p>小任务、短反馈、可验证，比一次让 AI 做完全部更可靠。</p></div>
+    <p>资料核对日期：2026-07-26</p>
+  </footer>
+  <script src="buyer-guide.js" defer></script>
+</body>
+</html>

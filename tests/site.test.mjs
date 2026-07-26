@@ -11,6 +11,17 @@ const djiMicUrl = 'https://www.dji.com/cn/mic';
 const djiMic2Url = 'https://www.dji.com/cn/mic-2';
 const officialDriverUrl = 'https://www.wch.cn/downloads/CH343SER_EXE.html';
 const pageFiles = ['index.html', 'shop.html', 'guide.html'];
+const buyerKitDir = 'buyer-kit-7q4m9x2k6p8n3r5v';
+const buyerPageFiles = [
+  `${buyerKitDir}/index.html`,
+  `${buyerKitDir}/ai-guide.html`,
+  `${buyerKitDir}/coding-workflow.html`,
+  `${buyerKitDir}/openless-typeless.html`,
+];
+const buyerAssetFiles = [
+  `${buyerKitDir}/buyer-guide.css`,
+  `${buyerKitDir}/buyer-guide.js`,
+];
 const requiredProductImages = [
   'assets/images/product-hero.webp',
   'assets/images/product-macros.webp',
@@ -427,4 +438,191 @@ test('script color selector updates pressed state and selected label', () => {
   assert.equal(gray['aria-pressed'], 'false');
   assert.equal(red['aria-pressed'], 'true');
   assert.equal(selectedColor.textContent, '红色');
+});
+
+test('buyer guide files exist without being linked from public pages', () => {
+  for (const path of [...buyerPageFiles, ...buyerAssetFiles]) requireFile(path);
+
+  for (const page of pageFiles) {
+    assert.doesNotMatch(read(page), new RegExp(escapeRegExp(buyerKitDir)));
+  }
+
+  if (existsSync(fileUrl('robots.txt'))) {
+    assert.doesNotMatch(read('robots.txt'), new RegExp(escapeRegExp(buyerKitDir)));
+  }
+});
+
+test('buyer pages are private-by-obscurity documents with shared navigation', () => {
+  const titles = [];
+  for (const page of buyerPageFiles) {
+    const html = stripHtmlComments(read(page));
+    titles.push(html.match(/<title>([^<]+)<\/title>/i)?.[1]?.trim());
+    assert.match(html, /<meta\s+name="robots"\s+content="noindex, nofollow, noarchive"/i);
+    assert.match(html, /<main\b[^>]*id="main-content"/i);
+    assert.match(html, /class="buyer-header"/i);
+    assert.match(html, /class="buyer-footer"/i);
+    assert.match(html, /href="buyer-guide\.css"/i);
+    assert.match(html, /src="buyer-guide\.js"/i);
+    assert.match(html, /资料核对日期：2026-07-26/);
+  }
+  assert.equal(new Set(titles).size, buyerPageFiles.length);
+
+  const overview = read(`${buyerKitDir}/index.html`);
+  for (const href of ['ai-guide.html', 'coding-workflow.html', 'openless-typeless.html']) {
+    assert.match(overview, new RegExp(`href=["']${escapeRegExp(href)}["']`));
+  }
+});
+
+test('AI guide starts with CC-Switch and official provider setup', () => {
+  const html = stripHtmlComments(read(`${buyerKitDir}/ai-guide.html`));
+  const ccIndex = html.indexOf('先配置 CC-Switch');
+  const toolsIndex = html.indexOf('选择 AI 工具');
+  assert.ok(ccIndex >= 0 && toolsIndex > ccIndex);
+
+  for (const phrase of [
+    '备份现有配置',
+    'YOUR_API_KEY_HERE',
+    'Base URL',
+    '成功标志',
+    '国内直连',
+    '可能需要科学上网',
+    'DeepSeek',
+    'OpenAI',
+    'Anthropic Claude',
+    'Google Gemini',
+    'Kimi',
+    '阿里云百炼',
+    '火山方舟',
+    'Marvis',
+    'CodeBuddy',
+    'TRAE',
+    'Codex',
+    'Claude Code',
+    'Cursor',
+    'Gemini CLI',
+    'GitHub Copilot',
+    'OpenClaw',
+  ]) assert.match(html, new RegExp(escapeRegExp(phrase)));
+
+  for (const url of [
+    'https://ccswitch.io',
+    'https://github.com/farion1231/cc-switch',
+    'https://github.com/farion1231/cc-switch/releases/latest',
+    'https://platform.deepseek.com/api_keys',
+    'https://api-docs.deepseek.com/',
+  ]) assert.match(html, new RegExp(escapeRegExp(url)));
+
+  const toolCards = [...html.matchAll(/<article class="tool-card"[^>]*>([^]*?)<\/article>/gi)];
+  assert.equal(toolCards.length, 11);
+  for (const [, card] of toolCards) {
+    assert.match(card, /<strong>上手：<\/strong>/);
+    assert.match(card, /<strong>第一次任务：<\/strong>/);
+    assert.match(card, /<strong>成功标志：<\/strong>/);
+    assert.match(card, /href="https:\/\//);
+  }
+});
+
+test('workflow guide teaches practical Skills usage', () => {
+  const html = stripHtmlComments(read(`${buyerKitDir}/coding-workflow.html`));
+  for (const phrase of [
+    '第一次开发任务',
+    'Brainstorming',
+    'Writing Plans',
+    'Test-Driven Development',
+    'Systematic Debugging',
+    'Verification Before Completion',
+    'Requesting Code Review',
+    'Receiving Code Review',
+    'Finishing a Development Branch',
+    'Documents',
+    'PDF',
+    'Spreadsheets',
+    'Presentations',
+    'ImageGen',
+    'Visualize',
+    'Browser Control',
+    'Skill Installer',
+    'Skill Creator',
+    '/skills',
+    '$skill-installer',
+    'AutoClipboard',
+  ]) assert.match(html, new RegExp(escapeRegExp(phrase)));
+
+  for (const url of [
+    'https://developers.openai.com/codex/skills',
+    'https://github.com/openai/skills',
+    'https://agentskills.io/specification',
+  ]) assert.match(html, new RegExp(escapeRegExp(url)));
+
+  const firstProject = html.match(/<section class="buyer-section" id="first-project"[^>]*>([^]*?)<\/section>/i)?.[1] ?? '';
+  const workflowSteps = [...firstProject.matchAll(/<li><span>\d<\/span><div>([^]*?)<\/div><\/li>/gi)];
+  assert.equal(workflowSteps.length, 8);
+  for (const [, step] of workflowSteps) {
+    assert.match(step, /class="copy-block"/);
+    assert.match(step, /<strong>你需要确认：<\/strong>/);
+    assert.match(step, /<strong>成功标志：<\/strong>/);
+    assert.match(step, /<strong>下一步：<\/strong>/);
+  }
+});
+
+test('buyer guide articles provide an explicit return-to-top link', () => {
+  for (const page of buyerPageFiles.slice(1)) {
+    assert.match(read(page), /<a[^>]+href="#main-content"[^>]*>返回顶部<\/a>/i);
+  }
+});
+
+test('voice guide covers only the approved OpenLess and Typeless products', () => {
+  const html = stripHtmlComments(read(`${buyerKitDir}/openless-typeless.html`));
+  for (const phrase of [
+    'OpenLess',
+    'Typeless',
+    'macOS / Windows / Linux',
+    '第一次语音转文字',
+    '麦克风权限',
+    '快捷键冲突',
+    '苍虬手柄',
+    'AutoClipboard',
+  ]) assert.match(html, new RegExp(escapeRegExp(phrase)));
+  assert.doesNotMatch(html, /Openiless/);
+  assert.doesNotMatch(html, /OpenTypeless/);
+  for (const url of [
+    'https://openless.top/',
+    'https://github.com/Open-Less/openless',
+    'https://www.typeless.com/zh-cn',
+    'https://www.typeless.com/zh-cn/downloads',
+  ]) assert.match(html, new RegExp(escapeRegExp(url)));
+});
+
+test('buyer pages use safe official links and contain no live secrets', () => {
+  const combined = buyerPageFiles.map((page) => stripHtmlComments(read(page))).join('\n');
+  for (const page of buyerPageFiles) {
+    const externalAnchors = openingTags(read(page), 'a').filter((tag) =>
+      /^https:\/\//.test(attributeValue(tag, 'href') ?? ''),
+    );
+    assert.ok(externalAnchors.length > 0, `${page} should expose official external links`);
+    for (const anchor of externalAnchors) {
+      assert.equal(attributeValue(anchor, 'target'), '_blank');
+      assert.match(attributeValue(anchor, 'rel') ?? '', /(?:^|\s)noopener(?:\s|$)/);
+      assert.match(attributeValue(anchor, 'rel') ?? '', /(?:^|\s)noreferrer(?:\s|$)/);
+    }
+  }
+  assert.doesNotMatch(combined, /sk-[A-Za-z0-9_-]{20,}/);
+  assert.doesNotMatch(combined, /AIza[0-9A-Za-z_-]{20,}/);
+  assert.doesNotMatch(combined, /(?:api[_-]?key|token)\s*[:=]\s*["'][^"']{16,}["']/i);
+  assert.match(combined, /YOUR_API_KEY_HERE/);
+});
+
+test('buyer guide assets provide responsive focus-safe progressive enhancement', () => {
+  const css = read(`${buyerKitDir}/buyer-guide.css`).replace(/\/\*[^]*?\*\//g, '');
+  for (const selector of ['.buyer-header', '.buyer-layout', '.route-grid', '.step-list', '.status-tag', '.copy-block', '.buyer-footer']) {
+    assert.match(css, new RegExp(escapeRegExp(selector)));
+  }
+  assert.match(css, /@media\b[^{}]*\(\s*max-width\s*:/i);
+  assert.match(css, /@media\b[^{}]*\(\s*prefers-reduced-motion\s*:\s*reduce\s*\)/i);
+  assert.match(css, /:focus-visible[^{}]*\{[^}]*(?:outline|box-shadow)\s*:/i);
+
+  const script = read(`${buyerKitDir}/buyer-guide.js`);
+  assert.match(script, /data-copy-button/);
+  assert.match(script, /navigator\.clipboard/);
+  assert.match(script, /复制成功/);
 });

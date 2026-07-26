@@ -43,9 +43,9 @@ buyer-kit-7q4m9x2k6p8n3r5v/
 - 公开页面不得链接到隐藏目录。
 - 隐藏页面不得加入站点地图或公开下载区。
 - 每个隐藏页面添加 `robots` 元信息：`noindex, nofollow, noarchive`。
-- 根目录 `robots.txt` 禁止抓取该隐藏目录。
+- 不在根目录 `robots.txt` 中写出隐藏目录名，避免该公开文件反向暴露完整路径；页面使用 `noindex`，公开页面继续不提供入口。
 - 页面之间只使用相对链接互相导航。
-- 如果链接泄露，通过重命名整个隐藏目录使旧链接失效；重命名时同步更新 `robots.txt`。
+- 如果链接泄露，通过重命名整个隐藏目录使旧链接失效，并同步更新页面与自动化测试。
 
 ## 总体信息架构
 
@@ -343,7 +343,7 @@ Codex Skills 章节至少引用：
 - 公开的 `index.html`、`shop.html`、`guide.html` 和页脚中不得出现隐藏目录名。
 - 隐藏目录包含总纲和三份独立文档。
 - 四个 HTML 页面都包含 `noindex, nofollow, noarchive`。
-- `robots.txt` 禁止抓取隐藏目录。
+- `robots.txt` 不得出现隐藏目录名；搜索引擎提示由页面 `noindex` 元信息承担。
 - 三份文档之间的相对链接均存在。
 - 所有外部链接包含安全属性。
 - 页面包含 CC-Switch、API Key、DeepSeek、Codex、OpenClaw、Superpowers、OpenLess 和 Typeless 等核心内容。
@@ -374,5 +374,5 @@ Codex Skills 章节至少引用：
 - 不在网页中存储或代管用户 API Key。
 - 不替用户注册模型账号、充值或创建密钥。
 - 不推荐来源不明的破解软件、共享账号或低价密钥。
-- 不修改公开官网现有内容和导航，除增加根目录 `robots.txt` 的隐藏路径规则外。
+- 不修改公开官网现有内容、导航或根目录抓取规则。
 - 不把完整的 CC-Switch、Codex、OpenClaw 或各模型官方文档复制到资料站；只提供小白可执行的最短流程和官方链接。

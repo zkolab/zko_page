@@ -1,10 +1,12 @@
 # ZKO Private Buyer Guide Implementation Plan
 
+> **最终审查修订（2026-07-26）：**不得在公开的 `robots.txt` 中写出隐藏目录名，因为这会直接暴露完整路径。以下计划中所有创建、测试、提交或核对 `robots.txt` 隐藏规则的步骤均由“页面保留 `noindex, nofollow, noarchive`，公开页面不链接隐藏目录，`robots.txt` 不得包含隐藏目录名”取代。
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Build an unlinked four-page buyer guide inside the existing GitHub Pages site, with CC-Switch and official API setup first, practical AI and Skills workflows, and OpenLess / Typeless hand-controller integration.
 
-**Architecture:** Keep the project static and build-free. Add one isolated hidden directory with four semantic HTML pages plus a shared CSS and JavaScript file; extend the existing Node contract tests to enforce hidden-path isolation, official links, required beginner content, responsive styling, copy controls, and secret-safety rules. Only `robots.txt` changes at the public root.
+**Architecture:** Keep the project static and build-free. Add one isolated hidden directory with four semantic HTML pages plus a shared CSS and JavaScript file; extend the existing Node contract tests to enforce hidden-path isolation, official links, required beginner content, responsive styling, copy controls, and secret-safety rules. Do not expose the hidden path from public-root files.
 
 **Tech Stack:** Semantic HTML5, standalone responsive CSS, vanilla JavaScript, Node.js built-in test runner, GitHub Pages.
 

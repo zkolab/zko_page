@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow, noarchive">
+  <meta name="description" content="从 CC-Switch、官方 API Key 到第一次 AI 任务的实操指南。">
+  <title>AI 使用指南 · 苍虬购买用户资料</title>
+  <link rel="stylesheet" href="buyer-guide.css">
+</head>
+<body>
+  <a class="skip-link" href="#main-content">跳到主要内容</a>
+  <header class="buyer-header">
+    <a class="buyer-brand" href="index.html"><span>ZKO</span>苍虬 · 购买用户资料</a>
+    <nav aria-label="资料导航">
+      <a href="ai-guide.html" aria-current="page">AI 使用</a>
+      <a href="coding-workflow.html">编程工作流</a>
+      <a href="openless-typeless.html">语音输入</a>
+    </nav>
+  </header>
+
+  <main id="main-content">
+    <section class="buyer-hero" aria-labelledby="page-title">
+      <div>
+        <p class="eyebrow">AI QUICK START</p>
+        <h1 id="page-title">AI 使用指南</h1>
+        <p>先用 CC-Switch 管理模型配置，再选择一个工具完成第一次任务。基础路线优先使用国内可以直接访问的服务，进阶路线再接入 Codex、Claude Code、OpenClaw 等工具。</p>
+        <div class="hero-actions">
+          <a class="primary-button" href="#cc-switch">先配置 CC-Switch</a>
+          <a class="secondary-button" href="#first-task">直接看第一次任务</a>
+        </div>
+      </div>
+      <aside class="hero-checklist">
+        <strong>本页完成标准</strong>
+        <ul class="check-list">
+          <li>安装 CC-Switch 并备份原配置</li>
+          <li>创建至少一个官方 API Key</li>
+          <li>切换供应商后连接测试成功</li>
+          <li>让 AI 只读查看一个真实项目</li>
+        </ul>
+      </aside>
+    </section>
+
+    <div class="buyer-layout">
+      <aside class="buyer-toc" aria-label="本页目录">
+        <strong>本页目录</strong>
+        <a href="#cc-switch">1. CC-Switch</a>
+        <a href="#api-keys">2. API Key</a>
+        <a href="#providers">3. 模型供应商</a>
+        <a href="#tools">4. 选择 AI 工具</a>
+        <a href="#first-task">5. 第一次任务</a>
+        <a href="#troubleshooting">6. 快速排障</a>
+      </aside>
+
+      <div class="buyer-content">
+        <section class="buyer-section" id="cc-switch" aria-labelledby="cc-title">
+          <p class="eyebrow">STEP 1</p>
+          <h2 id="cc-title">先配置 CC-Switch</h2>
+          <p>CC-Switch 是一个跨平台配置管理器，可以统一管理 Claude Code、Codex、Gemini CLI、OpenCode、OpenClaw 等工具的供应商配置。以后换模型时，不必反复手改多个配置文件。</p>
+
+          <div class="warning-box"><strong>只认准官方入口。</strong>项目官方仓库明确声明唯一官网是 <code>ccswitch.io</code>。搜索结果里名称相近的网站、中转平台和推广页面不等于官方软件。</div>
+          <div class="official-links">
+            <a class="official-link" href="https://ccswitch.io" target="_blank" rel="noopener noreferrer">CC-Switch 官方站点</a>
+            <a class="official-link" href="https://github.com/farion1231/cc-switch" target="_blank" rel="noopener noreferrer">官方 GitHub</a>
+            <a class="official-link" href="https://github.com/farion1231/cc-switch/releases/latest" target="_blank" rel="noopener noreferrer">官方下载 Releases</a>
+          </div>
+
+          <ol class="step-list">
+            <li><span>1</span><div><h3>下载对应系统版本</h3><p>Windows 用户从 Releases 选择安装程序，macOS 和 Linux 用户选择对应平台文件。不要从网盘或软件下载站获取。</p></div></li>
+            <li><span>2</span><div><h3>安装并首次启动</h3><p>打开 CC-Switch，确认左侧能看到你准备使用的工具，例如 Codex、Claude Code、Gemini CLI 或 OpenClaw。</p></div></li>
+            <li><span>3</span><div><h3>备份现有配置</h3><p>如果电脑上已经使用过这些工具，先在 CC-Switch 中查看当前供应商，并使用备份或导出能力保存现状。找不到备份入口时，先不要覆盖原配置。</p></div></li>
+            <li><span>4</span><div><h3>添加供应商</h3><p>选择目标工具，点击添加供应商或新增配置。优先选择内置官方预设；没有预设时，再按下文填写官方 Base URL。</p></div></li>
+            <li><span>5</span><div><h3>填写三个核心字段</h3><p>依次填写 Base URL、API Key 和模型名称。模型名必须来自对应官方控制台或文档，不要凭感觉输入。</p></div></li>
+            <li><span>6</span><div><h3>测试并切换</h3><p>保存后执行连接测试，再点击启用或切换。然后完全关闭并重新打开目标 AI 工具，避免它继续读取旧配置。</p></div></li>
+          </ol>
+          <div class="success-box"><strong>成功标志：</strong>CC-Switch 显示当前供应商已经启用，目标 AI 工具能返回一条简单回答，并且没有出现 401、余额不足或模型不存在。</div>
+        </section>
+
+        <section class="buyer-section" id="api-keys" aria-labelledby="key-title">
+          <p class="eyebrow">STEP 2</p>
+          <h2 id="key-title">获取和保存 API Key</h2>
+          <p>API Key 不是下载文件，而是在模型厂商控制台创建后复制的一串密钥。它通常只完整显示一次，作用接近账户密码。</p>
+
+          <div class="copy-block"><code>YOUR_API_KEY_HERE</code><button type="button" data-copy-button>复制占位符</button></div>
+          <div class="warning-box"><strong>绝对不要把真实 Key 粘贴到教程、截图、群聊或 GitHub。</strong>建议先低额充值或设置消费限额。怀疑泄露时，立即删除旧 Key 并创建新 Key。</div>
+
+          <ol class="step-list step-list--compact">
+            <li><span>1</span><div><h3>进入官方控制台</h3><p>从本页的官方链接进入，不使用搜索广告里的低价密钥网站。</p></div></li>
+            <li><span>2</span><div><h3>完成账号要求</h3><p>按平台要求登录、实名认证或绑定支付方式；没有余额的 API 通常无法调用。</p></div></li>
+            <li><span>3</span><div><h3>创建新 Key</h3><p>给 Key 起一个能看懂的名字，例如 <code>zko-cc-switch</code>，创建后立即复制。</p></div></li>
+            <li><span>4</span><div><h3>只存到可信位置</h3><p>优先使用密码管理器或系统凭据存储；不要保存到会同步或提交的项目文件。</p></div></li>
+          </ol>
+        </section>
+
+        <section class="buyer-section" id="providers" aria-labelledby="provider-title">
+          <p class="eyebrow">STEP 3</p>
+          <h2 id="provider-title">选择一个官方模型供应商</h2>
+          <p>新手只需要先配一个。国内用户建议从 DeepSeek、Kimi、阿里云百炼或火山方舟中选择；有海外网络和支付条件后，再配置 OpenAI、Anthropic Claude 或 Google Gemini。</p>
+
+          <div class="provider-grid">
+            <article class="provider-card">
+              <div class="tag-row"><span class="status-tag status-tag--direct">国内直连</span><span class="status-tag">推荐入门</span></div>
+              <h3>DeepSeek</h3>
+              <p>适合先跑通官方 API 和 OpenAI 兼容配置。控制台创建 Key 后，在 CC-Switch 的兼容供应商中填写：</p>
+              <div class="copy-block"><code>Base URL: https://api.deepseek.com
+API Key: YOUR_API_KEY_HERE
+模型：以官方控制台当前可选模型为准</code><button type="button" data-copy-button>复制配置</button></div>
+              <p><strong>是否充值：</strong>通常需要账户有可用余额。模型名和价格会变化，以官方页面为准。</p>
+              <div class="official-links">
+                <a class="official-link" href="https://platform.deepseek.com/api_keys" target="_blank" rel="noopener noreferrer">创建 API Key</a>
+                <a class="official-link" href="https://api-docs.deepseek.com/" target="_blank" rel="noopener noreferrer">官方 API 文档</a>
+                <a class="official-link" href="https://api-docs.deepseek.com/quick_start/pricing" target="_blank" rel="noopener noreferrer">模型与价格</a>
+              </div>
+              <div class="success-box"><strong>成功标志：</strong>测试请求能返回内容，控制台用量记录出现本次调用。</div>
+            </article>
+
+            <article class="provider-card">
+              <div class="tag-row"><span class="status-tag status-tag--advanced">可能需要科学上网</span><span class="status-tag">国际支付</span></div>
+              <h3>OpenAI</h3>
+              <p>适合 Codex 和 OpenAI API。登录官方平台创建 Key，并确认 API 账户有独立的计费或额度；ChatGPT 订阅不等于 API 余额。</p>
+              <div class="copy-block"><code>Base URL: https://api.openai.com/v1
+API Key: YOUR_API_KEY_HERE
+模型：以 OpenAI 官方模型页为准</code><button type="button" data-copy-button>复制配置</button></div>
+              <div class="official-links">
+                <a class="official-link" href="https://platform.openai.com/api-keys" target="_blank" rel="noopener noreferrer">创建 API Key</a>
+                <a class="official-link" href="https://developers.openai.com/api/docs/overview" target="_blank" rel="noopener noreferrer">官方 API 文档</a>
+                <a class="official-link" href="https://developers.openai.com/codex/" target="_blank" rel="noopener noreferrer">Codex 官方资料</a>
+              </div>
+              <div class="success-box"><strong>成功标志：</strong>OpenAI 平台用量页面出现请求，工具能读取当前目录并回答问题。</div>
+            </article>
+
+            <article class="provider-card">
+              <div class="tag-row"><span class="status-tag status-tag--advanced">可能需要科学上网</span><span class="status-tag">国际支付</span></div>
+              <h3>Anthropic Claude</h3>
+              <p>适合 Claude Code。CC-Switch 有官方或 Anthropic 预设时优先使用预设，不要随意更改接口格式。</p>
+              <div class="copy-block"><code>Base URL: https://api.anthropic.com
+API Key: YOUR_API_KEY_HERE
+模型：以 Anthropic Console 当前可用模型为准</code><button type="button" data-copy-button>复制配置</button></div>
+              <div class="official-links">
+                <a class="official-link" href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener noreferrer">创建 API Key</a>
+                <a class="official-link" href="https://docs.anthropic.com/en/api/getting-started" target="_blank" rel="noopener noreferrer">官方 API 文档</a>
+                <a class="official-link" href="https://docs.anthropic.com/en/docs/claude-code/overview" target="_blank" rel="noopener noreferrer">Claude Code 文档</a>
+              </div>
+              <div class="success-box"><strong>成功标志：</strong>Claude Code 启动后不再要求重新登录，并能回答当前项目的问题。</div>
+            </article>
+
+            <article class="provider-card">
+              <div class="tag-row"><span class="status-tag status-tag--advanced">可能需要科学上网</span><span class="status-tag">可有免费额度</span></div>
+              <h3>Google Gemini</h3>
+              <p>适合 Gemini CLI。最简单的方式是在 Google AI Studio 创建 Key，再使用 CC-Switch 的 Gemini CLI 预设。</p>
+              <div class="copy-block"><code>API Key: YOUR_API_KEY_HERE
+模型：以 Google AI Studio 当前可用模型为准
+Base URL：优先保留 CC-Switch 官方预设</code><button type="button" data-copy-button>复制配置</button></div>
+              <div class="official-links">
+                <a class="official-link" href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer">创建 API Key</a>
+                <a class="official-link" href="https://ai.google.dev/gemini-api/docs/api-key" target="_blank" rel="noopener noreferrer">API Key 官方文档</a>
+                <a class="official-link" href="https://github.com/google-gemini/gemini-cli" target="_blank" rel="noopener noreferrer">Gemini CLI 官方仓库</a>
+              </div>
+              <div class="success-box"><strong>成功标志：</strong>Gemini CLI 能启动并对当前目录给出简短说明。</div>
+            </article>
+
+            <article class="provider-card">
+              <div class="tag-row"><span class="status-tag status-tag--direct">国内直连</span><span class="status-tag">中文友好</span></div>
+              <h3>Kimi / Moonshot AI</h3>
+              <p>适合国内用户接入长文本和编程模型。使用 Moonshot 开放平台创建 Key，优先选择 CC-Switch 内置 Kimi/Moonshot 预设。</p>
+              <div class="copy-block"><code>Base URL: https://api.moonshot.cn/v1
+API Key: YOUR_API_KEY_HERE
+模型：以 Moonshot 控制台当前可选模型为准</code><button type="button" data-copy-button>复制配置</button></div>
+              <div class="official-links">
+                <a class="official-link" href="https://platform.moonshot.cn/console/api-keys" target="_blank" rel="noopener noreferrer">创建 API Key</a>
+                <a class="official-link" href="https://platform.moonshot.cn/docs/intro" target="_blank" rel="noopener noreferrer">开放平台文档</a>
+              </div>
+              <div class="success-box"><strong>成功标志：</strong>控制台出现调用记录，AI 工具能正常返回中文内容。</div>
+            </article>
+
+            <article class="provider-card">
+              <div class="tag-row"><span class="status-tag status-tag--direct">国内直连</span><span class="status-tag">企业云平台</span></div>
+              <h3>通义千问 / 阿里云百炼</h3>
+              <p>适合已有阿里云账号的用户。先在百炼开通模型服务并创建 API Key，再选择 OpenAI 兼容模式。</p>
+              <div class="copy-block"><code>Base URL: https://dashscope.aliyuncs.com/compatible-mode/v1
+API Key: YOUR_API_KEY_HERE
+模型：以百炼控制台当前开通模型为准</code><button type="button" data-copy-button>复制配置</button></div>
+              <div class="official-links">
+                <a class="official-link" href="https://bailian.console.aliyun.com/" target="_blank" rel="noopener noreferrer">百炼控制台</a>
+                <a class="official-link" href="https://help.aliyun.com/zh/model-studio/getting-started/first-api-call-to-qwen" target="_blank" rel="noopener noreferrer">千问首次 API 调用</a>
+              </div>
+              <div class="success-box"><strong>成功标志：</strong>百炼监控中出现调用，返回内容没有“模型未开通”提示。</div>
+            </article>
+
+            <article class="provider-card">
+              <div class="tag-row"><span class="status-tag status-tag--direct">国内直连</span><span class="status-tag">需要创建推理接入点</span></div>
+              <h3>豆包 / 火山方舟</h3>
+              <p>火山方舟通常需要先开通模型并创建推理接入点。配置时使用控制台提供的接入点 ID，不要把展示名称当作模型名。</p>
+              <div class="copy-block"><code>Base URL: https://ark.cn-beijing.volces.com/api/v3
+API Key: YOUR_API_KEY_HERE
+模型：填写方舟控制台创建的推理接入点 ID</code><button type="button" data-copy-button>复制配置</button></div>
+              <div class="official-links">
+                <a class="official-link" href="https://console.volcengine.com/ark/region:ark+cn-beijing/apiKey" target="_blank" rel="noopener noreferrer">方舟 API Key</a>
+                <a class="official-link" href="https://www.volcengine.com/docs/82379/1399008" target="_blank" rel="noopener noreferrer">方舟 API 文档</a>
+              </div>
+              <div class="success-box"><strong>成功标志：</strong>接入点状态正常，测试请求有返回并产生用量记录。</div>
+            </article>
+          </div>
+
+          <div class="warning-box"><strong>第三方中转不是默认方案。</strong>它可能更便宜或更容易访问，但存在模型替换、日志留存、余额和停服风险。即使 CC-Switch 页面出现赞助商，也不代表它是模型厂商的官方 API。</div>
+        </section>
+
+        <section class="buyer-section" id="tools" aria-labelledby="tools-title">
+          <p class="eyebrow">STEP 4</p>
+          <h2 id="tools-title">选择 AI 工具</h2>
+          <p>不要一次安装全部工具。先按你的任务选择一个，完成第一次工作后再增加第二个。</p>
+
+          <h3>国内基础：先得到结果</h3>
+          <div class="tool-grid">
+            <article class="tool-card"><div class="tag-row"><span class="status-tag status-tag--direct">国内直连</span><span class="status-tag">电脑操作</span></div><h3>腾讯 Marvis</h3><p><strong>适合：</strong>文件整理、打开应用、搜索本地资料和完成常见电脑操作。</p><p><strong>上手：</strong>打开官网，按页面提示获取客户端或体验入口并登录腾讯账号；第一次只授予任务需要的权限。</p><p><strong>第一次任务：</strong>“请只查看桌面上的文件类型，按图片、文档和压缩包给我一个整理建议，不要移动文件。”</p><p><strong>成功标志：</strong>它先汇总文件，再等待你确认。</p><a class="official-link" href="https://marvis.qq.com/" target="_blank" rel="noopener noreferrer">Marvis 官网与获取入口</a></article>
+            <article class="tool-card"><div class="tag-row"><span class="status-tag status-tag--direct">国内直连</span><span class="status-tag">编程助手</span></div><h3>腾讯 CodeBuddy</h3><p><strong>适合：</strong>代码补全、解释项目、生成小功能和修复错误。</p><p><strong>上手：</strong>从官方入口选择 VS Code、JetBrains 或官方编辑器版本，安装后登录；打开项目时先不要开启自动大范围修改。</p><p><strong>第一次任务：</strong>打开一个小项目，让它只解释入口文件和运行方式。</p><p><strong>成功标志：</strong>没有修改代码，就能准确指出项目结构。</p><a class="official-link" href="https://copilot.tencent.com/" target="_blank" rel="noopener noreferrer">CodeBuddy 官网、文档与下载</a></article>
+            <article class="tool-card"><div class="tag-row"><span class="status-tag status-tag--direct">国内直连</span><span class="status-tag">AI 编辑器</span></div><h3>TRAE 国内版</h3><p><strong>适合：</strong>希望在图形化编辑器里直接聊天、改代码和预览结果的新手。</p><p><strong>上手：</strong>从官网下载国内版，安装并登录后新建一个空文件夹；先确认终端命令和文件改动需要你批准。</p><p><strong>第一次任务：</strong>新建空文件夹，让它创建只含标题和按钮的单页网页。</p><p><strong>成功标志：</strong>能本地预览网页，并知道改动了哪些文件。</p><a class="official-link" href="https://www.trae.cn/" target="_blank" rel="noopener noreferrer">TRAE 官网、教程与下载</a></article>
+            <article class="tool-card"><div class="tag-row"><span class="status-tag status-tag--direct">国内直连</span><span class="status-tag">IDE 插件</span></div><h3>通义灵码</h3><p><strong>适合：</strong>已经使用 VS Code 或 JetBrains，希望加入代码补全和问答。</p><p><strong>上手：</strong>在官网选择当前 IDE，按官方步骤安装插件并登录阿里云账号；安装后重启 IDE，确认侧边栏出现灵码入口。</p><p><strong>第一次任务：</strong>选中一个函数，让它逐行解释并提出一个低风险改进。</p><p><strong>成功标志：</strong>解释与代码一致，不凭空引用不存在的文件。</p><a class="official-link" href="https://lingma.aliyun.com/" target="_blank" rel="noopener noreferrer">通义灵码官网、文档与安装</a></article>
+            <article class="tool-card"><div class="tag-row"><span class="status-tag status-tag--direct">国内直连</span><span class="status-tag">通用问答</span></div><h3>DeepSeek</h3><p><strong>适合：</strong>先学习怎样描述需求、粘贴报错和核对 AI 答案。</p><p><strong>上手：</strong>打开官方对话页并登录即可使用；不要粘贴 API Key、客户资料或未脱敏源码。</p><p><strong>第一次任务：</strong>粘贴一段不含隐私的报错，让它先用小白能懂的话解释，再给排查顺序。</p><p><strong>成功标志：</strong>它先定位信息不足之处，而不是直接让你重装系统。</p><a class="official-link" href="https://chat.deepseek.com/" target="_blank" rel="noopener noreferrer">DeepSeek 官方对话入口</a></article>
+          </div>
+
+          <h3>进阶开发：让 Agent 进入项目工作</h3>
+          <div class="tool-grid">
+            <article class="tool-card"><div class="tag-row"><span class="status-tag status-tag--advanced">可能需要科学上网</span><span class="status-tag">代码 Agent</span></div><h3>Codex</h3><p><strong>适合：</strong>读取整个仓库、修改代码、运行测试和进行代码审查。</p><p><strong>上手：</strong>从官方文档选择 Codex App、CLI 或 IDE 入口，按官方方式登录；打开项目后先让它只读检查，之后再决定是否授权修改。</p><p><strong>第一次任务：</strong>让它只读查看项目并报告运行命令。</p><p><strong>成功标志：</strong>能引用真实文件和命令，并且没有在未授权时修改内容。</p><a class="official-link" href="https://developers.openai.com/codex/" target="_blank" rel="noopener noreferrer">Codex 官方入口与文档</a></article>
+            <article class="tool-card"><div class="tag-row"><span class="status-tag status-tag--advanced">可能需要科学上网</span><span class="status-tag">终端 Agent</span></div><h3>Claude Code</h3><p><strong>适合：</strong>在终端中理解项目、执行计划、修改和验证代码。</p><p><strong>上手：</strong>按官方文档安装 Claude Code，使用官方账号或 Anthropic API 登录；在项目目录启动后先检查它识别的路径。</p><p><strong>第一次任务：</strong>让它读取说明文件，列出三个最小改进建议，不修改文件。</p><p><strong>成功标志：</strong>能引用项目中的真实文件，并在修改前说明计划和权限请求。</p><a class="official-link" href="https://docs.anthropic.com/en/docs/claude-code/overview" target="_blank" rel="noopener noreferrer">Claude Code 官方安装与文档</a></article>
+            <article class="tool-card"><div class="tag-row"><span class="status-tag status-tag--advanced">可能需要科学上网</span><span class="status-tag">AI 编辑器</span></div><h3>Cursor</h3><p><strong>适合：</strong>希望在类似 VS Code 的界面中让 AI 理解、搜索和编辑项目。</p><p><strong>上手：</strong>从官网下载并安装，登录后打开现有项目；首次使用先关闭或谨慎使用自动执行高风险命令的能力。</p><p><strong>第一次任务：</strong>打开现有项目，让它解释启动方式和最重要的三个文件。</p><p><strong>成功标志：</strong>引用的文件真实存在，运行方式与 README 一致。</p><a class="official-link" href="https://cursor.com/" target="_blank" rel="noopener noreferrer">Cursor 官网、文档与下载</a></article>
+            <article class="tool-card"><div class="tag-row"><span class="status-tag status-tag--advanced">可能需要科学上网</span><span class="status-tag">开源 CLI</span></div><h3>Gemini CLI</h3><p><strong>适合：</strong>在终端使用 Gemini 分析项目、生成代码和调用工具。</p><p><strong>上手：</strong>从官方仓库阅读安装命令，安装当前稳定版并按提示登录或配置 Gemini API Key；在目标项目目录启动。</p><p><strong>第一次任务：</strong>询问当前目录是什么项目、怎样运行测试。</p><p><strong>成功标志：</strong>能读取项目文件并给出真实存在的命令。</p><a class="official-link" href="https://github.com/google-gemini/gemini-cli" target="_blank" rel="noopener noreferrer">Gemini CLI 官方安装与文档</a></article>
+            <article class="tool-card"><div class="tag-row"><span class="status-tag status-tag--advanced">可能需要科学上网</span><span class="status-tag">IDE 集成</span></div><h3>GitHub Copilot</h3><p><strong>适合：</strong>在 VS Code、JetBrains 和 GitHub 中使用补全、聊天和 Agent 能力。</p><p><strong>上手：</strong>在官网确认套餐和可用范围，在 IDE 的官方扩展市场安装 GitHub Copilot，并登录已开通权限的 GitHub 账号。</p><p><strong>第一次任务：</strong>选中一个函数，请它解释输入、输出和可能的异常。</p><p><strong>成功标志：</strong>能引用选中代码，而不是泛泛回答。</p><div class="official-links"><a class="official-link" href="https://github.com/features/copilot" target="_blank" rel="noopener noreferrer">GitHub Copilot 官网</a><a class="official-link" href="https://docs.github.com/en/copilot" target="_blank" rel="noopener noreferrer">官方安装与使用文档</a></div></article>
+            <article class="tool-card"><div class="tag-row"><span class="status-tag status-tag--advanced">部署要求较高</span><span class="status-tag">个人 Agent</span></div><h3>OpenClaw</h3><p><strong>适合：</strong>在自己的设备上运行可连接聊天渠道、Skills 和自动化任务的个人 AI 助手。</p><p><strong>上手：</strong>先读官方部署文档，只连接一个测试目录和一个模型供应商；确认日志、权限和停止方式后再增加聊天渠道。</p><p><strong>第一次任务：</strong>只连接一个测试目录，让它列出文件，不执行写入。</p><p><strong>成功标志：</strong>服务稳定启动，能列出测试目录内容，并且写入和外部发送仍需明确授权。</p><div class="official-links"><a class="official-link" href="https://openclaw.ai/" target="_blank" rel="noopener noreferrer">OpenClaw 官网</a><a class="official-link" href="https://docs.openclaw.ai/zh-CN" target="_blank" rel="noopener noreferrer">中文安装与配置文档</a><a class="official-link" href="https://github.com/openclaw/openclaw" target="_blank" rel="noopener noreferrer">官方仓库</a></div></article>
+          </div>
+        </section>
+
+        <section class="buyer-section" id="first-task" aria-labelledby="task-title">
+          <p class="eyebrow">STEP 5</p>
+          <h2 id="task-title">开始你的第一个工作</h2>
+          <p>第一次不要让 AI 直接改代码。先验证它是否真的理解项目，再让它完成一个小任务。</p>
+
+          <h3>第一句话：只读了解项目</h3>
+          <div class="copy-block"><code>请先阅读当前文件夹中的 README.md 和项目文件，不要修改任何内容。用简单中文告诉我：这个项目做什么、怎么运行、我可以先完成哪一个最小任务。</code><button type="button" data-copy-button>复制提示词</button></div>
+          <div class="success-box"><strong>成功标志：</strong>AI 能说出真实存在的文件和运行命令，并明确表示尚未修改文件。</div>
+
+          <h3>第二句话：计划后再动手</h3>
+          <div class="copy-block"><code>请在修改前先列出计划。每完成一步就运行对应检查；如果失败，先解释原因，不要连续尝试高风险命令。</code><button type="button" data-copy-button>复制提示词</button></div>
+          <div class="success-box"><strong>成功标志：</strong>AI 先给出少量步骤，说明会修改哪些文件和怎样验证，而不是立刻进行大范围改动。</div>
+
+          <h3>第三句话：完成后核对</h3>
+          <div class="copy-block"><code>请运行与本次修改相关的测试或检查，然后列出：修改了什么、验证结果、仍有哪些限制。没有验证证据时不要说已经完成。</code><button type="button" data-copy-button>复制提示词</button></div>
+        </section>
+
+        <section class="buyer-section" id="troubleshooting" aria-labelledby="trouble-title">
+          <p class="eyebrow">QUICK FIXES</p>
+          <h2 id="trouble-title">连接失败时先看这里</h2>
+          <details><summary>出现 401、Invalid API Key 或 Unauthorized</summary><div>确认 Key 来自对应官方平台、复制时没有多余空格、CC-Switch 已启用正确供应商。仍失败就删除旧 Key 并重新创建；不要把真实 Key 发给别人排查。</div></details>
+          <details><summary>提示余额不足、额度不足或 Billing Error</summary><div>进入官方控制台查看 API 余额和计费状态。聊天产品订阅通常不等于 API 额度，必须以 API 控制台显示为准。</div></details>
+          <details><summary>提示模型不存在或没有权限</summary><div>从官方控制台复制当前可用模型名。火山方舟要检查推理接入点 ID；百炼要确认模型已经开通；不要继续使用已经下线的旧模型名。</div></details>
+          <details><summary>CC-Switch 显示已切换，但工具仍用旧配置</summary><div>完全退出目标工具后重新打开。检查 CC-Switch 当前选择的工具是否正确，并确认没有另一个环境变量或项目配置覆盖全局配置。</div></details>
+          <details><summary>连接超时或国内无法访问</summary><div>先用浏览器打开对应官方控制台确认网络是否可用。国内基础路线优先使用 DeepSeek、Kimi、百炼或方舟；海外平台可能需要科学上网。不要通过来历不明的代理页面输入官方 Key。</div></details>
+          <details><summary>改错配置后工具无法启动</summary><div>使用 CC-Switch 切回原供应商或恢复之前的备份。没有备份时，先查看工具官方配置说明，不要盲目删除整个配置目录。</div></details>
+
+          <nav class="page-nav" aria-label="文档翻页">
+            <a href="index.html"><small>返回</small>资料总纲</a>
+            <a href="coding-workflow.html"><small>下一篇</small>编程工作流心得</a>
+          </nav>
+          <a class="secondary-button back-to-top" href="#main-content">返回顶部</a>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <footer class="buyer-footer">
+    <div><strong>ZKO 苍虬</strong><p>官方入口和模型名称会变化，使用前请核对控制台。</p></div>
+    <p>资料核对日期：2026-07-26</p>
+  </footer>
+  <script src="buyer-guide.js" defer></script>
+</body>
+</html>
