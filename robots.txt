@@ -1,0 +1,2 @@
+User-agent: *
+Disallow: /buyer-kit-7q4m9x2k6p8n3r5v/
