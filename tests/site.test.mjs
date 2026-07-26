@@ -156,6 +156,12 @@ test('all public page headers use the supplied vector ZKO logo', () => {
   }
 });
 
+test('header logo is converted to a high-contrast light mark', () => {
+  const css = read('styles.css');
+  const logoRule = css.match(/\.brand__logo\s*\{([^}]*)\}/)?.[1] ?? '';
+  assert.match(logoRule, /filter:\s*brightness\(0\)\s+invert\(1\)/);
+});
+
 test('homepage presents flagship product storytelling', () => {
   const html = stripHtmlComments(read('index.html'));
   for (const id of ['overview', 'macros', 'status', 'software', 'compatibility', 'support']) {

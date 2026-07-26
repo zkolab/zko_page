@@ -180,6 +180,7 @@ code {
   width: 88px;
   height: auto;
   flex: 0 0 auto;
+  filter: brightness(0) invert(1);
 }
 
 .brand small {
