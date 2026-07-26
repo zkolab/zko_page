@@ -549,6 +549,7 @@ test('voice guide covers only the approved OpenLess and Typeless products', () =
   for (const phrase of [
     'OpenLess',
     'Typeless',
+    'macOS / Windows / Linux',
     '第一次语音转文字',
     '麦克风权限',
     '快捷键冲突',
