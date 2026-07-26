@@ -441,15 +441,15 @@ test('script color selector updates pressed state and selected label', () => {
 });
 
 test('buyer guide files exist without being linked from public pages', () => {
-  for (const path of [...buyerPageFiles, ...buyerAssetFiles, 'robots.txt']) requireFile(path);
+  for (const path of [...buyerPageFiles, ...buyerAssetFiles]) requireFile(path);
 
   for (const page of pageFiles) {
     assert.doesNotMatch(read(page), new RegExp(escapeRegExp(buyerKitDir)));
   }
 
-  const robots = read('robots.txt');
-  assert.match(robots, /User-agent:\s*\*/i);
-  assert.match(robots, new RegExp(`Disallow:\\s*/${escapeRegExp(buyerKitDir)}/`));
+  if (existsSync(fileUrl('robots.txt'))) {
+    assert.doesNotMatch(read('robots.txt'), new RegExp(escapeRegExp(buyerKitDir)));
+  }
 });
 
 test('buyer pages are private-by-obscurity documents with shared navigation', () => {
@@ -511,6 +511,15 @@ test('AI guide starts with CC-Switch and official provider setup', () => {
     'https://platform.deepseek.com/api_keys',
     'https://api-docs.deepseek.com/',
   ]) assert.match(html, new RegExp(escapeRegExp(url)));
+
+  const toolCards = [...html.matchAll(/<article class="tool-card"[^>]*>([^]*?)<\/article>/gi)];
+  assert.equal(toolCards.length, 11);
+  for (const [, card] of toolCards) {
+    assert.match(card, /<strong>上手：<\/strong>/);
+    assert.match(card, /<strong>第一次任务：<\/strong>/);
+    assert.match(card, /<strong>成功标志：<\/strong>/);
+    assert.match(card, /href="https:\/\//);
+  }
 });
 
 test('workflow guide teaches practical Skills usage', () => {
@@ -523,6 +532,8 @@ test('workflow guide teaches practical Skills usage', () => {
     'Systematic Debugging',
     'Verification Before Completion',
     'Requesting Code Review',
+    'Receiving Code Review',
+    'Finishing a Development Branch',
     'Documents',
     'PDF',
     'Spreadsheets',
@@ -542,6 +553,22 @@ test('workflow guide teaches practical Skills usage', () => {
     'https://github.com/openai/skills',
     'https://agentskills.io/specification',
   ]) assert.match(html, new RegExp(escapeRegExp(url)));
+
+  const firstProject = html.match(/<section class="buyer-section" id="first-project"[^>]*>([^]*?)<\/section>/i)?.[1] ?? '';
+  const workflowSteps = [...firstProject.matchAll(/<li><span>\d<\/span><div>([^]*?)<\/div><\/li>/gi)];
+  assert.equal(workflowSteps.length, 8);
+  for (const [, step] of workflowSteps) {
+    assert.match(step, /class="copy-block"/);
+    assert.match(step, /<strong>你需要确认：<\/strong>/);
+    assert.match(step, /<strong>成功标志：<\/strong>/);
+    assert.match(step, /<strong>下一步：<\/strong>/);
+  }
+});
+
+test('buyer guide articles provide an explicit return-to-top link', () => {
+  for (const page of buyerPageFiles.slice(1)) {
+    assert.match(read(page), /<a[^>]+href="#main-content"[^>]*>返回顶部<\/a>/i);
+  }
 });
 
 test('voice guide covers only the approved OpenLess and Typeless products', () => {
