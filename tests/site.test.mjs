@@ -88,6 +88,8 @@ test('required public files exist', () => {
     'styles.css',
     'script.js',
     'account.js',
+    'account-bridge.html',
+    'account-bridge.js',
     'account-config.js',
     'README.md',
     'assets/favicon.ico',
@@ -210,7 +212,7 @@ test('pages have unique titles, main landmarks, and skip links', () => {
   assert.equal(new Set(titles).size, allPublicPageFiles.length, 'page titles should be unique');
 });
 
-test('account page exposes passwordless login, wallet, recharge, and desktop authorization', () => {
+test('account page exposes email and username login, profile settings, billing, and desktop authorization', () => {
   const html = stripHtmlComments(read('account.html'));
   const source = `${html}\n${read('account.js')}`;
   for (const phrase of [
@@ -219,7 +221,12 @@ test('account page exposes passwordless login, wallet, recharge, and desktop aut
     '邮箱',
     '获取验证码',
     '验证并登录',
-    '账户余额',
+    '用户名密码',
+    '个人资料',
+    '选择头像',
+    '安全与登录',
+    '登录 AutoClipboard',
+    '当前余额',
     '充值金额',
     '支付宝',
     '微信支付',
@@ -230,10 +237,12 @@ test('account page exposes passwordless login, wallet, recharge, and desktop aut
     assert.match(source, new RegExp(escapeRegExp(phrase)), `account page should mention ${phrase}`);
   }
   assert.match(html, /data-auth-form/);
+  assert.match(html, /data-profile-form/);
+  assert.match(html, /data-avatar-input/);
   assert.match(html, /data-recharge-form/);
   assert.match(html, /data-authorize-desktop/);
   assert.match(html, /assets\/vendor\/cloudbase-3\.7\.1\.min\.js/);
-  assert.doesNotMatch(html, /type=["']password["']/i, 'passwordless account page should not collect passwords');
+  assert.match(html, /type=["']password["']/i, 'username login should collect a CloudBase-managed password');
 });
 
 test('account configuration is public-only and pins the CloudBase integration contract', () => {
@@ -243,6 +252,8 @@ test('account configuration is public-only and pins the CloudBase integration co
   assert.match(config, /accountApi:\s*['"]zko-account-api['"]/);
   assert.match(config, /desktopAuthUrl:\s*['"]https:\/\/zkolab-dev-[^'"]+\/desktop-auth['"]/);
   assert.match(config, /hostedAccountUrl:\s*['"]https:\/\/zkolab-dev-[^'"]+\.tcloudbaseapp\.com\/account\.html['"]/);
+  assert.match(config, /hostedBridgeUrl:\s*['"]https:\/\/zkolab-dev-[^'"]+\.tcloudbaseapp\.com\/account-bridge\.html['"]/);
+  assert.match(config, /websiteUrl:\s*['"]https:\/\/zkolab\.com\/['"]/);
   assert.match(config, /protocol:\s*['"]autoclipboard:['"]/);
   assert.match(config, /hostname:\s*['"]auth['"]/);
   assert.match(config, /pathname:\s*['"]\/callback['"]/);
@@ -252,6 +263,10 @@ test('account configuration is public-only and pins the CloudBase integration co
 test('account script keeps tokens out of desktop callbacks and fails closed around payments', () => {
   const script = read('account.js');
   assert.match(script, /auth\.signInWithOtp\(/);
+  assert.match(script, /auth\.signInWithPassword\(/);
+  assert.match(script, /resetPasswordForEmail/);
+  assert.match(script, /updateUsername|auth\.updateUser/);
+  assert.match(script, /action:\s*['"]updateProfile['"]/);
   assert.match(script, /verifyOtp/);
   assert.match(script, /config\.functions\.accountApi/);
   assert.match(script, /action:\s*['"]authorizeDesktop['"]/);
@@ -261,6 +276,26 @@ test('account script keeps tokens out of desktop callbacks and fails closed arou
   assert.match(script, /codeChallenge/);
   assert.match(script, /deviceInstanceHash/);
   assert.doesNotMatch(script, /searchParams\.set\([^\n]*(?:access|refresh)[_-]?token/i);
+});
+
+test('every public page exposes the upper-right account avatar area', () => {
+  for (const page of allPublicPageFiles) {
+    const html = stripHtmlComments(read(page));
+    assert.match(html, /data-header-account/);
+    assert.match(html, /data-header-account-image/);
+    assert.match(html, /data-header-account-name/);
+  }
+  const shared = read('script.js');
+  assert.match(shared, /ZKO_ACCOUNT_HEADER/);
+  assert.match(shared, /_zko_profile/);
+  assert.match(shared, /hostedBridgeUrl/);
+});
+
+test('account bridge returns sanitized profile state without tokens', () => {
+  const bridge = read('account-bridge.js');
+  assert.match(bridge, /zko:account-profile/);
+  assert.match(bridge, /zkolab\.com/);
+  assert.doesNotMatch(bridge, /access[_-]?token|refresh[_-]?token/i);
 });
 
 test('vendored CloudBase SDK is local, pinned, and carries license notices', () => {

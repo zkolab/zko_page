@@ -13,13 +13,26 @@
 
 `account-config.js` 只能包含这些公开标识。CloudBase 管理凭据、支付商户密钥、验证码和桌面 refresh token 都不得进入仓库、URL 或日志。
 
-## 网页邮箱登录
+## 网页登录与账户资料
 
-网页使用 CloudBase `signInWithOtp({ email, options: { shouldCreateUser: true } })` 发送验证码，再调用本次请求返回的 `verifyOtp({ token })` 完成登录或首次注册。当前不提供匿名、用户名密码或手机号登录。
+网页使用 CloudBase `signInWithOtp({ email, options: { shouldCreateUser: true } })` 发送验证码，再调用本次请求返回的 `verifyOtp({ token })` 完成登录或首次注册。匿名和手机号登录保持关闭。
+
+邮箱验证码仍是首次注册和账户找回入口。用户登录后可绑定唯一用户名，并通过 CloudBase 的邮箱安全链接设置密码；此后网页可使用 `signInWithPassword({ username, password })` 登录。密码、验证码和密码重置令牌始终由 CloudBase Auth 管理，不进入业务表。
+
+业务账户单独保存：
+
+- `display_name`：网页右上角和 AutoClipboard 展示名称；
+- `full_name`：用户自行填写的姓名或称呼；
+- `username`：与 CloudBase Auth 同步的小写唯一用户名；
+- `avatar_file_id`：CloudBase 存储中的头像文件 ID，页面只接收短期签名 URL。
+
+`zkolab.com` 与免费 CloudBase 托管域名当前是不同 Origin。公开页面只通过受限 `postMessage` bridge 或显式返回链接接收不含邮箱和 Token 的头像、显示名称与用户名缓存；所有账户写操作仍在 CloudBase 托管账户页完成。
 
 网页登录后调用 `zko-account-api`：
 
 - `action=overview`：幂等创建业务账户与钱包并返回余额、最近账目和支付配置状态。
+- `action=checkUsername`：在保存前检查业务用户名是否可用。
+- `action=updateProfile`：更新显示名称、姓名、用户名和经过大小与格式校验的头像。
 - `action=authorizeDesktop`：将当前 CloudBase 用户绑定到一次性桌面登录票据。
 - `action=createRecharge`：只在支付宝或微信商户 API 真正配置后创建订单；当前 fail closed，不使用普通收款码伪造自动到账。
 
@@ -39,6 +52,8 @@ AutoClipboard 在本机生成：
 ```text
 https://zkolab-dev-d8gzrr41k9b933d9e-1462162031.tcloudbaseapp.com/account.html?desktop=1&state=...&code_challenge=...&device=...
 ```
+
+网站账户设置中的“登录 AutoClipboard”会先拉起 `autoclipboard://auth/start`。已安装的软件收到该命令后自行生成上述 state、verifier、challenge 和设备哈希，再打开账户网页；网站不会代替桌面端生成 verifier。
 
 网页完成登录后调用 `zko-account-api` 签发两分钟有效、只能使用一次的随机 code，并拉起：
 

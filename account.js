@@ -10,27 +10,31 @@
     location.replace(destination.toString());
     return;
   }
+
   const sdk = globalThis.cloudbase ?? globalThis.cloudbaseBundle?.default ?? globalThis.cloudbaseBundle;
   if (!config || !sdk?.init) return;
 
   const app = sdk.init({ env: config.cloudbase.envId, region: config.cloudbase.region });
   const auth = app.auth({ persistence: 'local' });
   const select = (selector) => document.querySelector(selector);
-  const authForm = select('[data-auth-form]');
-  const identifierInput = select('[data-auth-identifier]');
+  const selectAll = (selector) => [...document.querySelectorAll(selector)];
+  const emailForm = select('[data-auth-form="email"]');
+  const usernameForm = select('[data-auth-form="username"]');
+  const emailInput = select('[data-auth-email]');
   const verificationStep = select('[data-verification-step]');
   const codeInput = select('[data-auth-code]');
   const sendButton = select('[data-send-code]');
   const verifyButton = select('[data-verify-code]');
   const resendButton = select('[data-resend-code]');
-  const authMessage = select('[data-auth-message]');
+  const emailMessage = select('[data-email-auth-message]');
+  const usernameMessage = select('[data-username-auth-message]');
   const authState = select('[data-auth-state]');
-  const signedInSummary = select('[data-signed-in-summary]');
-  const accountIdentity = select('[data-account-identity]');
-  const accountAvatar = select('[data-account-avatar]');
-  const dashboard = select('[data-account-dashboard]');
+  const workspace = select('[data-account-workspace]');
+  const profileForm = select('[data-profile-form]');
+  const avatarInput = select('[data-avatar-input]');
   const authorizeButton = select('[data-authorize-desktop]');
   const openDesktopLink = select('[data-open-desktop]');
+  const startDesktopLink = select('[data-start-desktop]');
   const desktopStatus = select('[data-desktop-status]');
   const rechargeForm = select('[data-recharge-form]');
   const rechargeButton = select('[data-recharge-submit]');
@@ -38,6 +42,8 @@
   const desktopRequest = readDesktopRequest(new URLSearchParams(location.search));
   let otpVerification = null;
   let currentUser = null;
+  let currentProfile = null;
+  let pendingAvatarDataUrl = '';
   let resendTimer = 0;
   let authorizing = false;
 
@@ -63,8 +69,11 @@
 
   function friendlyError(error, fallback) {
     const code = String(error?.code || error?.error || error?.message || '');
-    if (/frequency|limit|too_many/i.test(code)) return '验证码发送过于频繁，请稍后再试。';
+    if (/frequency|limit|too_many/i.test(code)) return '操作过于频繁，请稍后再试。';
     if (/invalid.*otp|verification|token/i.test(code)) return '验证码不正确或已过期，请重新输入。';
+    if (/invalid.*password|password.*invalid|wrong.*password/i.test(code)) return '用户名或密码不正确。';
+    if (/username.*exist|already.*registered|username_taken|23505/i.test(code)) return '这个用户名已被使用。';
+    if (/username/i.test(code)) return '用户名格式不正确，或该用户名暂不可用。';
     if (/email/i.test(code)) return '请输入有效的邮箱地址。';
     return fallback;
   }
@@ -85,8 +94,59 @@
     }));
   }
 
-  function userIdentity(user) {
-    return user?.email || user?.username || user?.displayName || 'ZKO 用户';
+  function initialFor(profile) {
+    return String(profile?.displayName || profile?.username || currentUser?.email || 'Z').trim().slice(0, 1).toUpperCase() || 'Z';
+  }
+
+  function setAvatar(image, initial, profile) {
+    if (!image || !initial) return;
+    const url = profile?.avatarUrl || '';
+    image.hidden = !url;
+    initial.hidden = Boolean(url);
+    if (url) image.src = url;
+    else image.removeAttribute('src');
+    initial.textContent = initialFor(profile);
+  }
+
+  function renderProfile(profile) {
+    const identity = profile.displayName || profile.username || currentUser?.email || 'ZKO 用户';
+    select('[data-profile-heading]').textContent = identity;
+    select('[data-overview-name]').textContent = identity;
+    select('[data-profile-username]').textContent = profile.username ? `@${profile.username}` : '尚未设置用户名';
+    select('[data-profile-display-name]').value = profile.displayName || '';
+    select('[data-profile-full-name]').value = profile.fullName || '';
+    select('[data-profile-username-input]').value = profile.username || '';
+    select('[data-security-email]').textContent = currentUser?.email || profile.email || '未读取到邮箱';
+    select('[data-security-username]').textContent = profile.username ? `@${profile.username} 可用于密码登录` : '保存用户名后即可配置密码。';
+    select('[data-username-state]').textContent = profile.username ? '已绑定' : '未配置';
+    setAvatar(select('[data-profile-avatar-image]'), select('[data-profile-avatar-initial]'), profile);
+    setAvatar(select('[data-avatar-preview]'), select('[data-avatar-preview-initial]'), profile);
+    globalThis.ZKO_ACCOUNT_HEADER?.update?.({ ...profile, signedIn: true });
+    updatePublicSiteLinks(profile);
+  }
+
+  function encodeProfile(profile) {
+    const safe = JSON.stringify({
+      displayName: profile.displayName || '',
+      username: profile.username || '',
+      avatarUrl: profile.avatarUrl || '',
+      updatedAt: Date.now(),
+    });
+    const bytes = new TextEncoder().encode(safe);
+    let binary = '';
+    for (const byte of bytes) binary += String.fromCharCode(byte);
+    return btoa(binary).replaceAll('+', '-').replaceAll('/', '_').replace(/=+$/, '');
+  }
+
+  function updatePublicSiteLinks(profile) {
+    const siteUrl = config.websiteUrl || 'https://zkolab.com/';
+    const encoded = profile ? encodeProfile(profile) : '';
+    for (const link of selectAll('[data-public-site-link]')) {
+      const target = new URL(link.dataset.publicSiteLink || '', siteUrl);
+      if (encoded) target.searchParams.set('_zko_profile', encoded);
+      else target.searchParams.set('_zko_signed_out', '1');
+      link.href = target.href;
+    }
   }
 
   async function refreshUi({ autoHandoff = false } = {}) {
@@ -96,18 +156,16 @@
       currentUser = null;
     }
     const signedIn = Boolean(currentUser);
-    authForm.hidden = signedIn;
-    signedInSummary.hidden = !signedIn;
-    dashboard.hidden = !signedIn;
+    for (const guest of selectAll('[data-guest-view]')) guest.hidden = signedIn;
+    workspace.hidden = !signedIn;
     authState.textContent = signedIn ? '已登录' : '未登录';
     if (!signedIn) {
+      currentProfile = null;
+      globalThis.ZKO_ACCOUNT_HEADER?.update?.({ signedIn: false });
       configureDesktopState();
+      updatePublicSiteLinks(null);
       return;
     }
-
-    const identity = userIdentity(currentUser);
-    accountIdentity.textContent = identity;
-    accountAvatar.textContent = identity.trim().slice(0, 1).toUpperCase() || 'Z';
     configureDesktopState();
     await loadOverview();
     if (autoHandoff && desktopRequest && !desktopRequest.invalid) await authorizeDesktop();
@@ -116,32 +174,40 @@
   function configureDesktopState() {
     authorizeButton.hidden = true;
     openDesktopLink.hidden = true;
+    startDesktopLink.hidden = Boolean(desktopRequest);
     if (!desktopRequest) {
       desktopStatus.textContent = '当前没有桌面端登录请求';
+      select('[data-desktop-summary]').textContent = '可随时登录';
       return;
     }
     if (desktopRequest.invalid) {
       desktopStatus.textContent = '桌面端登录请求无效，请从 AutoClipboard 重新打开';
+      select('[data-desktop-summary]').textContent = '请求无效';
       return;
     }
     if (!currentUser) {
-      desktopStatus.textContent = '完成邮箱验证后将自动返回 AutoClipboard';
+      desktopStatus.textContent = '完成账户登录后将自动返回 AutoClipboard';
       return;
     }
     desktopStatus.textContent = '账户已验证，正在授权 AutoClipboard……';
+    select('[data-desktop-summary]').textContent = '正在授权';
     authorizeButton.hidden = false;
   }
 
   async function loadOverview() {
-    setMessage(select('[data-wallet-status]'), '正在读取账户服务……');
     try {
-      const result = await callAccountApi({ action: 'overview' });
-      if (!result.ok) throw new Error(result.code || 'overview_failed');
-      const cents = Number(result.wallet?.balance_cents || 0);
+      const response = await callAccountApi({ action: 'overview' });
+      if (!response.ok) throw new Error(response.code || 'overview_failed');
+      currentProfile = {
+        ...response.account,
+        email: currentUser?.email || response.account?.email || '',
+        username: response.account?.username || currentUser?.username || '',
+      };
+      renderProfile(currentProfile);
+      const cents = Number(response.wallet?.balance_cents || 0);
       select('[data-wallet-balance]').textContent = `¥ ${(cents / 100).toFixed(2)}`;
-      setMessage(select('[data-wallet-status]'), '余额由 CloudBase 后端保存；未登录不影响软件本地功能。');
-      renderEntries(result.entries || []);
-      const paymentReady = Boolean(result.payment?.configured);
+      renderEntries(response.entries || []);
+      const paymentReady = Boolean(response.payment?.configured);
       rechargeButton.disabled = !paymentReady;
       setMessage(
         rechargeMessage,
@@ -149,7 +215,7 @@
         paymentReady ? '' : 'warning',
       );
     } catch {
-      setMessage(select('[data-wallet-status]'), '账户服务暂时不可用，请稍后刷新。', 'error');
+      setMessage(select('[data-profile-message]'), '账户服务暂时不可用，请稍后刷新。', 'error');
       rechargeButton.disabled = true;
     }
   }
@@ -167,67 +233,83 @@
       const item = document.createElement('li');
       const amount = Number(entry.amount_cents || 0) / 100;
       const date = new Date(entry.created_at).toLocaleString('zh-CN');
-      item.textContent = `${date} · ${entry.entry_type} · ${amount >= 0 ? '+' : ''}¥${amount.toFixed(2)}`;
+      const summary = document.createElement('span');
+      const value = document.createElement('strong');
+      summary.textContent = `${date} · ${entry.entry_type}`;
+      value.dataset.positive = String(amount >= 0);
+      value.textContent = `${amount >= 0 ? '+' : ''}¥${amount.toFixed(2)}`;
+      item.append(summary, value);
       list.append(item);
     }
   }
 
   async function sendCode() {
-    const email = identifierInput.value.trim().toLowerCase();
-    if (!identifierInput.checkValidity() || !email) {
-      identifierInput.reportValidity();
-      return;
-    }
+    const email = emailInput.value.trim().toLowerCase();
+    if (!emailInput.checkValidity() || !email) return emailInput.reportValidity();
     sendButton.disabled = true;
-    setMessage(authMessage, '正在发送验证码……');
+    setMessage(emailMessage, '正在发送验证码……');
     try {
-      const response = await auth.signInWithOtp({
-        email,
-        options: { shouldCreateUser: true },
-      });
+      const response = await auth.signInWithOtp({ email, options: { shouldCreateUser: true } });
       if (response?.error || !response?.data?.verifyOtp) throw response?.error || new Error('otp_unavailable');
       otpVerification = response.data;
       verificationStep.hidden = false;
-      identifierInput.disabled = true;
+      emailInput.disabled = true;
       sendButton.hidden = true;
       codeInput.focus();
-      setMessage(authMessage, `验证码已发送到 ${email}。`, 'success');
+      setMessage(emailMessage, `验证码已发送到 ${email}。`, 'success');
       startResendCountdown();
     } catch (error) {
-      setMessage(authMessage, friendlyError(error, '验证码发送失败，请稍后再试。'), 'error');
+      setMessage(emailMessage, friendlyError(error, '验证码发送失败，请稍后再试。'), 'error');
       sendButton.disabled = false;
     }
   }
 
   async function verifyCode() {
     const token = codeInput.value.trim();
-    if (!otpVerification || !/^\d{4,8}$/.test(token)) {
-      setMessage(authMessage, '请输入邮件中的验证码。', 'error');
-      return;
-    }
+    if (!otpVerification || !/^\d{4,8}$/.test(token)) return setMessage(emailMessage, '请输入邮件中的验证码。', 'error');
     verifyButton.disabled = true;
-    setMessage(authMessage, '正在验证并登录……');
+    setMessage(emailMessage, '正在验证并登录……');
     try {
       const response = await otpVerification.verifyOtp({ token });
       if (response?.error) throw response.error;
-      setMessage(authMessage, '登录成功。', 'success');
+      setMessage(emailMessage, '登录成功。', 'success');
       await refreshUi({ autoHandoff: true });
     } catch (error) {
-      setMessage(authMessage, friendlyError(error, '验证码验证失败，请重试。'), 'error');
+      setMessage(emailMessage, friendlyError(error, '验证码验证失败，请重试。'), 'error');
     } finally {
       verifyButton.disabled = false;
+    }
+  }
+
+  async function loginWithUsername() {
+    const usernameInput = select('[data-login-username]');
+    const passwordInput = select('[data-login-password]');
+    const username = usernameInput.value.trim().toLowerCase();
+    if (!usernameForm.checkValidity()) return usernameForm.reportValidity();
+    setMessage(usernameMessage, '正在登录……');
+    select('[data-username-login]').disabled = true;
+    try {
+      const response = await auth.signInWithPassword({ username, password: passwordInput.value });
+      if (response?.error) throw response.error;
+      passwordInput.value = '';
+      setMessage(usernameMessage, '登录成功。', 'success');
+      await refreshUi({ autoHandoff: true });
+    } catch (error) {
+      setMessage(usernameMessage, friendlyError(error, '用户名登录失败，请检查用户名和密码。'), 'error');
+    } finally {
+      select('[data-username-login]').disabled = false;
     }
   }
 
   function resetOtp() {
     otpVerification = null;
     verificationStep.hidden = true;
-    identifierInput.disabled = false;
+    emailInput.disabled = false;
     sendButton.hidden = false;
     sendButton.disabled = false;
     codeInput.value = '';
-    identifierInput.focus();
-    setMessage(authMessage, '');
+    emailInput.focus();
+    setMessage(emailMessage, '');
   }
 
   function startResendCountdown() {
@@ -245,26 +327,89 @@
     }, 1000);
   }
 
+  async function compressAvatar(file) {
+    if (!/^image\/(jpeg|png|webp)$/.test(file.type) || file.size > 5 * 1024 * 1024) throw new Error('avatar_invalid');
+    const bitmap = await createImageBitmap(file);
+    const scale = Math.min(1, 512 / Math.max(bitmap.width, bitmap.height));
+    const canvas = document.createElement('canvas');
+    canvas.width = Math.max(1, Math.round(bitmap.width * scale));
+    canvas.height = Math.max(1, Math.round(bitmap.height * scale));
+    const context = canvas.getContext('2d', { alpha: false });
+    context.fillStyle = '#101318';
+    context.fillRect(0, 0, canvas.width, canvas.height);
+    context.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+    bitmap.close?.();
+    let quality = 0.88;
+    let value = canvas.toDataURL('image/jpeg', quality);
+    while (value.length > 690000 && quality > 0.5) {
+      quality -= 0.08;
+      value = canvas.toDataURL('image/jpeg', quality);
+    }
+    if (value.length > 690000) throw new Error('avatar_too_large');
+    return value;
+  }
+
+  async function saveProfile() {
+    if (!profileForm.checkValidity()) return profileForm.reportValidity();
+    const displayName = select('[data-profile-display-name]').value.trim();
+    const fullName = select('[data-profile-full-name]').value.trim();
+    const username = select('[data-profile-username-input]').value.trim().toLowerCase();
+    const oldUsername = currentProfile?.username || currentUser?.username || '';
+    const saveButton = select('[data-save-profile]');
+    saveButton.disabled = true;
+    setMessage(select('[data-profile-message]'), '正在保存个人资料……');
+    try {
+      if (username !== oldUsername) {
+        const check = await callAccountApi({ action: 'checkUsername', username });
+        if (!check.ok || !check.available) throw new Error(check.code || 'username_taken');
+        if (typeof currentUser.updateUsername === 'function') {
+          await currentUser.updateUsername(username);
+        } else {
+          const authResult = await auth.updateUser({ username });
+          if (authResult?.error) throw authResult.error;
+        }
+      }
+      const response = await callAccountApi({
+        action: 'updateProfile',
+        displayName,
+        fullName,
+        username,
+        avatarDataUrl: pendingAvatarDataUrl || undefined,
+      });
+      if (!response.ok) throw new Error(response.code || 'profile_update_failed');
+      currentUser = await auth.getCurrentUser();
+      currentProfile = { ...response.account, email: currentUser?.email || '' };
+      pendingAvatarDataUrl = '';
+      renderProfile(currentProfile);
+      setMessage(select('[data-profile-message]'), '个人资料已保存。', 'success');
+    } catch (error) {
+      setMessage(select('[data-profile-message]'), friendlyError(error, '保存失败，请稍后重试。'), 'error');
+    } finally {
+      saveButton.disabled = false;
+    }
+  }
+
   async function authorizeDesktop() {
     if (authorizing || !currentUser || !desktopRequest || desktopRequest.invalid) return;
     authorizing = true;
     authorizeButton.disabled = true;
     desktopStatus.textContent = '正在创建一次性授权码……';
     try {
-      const result = await callAccountApi({
+      const response = await callAccountApi({
         action: 'authorizeDesktop',
         state: desktopRequest.state,
         codeChallenge: desktopRequest.codeChallenge,
         deviceInstanceHash: desktopRequest.deviceInstanceHash,
       });
-      if (!result.ok || !result.code) throw new Error(result.code || 'authorization_failed');
+      if (!response.ok || !response.code) throw new Error(response.code || 'authorization_failed');
       const callback = new URL('autoclipboard://auth/callback');
-      callback.searchParams.set('code', result.code);
-      callback.searchParams.set('state', result.state);
+      callback.searchParams.set('code', response.code);
+      callback.searchParams.set('state', response.state);
       openDesktopLink.href = callback.href;
       openDesktopLink.hidden = false;
       openDesktopLink.textContent = '未自动打开？点击返回 AutoClipboard';
       desktopStatus.textContent = '授权成功，正在打开 AutoClipboard……';
+      select('[data-desktop-summary]').textContent = '授权成功';
       location.assign(callback.href);
     } catch {
       desktopStatus.textContent = '桌面端授权失败，请返回软件重新发起登录。';
@@ -274,20 +419,53 @@
     }
   }
 
-  authForm.addEventListener('submit', (event) => {
-    event.preventDefault();
-    void sendCode();
-  });
+  for (const tab of selectAll('[data-auth-tab]')) {
+    tab.addEventListener('click', () => {
+      const mode = tab.dataset.authTab;
+      for (const candidate of selectAll('[data-auth-tab]')) candidate.setAttribute('aria-selected', String(candidate === tab));
+      emailForm.hidden = mode !== 'email';
+      usernameForm.hidden = mode !== 'username';
+      (mode === 'email' ? emailInput : select('[data-login-username]')).focus();
+    });
+  }
+  emailForm.addEventListener('submit', (event) => { event.preventDefault(); void sendCode(); });
+  usernameForm.addEventListener('submit', (event) => { event.preventDefault(); void loginWithUsername(); });
   verifyButton.addEventListener('click', () => void verifyCode());
-  resendButton.addEventListener('click', () => {
-    resetOtp();
-    void sendCode();
-  });
+  resendButton.addEventListener('click', () => { resetOtp(); void sendCode(); });
   select('[data-change-identifier]').addEventListener('click', resetOtp);
   select('[data-sign-out]').addEventListener('click', async () => {
     await auth.signOut();
     resetOtp();
     await refreshUi();
+  });
+  avatarInput.addEventListener('change', async () => {
+    const file = avatarInput.files?.[0];
+    if (!file) return;
+    setMessage(select('[data-profile-message]'), '正在处理头像……');
+    try {
+      pendingAvatarDataUrl = await compressAvatar(file);
+      const preview = select('[data-avatar-preview]');
+      preview.src = pendingAvatarDataUrl;
+      preview.hidden = false;
+      select('[data-avatar-preview-initial]').hidden = true;
+      setMessage(select('[data-profile-message]'), '头像已准备好，点击“保存个人资料”完成上传。', 'success');
+    } catch (error) {
+      pendingAvatarDataUrl = '';
+      setMessage(select('[data-profile-message]'), friendlyError(error, '头像处理失败，请换一张图片。'), 'error');
+    }
+  });
+  profileForm.addEventListener('submit', (event) => { event.preventDefault(); void saveProfile(); });
+  select('[data-reset-password]').addEventListener('click', async () => {
+    const email = currentUser?.email || currentProfile?.email || '';
+    if (!email) return setMessage(select('[data-security-message]'), '当前账户没有可用邮箱。', 'error');
+    setMessage(select('[data-security-message]'), '正在发送安全邮件……');
+    try {
+      const response = await auth.resetPasswordForEmail(email, { redirectTo: location.href.split('?')[0] });
+      if (response?.error) throw response.error;
+      setMessage(select('[data-security-message]'), `设置或修改密码的邮件已发送到 ${email}。`, 'success');
+    } catch (error) {
+      setMessage(select('[data-security-message]'), friendlyError(error, '邮件发送失败，请稍后重试。'), 'error');
+    }
   });
   authorizeButton.addEventListener('click', () => void authorizeDesktop());
   rechargeForm.addEventListener('submit', async (event) => {
@@ -295,12 +473,8 @@
     const form = new FormData(rechargeForm);
     rechargeButton.disabled = true;
     try {
-      const result = await callAccountApi({
-        action: 'createRecharge',
-        amountCents: Number(form.get('amount')),
-        provider: String(form.get('provider') || ''),
-      });
-      setMessage(rechargeMessage, result.message || '支付通道尚未配置。', result.ok ? 'success' : 'warning');
+      const response = await callAccountApi({ action: 'createRecharge', amountCents: Number(form.get('amount')), provider: String(form.get('provider') || '') });
+      setMessage(rechargeMessage, response.message || '支付通道尚未配置。', response.ok ? 'success' : 'warning');
     } catch {
       setMessage(rechargeMessage, '充值服务暂时不可用。', 'error');
     }
