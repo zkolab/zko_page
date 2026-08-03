@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="登录或注册 ZKO 苍虬账户，查看余额、进行充值，并安全同步登录 AutoClipboard。">
+  <meta name="theme-color" content="#0a0b0d">
+  <title>账户中心 · ZKO 苍虬</title>
+  <link rel="icon" href="assets/favicon.ico">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+  <link rel="stylesheet" href="styles.css">
+  <script src="assets/vendor/cloudbase-3.7.1.min.js" defer></script>
+  <script src="account-config.js" defer></script>
+  <script src="script.js" defer></script>
+  <script src="account.js" defer></script>
+</head>
+<body class="page page--account">
+  <a class="skip-link" href="#main-content">跳到主要内容</a>
+
+  <header class="global-header" data-header>
+    <div class="global-header__inner">
+      <a class="brand" href="index.html" aria-label="苍虬首页"><span class="brand__mark">ZKO</span><small>苍虬 · AI 编程手柄</small></a>
+      <button class="menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-controls="global-nav">菜单</button>
+      <nav class="global-nav" id="global-nav" data-global-nav aria-label="主要导航">
+        <a href="index.html">产品</a>
+        <a href="shop.html">商城</a>
+        <a href="guide.html">使用说明</a>
+        <a href="index.html#release-downloads">软件下载</a>
+        <a href="account.html" aria-current="page">账户</a>
+      </nav>
+      <a class="button button--header" data-purchase-link href="https://www.goofish.com/item?spm=a21ybx.personal.feeds.2.5a4e6ac2FqZlZf&amp;id=1065574393669&amp;categoryId=50023914" target="_blank" rel="noopener noreferrer">立即购买</a>
+    </div>
+  </header>
+
+  <main id="main-content" class="account-main">
+    <section class="account-hero" aria-labelledby="account-title">
+      <div class="account-hero__copy">
+        <h1 id="account-title">一个账户，<br>连接网页与 AutoClipboard</h1>
+        <p>产品介绍、商城和使用说明始终公开。登录后才会启用余额、充值，以及桌面软件授权。</p>
+        <div class="account-principles" aria-label="账户能力">
+          <div><span>01</span><strong>公开内容无需登录</strong><small>浏览、下载和查看说明不设门槛。</small></div>
+          <div><span>02</span><strong>登录后安全充值</strong><small>支付结果只由后端验签后入账。</small></div>
+          <div><span>03</span><strong>同步 AutoClipboard</strong><small>使用一次性授权码，不在链接里传 Token。</small></div>
+        </div>
+      </div>
+
+      <section class="auth-panel" aria-labelledby="auth-panel-title" data-auth-panel>
+        <div class="auth-panel__heading">
+          <div>
+            <p class="account-label">ZKO ACCOUNT</p>
+            <h2 id="auth-panel-title">登录 / 注册</h2>
+          </div>
+          <span class="auth-state" data-auth-state>正在连接</span>
+        </div>
+
+        <form class="auth-form" data-auth-form novalidate>
+          <label class="field-label" for="auth-identifier" data-identifier-label>邮箱地址</label>
+          <input class="account-input" id="auth-identifier" name="identifier" type="email" inputmode="email" autocomplete="email" placeholder="name@example.com" required data-auth-identifier>
+          <p class="field-help" data-identifier-help>首次验证成功会自动创建账户，无需设置密码。</p>
+          <button class="button auth-submit" type="submit" data-send-code>获取验证码</button>
+
+          <div class="verification-step" hidden data-verification-step>
+            <label class="field-label" for="auth-code">验证码</label>
+            <div class="verification-row">
+              <input class="account-input" id="auth-code" name="code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="8" placeholder="输入验证码" data-auth-code>
+              <button class="text-button" type="button" data-resend-code disabled>重新发送</button>
+            </div>
+            <button class="button auth-submit" type="button" data-verify-code>验证并登录</button>
+            <button class="text-button text-button--muted" type="button" data-change-identifier>更换邮箱</button>
+          </div>
+          <p class="form-status" role="status" aria-live="polite" data-auth-message></p>
+          <p class="auth-privacy">验证码由腾讯云 CloudBase 发送。网页不会保存你的密码，也不会把登录 Token 交给桌面软件。</p>
+        </form>
+
+        <div class="signed-in-summary" hidden data-signed-in-summary>
+          <div class="signed-in-user">
+            <span class="account-avatar" aria-hidden="true" data-account-avatar>Z</span>
+            <div><small>当前账户</small><strong data-account-identity>已登录</strong></div>
+          </div>
+          <button class="text-button" type="button" data-sign-out>退出登录</button>
+        </div>
+      </section>
+    </section>
+
+    <section class="desktop-handoff" data-desktop-handoff aria-labelledby="desktop-handoff-title">
+      <div>
+        <p class="account-label">AUTOCLIPBOARD DESKTOP</p>
+        <h2 id="desktop-handoff-title" data-desktop-title>让桌面端同步同一账户</h2>
+        <p data-desktop-copy>在 AutoClipboard 中点击“账户 / 充值”，软件会打开本页面。完成验证后，网页会直接拉起软件并同步账户。</p>
+      </div>
+      <div class="desktop-handoff__action">
+        <span class="desktop-request-status" data-desktop-status>当前没有桌面端登录请求</span>
+        <button class="button button--light" type="button" hidden data-authorize-desktop>允许并返回 AutoClipboard</button>
+        <a class="button button--light" hidden data-open-desktop>打开 AutoClipboard</a>
+      </div>
+    </section>
+
+    <section class="account-dashboard" hidden data-account-dashboard aria-labelledby="dashboard-title">
+      <div class="wallet-overview">
+        <div>
+          <p class="account-label">WALLET</p>
+          <h2 id="dashboard-title">账户余额</h2>
+        </div>
+        <strong class="wallet-balance" data-wallet-balance>¥ 0.00</strong>
+        <p data-wallet-status>正在读取账户服务……</p>
+      </div>
+
+      <form class="recharge-panel" data-recharge-form>
+        <div class="recharge-panel__heading">
+          <div><p class="account-label">RECHARGE</p><h2>充值</h2></div>
+          <span>人民币 CNY</span>
+        </div>
+        <fieldset>
+          <legend>充值金额</legend>
+          <div class="amount-options" data-amount-options>
+            <label><input type="radio" name="amount" value="1000"><span>¥10</span></label>
+            <label><input type="radio" name="amount" value="5000" checked><span>¥50</span></label>
+            <label><input type="radio" name="amount" value="10000"><span>¥100</span></label>
+            <label><input type="radio" name="amount" value="20000"><span>¥200</span></label>
+          </div>
+        </fieldset>
+        <fieldset>
+          <legend>支付方式</legend>
+          <div class="payment-options">
+            <label><input type="radio" name="provider" value="alipay" checked><span><strong>支付宝</strong><small>电脑网站支付</small></span></label>
+            <label><input type="radio" name="provider" value="wechat"><span><strong>微信支付</strong><small>扫码支付</small></span></label>
+          </div>
+        </fieldset>
+        <button class="button recharge-submit" type="submit" disabled data-recharge-submit>立即充值</button>
+        <p class="form-status" role="status" aria-live="polite" data-recharge-message>账户与支付云函数部署完成后即可使用。</p>
+        <div class="payment-result" hidden data-payment-result></div>
+      </form>
+
+      <section class="transaction-panel" aria-labelledby="transaction-title">
+        <div class="transaction-panel__heading"><div><p class="account-label">ACTIVITY</p><h2 id="transaction-title">最近记录</h2></div></div>
+        <ol class="transaction-list" data-transaction-list><li>暂无充值或消费记录</li></ol>
+      </section>
+    </section>
+
+    <section class="account-security" aria-labelledby="security-title">
+      <div><p class="account-label">SECURITY BOUNDARY</p><h2 id="security-title">网页登录与桌面登录之间，只交换一次性授权码</h2></div>
+      <ol>
+        <li><span>1</span><p><strong>AutoClipboard 发起请求</strong>软件在本机生成 state、设备标识和 PKCE 校验参数，再打开账户网页。</p></li>
+        <li><span>2</span><p><strong>浏览器完成验证</strong>用户在 CloudBase 页面登录，并明确允许桌面端使用该账户。</p></li>
+        <li><span>3</span><p><strong>桌面端交换会话</strong>软件用一次性 code 和 verifier 换取自己的会话，code 使用一次即失效。</p></li>
+      </ol>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="site-footer__lead"><strong>ZKO 苍虬</strong><p>为 AI 编程、语音输入和 Agent 工作流打造的实体控制手柄。</p></div>
+    <div><h2>产品</h2><a href="index.html#macros">实体宏键</a><a href="index.html#status">状态反馈</a><a href="index.html#software">AutoClipboard</a></div>
+    <div><h2>账户与购买</h2><a href="account.html">账户中心</a><a href="shop.html">在线商城</a><a data-purchase-link href="https://www.goofish.com/item?spm=a21ybx.personal.feeds.2.5a4e6ac2FqZlZf&amp;id=1065574393669&amp;categoryId=50023914" target="_blank" rel="noopener noreferrer">闲鱼商品页</a></div>
+    <div><h2>使用支持</h2><a href="guide.html#quick-start">首次使用</a><a href="guide.html#bluetooth">蓝牙连接</a><a href="guide.html#troubleshooting">常见问题</a></div>
+    <div class="site-footer__bottom"><span>© 2026 ZKO 苍虬</span><span>账户、充值与桌面端授权以 CloudBase 后端实际部署状态为准。</span></div>
+  </footer>
+</body>
+</html>

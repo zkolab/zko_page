@@ -5,14 +5,18 @@
 ## 文件结构
 
 - `index.html`：页面结构、文案和购买链接的备用地址
+- `account.html`：CloudBase 验证码登录、钱包、充值和 AutoClipboard 授权页面
+- `account.js` / `account-config.js`：账户交互与公开的 CloudBase 环境/函数配置
 - `styles.css`：页面样式、响应式布局与动效
 - `script.js`：移动菜单、渐入增强和购买链接配置
 - `assets/images/`：页面图片资源
+- `assets/vendor/`：固定版本、自托管的 CloudBase Web SDK 及许可证
+- `docs/account-desktop-auth-contract.md`：网页、CloudBase 后端与桌面端的接口契约
 - `tests/site.test.mjs`：自动化站点检查
 
 ## 本地预览
 
-最简单的方式是直接用浏览器打开 `index.html`。
+普通产品页面可以直接用浏览器打开。账户页必须通过 HTTP(S) 访问，不能使用 `file://`，否则 CloudBase 的域名校验和网络请求无法正常工作。
 
 推荐在项目根目录启动静态服务器：
 
@@ -27,6 +31,8 @@ py -m http.server 8000
 ```
 
 如果没有 `python` 或 `py` 命令，可使用环境随附或本机安装的任意 Python 3 来运行同一模块。
+
+账户页地址为 <http://localhost:8000/account.html>。免费体验套餐不能新增自有身份验证安全域名，因此正式账户页部署到 CloudBase 自带安全域名；`zkolab.com/account.html` 会保留查询参数并自动跳转过去。升级到支持自有安全域名的套餐后，可只修改 `account-config.js` 和桌面端账户入口切回自有域名。
 
 ## 自动化测试
 
@@ -93,7 +99,9 @@ git push
 - 当前购买地址为 <https://m.tb.cn/h.802lN7o?tk=phNwgK0gm5B>。修改购买地址时，必须同时更新 `script.js` 中的 `PURCHASE_URL` 和 `index.html` 中各购买按钮的备用 `href`，保持两处一致。
 - Windows 直接下载入口默认使用 Gitee，GitHub 作为备用。发布新 Windows 安装包后，必须同时更新 `script.js` 中的 `AUTOCLIPBOARD_WINDOWS_VERSION`、三个公开页面中的备用 `href` 和 `tests/site.test.mjs` 中的版本断言；不要使用可能指向无 EXE Release 的 `latest/download`。
 - 页面文案在 `index.html` 中维护，图片放在 `assets/images/`，样式在 `styles.css` 中维护。
-- 页面明确不展示价格；维护时不要添加价格信息。
+- 账户页公开配置只允许包含环境 ID、区域、函数名和回调协议。CloudBase 管理凭据、支付商户私钥、APIv3 key、平台证书和桌面 refresh token 禁止进入本仓库。
+- 网页账户与授权依赖 `zko-account-api` 云函数；桌面端使用公开的 `zko-desktop-auth` HTTP 函数完成一次性 code + PKCE 换取会话。接口契约见 `docs/account-desktop-auth-contract.md`。
+- 产品展示页明确不展示商品售价；账户页的充值金额不属于商品定价。
 - `m.tb.cn` 是短链接域名；当前外链会根据设备、浏览器和 App 状态打开或重定向到闲鱼商品页面，也可能尝试唤起闲鱼 App。
 
 ## 常见问题

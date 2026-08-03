@@ -14,6 +14,7 @@ const djiMicUrl = 'https://www.dji.com/cn/mic';
 const djiMic2Url = 'https://www.dji.com/cn/mic-2';
 const officialDriverUrl = 'https://www.wch.cn/downloads/CH343SER_EXE.html';
 const pageFiles = ['index.html', 'shop.html', 'guide.html'];
+const allPublicPageFiles = [...pageFiles, 'account.html'];
 const buyerKitDir = 'buyer-kit-7q4m9x2k6p8n3r5v';
 const buyerPageFiles = [
   `${buyerKitDir}/index.html`,
@@ -83,18 +84,24 @@ function openingTags(html, tagName) {
 
 test('required public files exist', () => {
   for (const path of [
-    ...pageFiles,
+    ...allPublicPageFiles,
     'styles.css',
     'script.js',
+    'account.js',
+    'account-config.js',
     'README.md',
     'assets/favicon.ico',
     'assets/favicon.svg',
     'assets/apple-touch-icon.png',
+    'assets/vendor/cloudbase-3.7.1.min.js',
+    'assets/vendor/cloudbase-3.7.1.min.js.LEGAL.txt',
+    'assets/vendor/cloudbase-3.7.1.LICENSE.txt',
+    'docs/account-desktop-auth-contract.md',
   ]) requireFile(path);
 });
 
 test('all pages expose the shared ZKO favicon', () => {
-  for (const page of pageFiles) {
+  for (const page of allPublicPageFiles) {
     const html = read(page);
     assert.match(html, /<link\s+rel="icon"\s+href="assets\/favicon\.ico">/i);
     assert.match(html, /<link\s+rel="icon"\s+href="assets\/favicon\.svg"\s+type="image\/svg\+xml">/i);
@@ -114,9 +121,10 @@ test('all pages expose the shared navigation and reviewed destinations', () => {
     ['产品', 'index.html'],
     ['商城', 'shop.html'],
     ['使用说明', 'guide.html'],
+    ['账户', 'account.html'],
   ];
 
-  for (const page of pageFiles) {
+  for (const page of allPublicPageFiles) {
     const html = stripHtmlComments(read(page));
     const anchors = openingTags(html, 'a');
 
@@ -173,7 +181,7 @@ test('all pages expose a Gitee-first direct Windows download with GitHub backup'
 });
 
 test('external links use safe new-window attributes', () => {
-  for (const page of pageFiles) {
+  for (const page of allPublicPageFiles) {
     const html = stripHtmlComments(read(page));
     const externalAnchors = openingTags(html, 'a').filter((tag) =>
       /^https:\/\//.test(attributeValue(tag, 'href') ?? ''),
@@ -190,7 +198,7 @@ test('external links use safe new-window attributes', () => {
 
 test('pages have unique titles, main landmarks, and skip links', () => {
   const titles = [];
-  for (const page of pageFiles) {
+  for (const page of allPublicPageFiles) {
     const html = stripHtmlComments(read(page));
     const title = html.match(/<title>([^<]+)<\/title>/i)?.[1]?.trim();
     assert.ok(title, `${page} should have a title`);
@@ -199,7 +207,67 @@ test('pages have unique titles, main landmarks, and skip links', () => {
     assert.match(html, /<a\b[^>]*class="skip-link"[^>]*href="#main-content"/i);
     assert.match(html, /<footer\b[^>]*class="site-footer"/i);
   }
-  assert.equal(new Set(titles).size, pageFiles.length, 'page titles should be unique');
+  assert.equal(new Set(titles).size, allPublicPageFiles.length, 'page titles should be unique');
+});
+
+test('account page exposes passwordless login, wallet, recharge, and desktop authorization', () => {
+  const html = stripHtmlComments(read('account.html'));
+  const source = `${html}\n${read('account.js')}`;
+  for (const phrase of [
+    '公开内容无需登录',
+    '登录 / 注册',
+    '邮箱',
+    '获取验证码',
+    '验证并登录',
+    '账户余额',
+    '充值金额',
+    '支付宝',
+    '微信支付',
+    '当前没有桌面端登录请求',
+    '允许并返回 AutoClipboard',
+    '一次性授权码',
+  ]) {
+    assert.match(source, new RegExp(escapeRegExp(phrase)), `account page should mention ${phrase}`);
+  }
+  assert.match(html, /data-auth-form/);
+  assert.match(html, /data-recharge-form/);
+  assert.match(html, /data-authorize-desktop/);
+  assert.match(html, /assets\/vendor\/cloudbase-3\.7\.1\.min\.js/);
+  assert.doesNotMatch(html, /type=["']password["']/i, 'passwordless account page should not collect passwords');
+});
+
+test('account configuration is public-only and pins the CloudBase integration contract', () => {
+  const config = read('account-config.js');
+  assert.match(config, /envId:\s*['"]zkolab-dev-d8gzrr41k9b933d9e['"]/);
+  assert.match(config, /region:\s*['"]ap-shanghai['"]/);
+  assert.match(config, /accountApi:\s*['"]zko-account-api['"]/);
+  assert.match(config, /desktopAuthUrl:\s*['"]https:\/\/zkolab-dev-[^'"]+\/desktop-auth['"]/);
+  assert.match(config, /hostedAccountUrl:\s*['"]https:\/\/zkolab-dev-[^'"]+\.tcloudbaseapp\.com\/account\.html['"]/);
+  assert.match(config, /protocol:\s*['"]autoclipboard:['"]/);
+  assert.match(config, /hostname:\s*['"]auth['"]/);
+  assert.match(config, /pathname:\s*['"]\/callback['"]/);
+  assert.doesNotMatch(config, /api[_-]?key|secret|private[_-]?key|refresh[_-]?token/i);
+});
+
+test('account script keeps tokens out of desktop callbacks and fails closed around payments', () => {
+  const script = read('account.js');
+  assert.match(script, /auth\.signInWithOtp\(/);
+  assert.match(script, /verifyOtp/);
+  assert.match(script, /config\.functions\.accountApi/);
+  assert.match(script, /action:\s*['"]authorizeDesktop['"]/);
+  assert.match(script, /new URL\(['"]autoclipboard:\/\/auth\/callback['"]\)/);
+  assert.match(script, /callback\.searchParams\.set\(['"]code['"]/);
+  assert.match(script, /callback\.searchParams\.set\(['"]state['"]/);
+  assert.match(script, /codeChallenge/);
+  assert.match(script, /deviceInstanceHash/);
+  assert.doesNotMatch(script, /searchParams\.set\([^\n]*(?:access|refresh)[_-]?token/i);
+});
+
+test('vendored CloudBase SDK is local, pinned, and carries license notices', () => {
+  assert.ok(statSync(fileUrl('assets/vendor/cloudbase-3.7.1.min.js')).size > 500_000);
+  assert.ok(statSync(fileUrl('assets/vendor/cloudbase-3.7.1.LICENSE.txt')).size > 10_000);
+  assert.ok(statSync(fileUrl('assets/vendor/cloudbase-3.7.1.min.js.LEGAL.txt')).size > 500);
+  assert.match(read('assets/vendor/cloudbase-3.7.1.LICENSE.txt'), /Apache License/);
 });
 
 test('homepage presents flagship product storytelling', () => {
