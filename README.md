@@ -91,6 +91,7 @@ git push
 ## 维护说明
 
 - 当前购买地址为 <https://m.tb.cn/h.802lN7o?tk=phNwgK0gm5B>。修改购买地址时，必须同时更新 `script.js` 中的 `PURCHASE_URL` 和 `index.html` 中各购买按钮的备用 `href`，保持两处一致。
+- Windows 直接下载入口默认使用 Gitee，GitHub 作为备用。发布新 Windows 安装包后，必须同时更新 `script.js` 中的 `AUTOCLIPBOARD_WINDOWS_VERSION`、三个公开页面中的备用 `href` 和 `tests/site.test.mjs` 中的版本断言；不要使用可能指向无 EXE Release 的 `latest/download`。
 - 页面文案在 `index.html` 中维护，图片放在 `assets/images/`，样式在 `styles.css` 中维护。
 - 页面明确不展示价格；维护时不要添加价格信息。
 - `m.tb.cn` 是短链接域名；当前外链会根据设备、浏览器和 App 状态打开或重定向到闲鱼商品页面，也可能尝试唤起闲鱼 App。

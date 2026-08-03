@@ -398,6 +398,21 @@ code {
   gap: 0.75rem;
 }
 
+.hero-release__note {
+  margin: 0.8rem 0 0;
+  color: #aeb7c2;
+  font-size: 0.78rem;
+  line-height: 1.65;
+}
+
+.hero-release__note a {
+  color: #fff;
+  font-weight: 760;
+  text-decoration: underline;
+  text-decoration-color: rgba(138, 244, 255, 0.5);
+  text-underline-offset: 0.2em;
+}
+
 .release-button {
   display: inline-flex;
   align-items: center;
@@ -420,6 +435,13 @@ code {
   box-shadow: 0 18px 40px rgba(32, 204, 228, 0.32);
   filter: brightness(1.05);
   transform: translateY(-2px);
+}
+
+.release-button--secondary {
+  color: #f5fbfc;
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: none;
 }
 
 .hero__product {

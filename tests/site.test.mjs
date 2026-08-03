@@ -6,6 +6,9 @@ import { runInNewContext } from 'node:vm';
 const purchaseUrl = 'https://www.goofish.com/item?spm=a21ybx.personal.feeds.2.5a4e6ac2FqZlZf&id=1065574393669&categoryId=50023914';
 const downloadUrl = 'https://github.com/Lijinzh/Communist-Manifesto-Releases';
 const giteeReleaseUrl = 'https://gitee.com/shan-yujun/Communist-Manifesto-Releases';
+const autoClipboardWindowsVersion = '0.3.56';
+const giteeWindowsDownloadUrl = `https://gitee.com/shan-yujun/Communist-Manifesto-Releases/releases/download/v${autoClipboardWindowsVersion}/AutoClipboardSetup-${autoClipboardWindowsVersion}.exe`;
+const githubWindowsDownloadUrl = `https://github.com/Lijinzh/Communist-Manifesto-Releases/releases/download/v${autoClipboardWindowsVersion}/AutoClipboardSetup-${autoClipboardWindowsVersion}.exe`;
 const feedbackUrl = 'https://docs.qq.com/sheet/DQUFjTktqTmF0d1FG?tab=BB08J2';
 const djiMicUrl = 'https://www.dji.com/cn/mic';
 const djiMic2Url = 'https://www.dji.com/cn/mic-2';
@@ -133,11 +136,17 @@ test('all pages expose the shared navigation and reviewed destinations', () => {
   }
 });
 
-test('all pages expose equal-priority Gitee and GitHub release links', () => {
+test('all pages expose a Gitee-first direct Windows download with GitHub backup', () => {
   for (const page of pageFiles) {
     const html = stripHtmlComments(read(page));
+    const anchors = openingTags(html, 'a');
     assert.match(html, new RegExp(escapeRegExp(giteeReleaseUrl)), `${page} should link Gitee`);
     assert.match(html, new RegExp(escapeRegExp(downloadUrl)), `${page} should link GitHub`);
+    const giteeDirectLinks = anchors.filter((tag) => hasAttribute(tag, 'data-windows-download-link'));
+    assert.ok(giteeDirectLinks.length >= 1, `${page} should expose a direct Windows download`);
+    for (const anchor of giteeDirectLinks) {
+      assert.equal(attributeValue(anchor, 'href'), giteeWindowsDownloadUrl);
+    }
   }
 
   const home = stripHtmlComments(read('index.html'));
@@ -145,11 +154,22 @@ test('all pages expose equal-priority Gitee and GitHub release links', () => {
   const releaseButtons = openingTags(home, 'a').filter((tag) =>
     /(?:^|\s)release-button(?:\s|$)/.test(attributeValue(tag, 'class') ?? ''),
   );
-  assert.equal(releaseButtons.length, 2, 'homepage should expose two equal release buttons');
+  assert.equal(releaseButtons.length, 2, 'homepage should expose primary and fallback download buttons');
   assert.deepEqual(
     new Set(releaseButtons.map((tag) => attributeValue(tag, 'href'))),
-    new Set([giteeReleaseUrl, downloadUrl]),
+    new Set([giteeWindowsDownloadUrl, githubWindowsDownloadUrl]),
   );
+  assert.equal(attributeValue(releaseButtons[0], 'href'), giteeWindowsDownloadUrl);
+  assert.match(home, /国内用户默认使用 Gitee/);
+
+  const guide = stripHtmlComments(read('guide.html'));
+  const githubFallbacks = openingTags(guide, 'a').filter((tag) =>
+    hasAttribute(tag, 'data-windows-download-fallback'),
+  );
+  assert.ok(githubFallbacks.length >= 1, 'guide should expose a GitHub direct-download fallback');
+  for (const anchor of githubFallbacks) {
+    assert.equal(attributeValue(anchor, 'href'), githubWindowsDownloadUrl);
+  }
 });
 
 test('external links use safe new-window attributes', () => {
@@ -390,10 +410,16 @@ test('script defines reviewed URLs and applies the purchase destination', () => 
     script,
     new RegExp(`\\bconst\\s+GITEE_RELEASE_URL\\s*=\\s*["']${escapeRegExp(giteeReleaseUrl)}["']`),
   );
+  assert.match(
+    script,
+    new RegExp(`\\bconst\\s+AUTOCLIPBOARD_WINDOWS_VERSION\\s*=\\s*["']${escapeRegExp(autoClipboardWindowsVersion)}["']`),
+  );
 
   const purchaseLinks = [{ href: 'old://one' }, { href: 'old://two' }];
   const downloadLinks = [{ href: 'old://download' }];
   const giteeLinks = [{ href: 'old://gitee' }];
+  const giteeWindowsLinks = [{ href: 'old://windows-gitee' }];
+  const githubWindowsLinks = [{ href: 'old://windows-github' }];
   const classList = { add() {}, remove() {}, toggle() {}, contains() { return false; } };
   const document = {
     documentElement: { classList },
@@ -401,6 +427,8 @@ test('script defines reviewed URLs and applies the purchase destination', () => 
       if (selector === '[data-purchase-link]') return purchaseLinks;
       if (selector === '[data-download-link]') return downloadLinks;
       if (selector === '[data-gitee-release-link]') return giteeLinks;
+      if (selector === '[data-windows-download-link]') return giteeWindowsLinks;
+      if (selector === '[data-windows-download-fallback]') return githubWindowsLinks;
       return [];
     },
     querySelector() { return null; },
@@ -416,14 +444,19 @@ test('script defines reviewed URLs and applies the purchase destination', () => 
   };
   context.window = context;
   context.globalThis = context;
-  runInNewContext(`${script}\n;globalThis.__urls = { PURCHASE_URL, DOWNLOAD_URL, GITEE_RELEASE_URL };`, context);
+  runInNewContext(`${script}\n;globalThis.__urls = { PURCHASE_URL, DOWNLOAD_URL, GITEE_RELEASE_URL, AUTOCLIPBOARD_WINDOWS_VERSION, GITEE_WINDOWS_DOWNLOAD_URL, GITHUB_WINDOWS_DOWNLOAD_URL };`, context);
 
   assert.equal(context.__urls.PURCHASE_URL, purchaseUrl);
   assert.equal(context.__urls.DOWNLOAD_URL, downloadUrl);
   assert.equal(context.__urls.GITEE_RELEASE_URL, giteeReleaseUrl);
+  assert.equal(context.__urls.AUTOCLIPBOARD_WINDOWS_VERSION, autoClipboardWindowsVersion);
+  assert.equal(context.__urls.GITEE_WINDOWS_DOWNLOAD_URL, giteeWindowsDownloadUrl);
+  assert.equal(context.__urls.GITHUB_WINDOWS_DOWNLOAD_URL, githubWindowsDownloadUrl);
   assert.deepEqual(purchaseLinks.map((link) => link.href), [purchaseUrl, purchaseUrl]);
   assert.deepEqual(downloadLinks.map((link) => link.href), [downloadUrl]);
   assert.deepEqual(giteeLinks.map((link) => link.href), [giteeReleaseUrl]);
+  assert.deepEqual(giteeWindowsLinks.map((link) => link.href), [giteeWindowsDownloadUrl]);
+  assert.deepEqual(githubWindowsLinks.map((link) => link.href), [githubWindowsDownloadUrl]);
 });
 
 test('script color selector updates pressed state and selected label', () => {
