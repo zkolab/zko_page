@@ -79,7 +79,31 @@ function openingTags(html, tagName) {
 }
 
 test('required public files exist', () => {
-  for (const path of [...pageFiles, 'styles.css', 'script.js', 'README.md']) requireFile(path);
+  for (const path of [
+    ...pageFiles,
+    'styles.css',
+    'script.js',
+    'README.md',
+    'assets/favicon.ico',
+    'assets/favicon.svg',
+    'assets/apple-touch-icon.png',
+  ]) requireFile(path);
+});
+
+test('all pages expose the shared ZKO favicon', () => {
+  for (const page of pageFiles) {
+    const html = read(page);
+    assert.match(html, /<link\s+rel="icon"\s+href="assets\/favicon\.ico">/i);
+    assert.match(html, /<link\s+rel="icon"\s+href="assets\/favicon\.svg"\s+type="image\/svg\+xml">/i);
+    assert.match(html, /<link\s+rel="apple-touch-icon"\s+href="assets\/apple-touch-icon\.png">/i);
+  }
+
+  for (const page of buyerPageFiles) {
+    const html = read(page);
+    assert.match(html, /<link\s+rel="icon"\s+href="\.\.\/assets\/favicon\.ico">/i);
+    assert.match(html, /<link\s+rel="icon"\s+href="\.\.\/assets\/favicon\.svg"\s+type="image\/svg\+xml">/i);
+    assert.match(html, /<link\s+rel="apple-touch-icon"\s+href="\.\.\/assets\/apple-touch-icon\.png">/i);
+  }
 });
 
 test('all pages expose the shared navigation and reviewed destinations', () => {
