@@ -120,7 +120,7 @@
           <ol><li>双击波轮中键进入 <code>Settings</code>。</li><li>拨动到 <code>BLE Hosts</code>，单击进入。</li><li>找到目标电脑对应的 <code>SAVED</code> 槽位并短按。</li><li>小屏会先显示 <code>WAIT</code>；打开目标电脑蓝牙后，连接成功会变成 <code>LINK</code>。</li></ol>
           <h3>连接一台从未配对的新电脑</h3>
           <ol><li>进入 <code>Settings &gt; BLE Hosts</code>。</li><li>选择一个 <code>EMPTY</code> 空槽位并短按。</li><li>看到 <code>PAIR</code> 后，在 120 秒内打开新电脑的系统蓝牙设置。</li><li>添加完整名称 <code>CommunistKB-XXXX</code>，并等待手柄显示 <code>LINK</code>。</li></ol>
-          <p class="notice">三个槽位都已占用时，只长按删除确认不再使用的 <code>SAVED</code> 槽位，再短按变成的 <code>EMPTY</code> 槽位进行配对。开机时按住中键约 5 秒会清空全部槽位，仅用于恢复出厂，不是日常切换操作。</p>
+          <p class="notice">三个槽位都已占用时，只长按删除确认不再使用的 <code>SAVED</code> 槽位，再短按变成的 <code>EMPTY</code> 槽位进行配对。开机时按住中键约 5 秒会清空全部槽位，仅用于恢复出厂，不是日常切换操作。清槽只会删除手柄端密钥；电脑仍可能保留旧密钥，必须先在系统蓝牙设置中忽略或移除对应的 <code>CommunistKB-XXXX</code>，再让手柄保持 <code>PAIR</code> 并重新添加。</p>
         </section>
 
         <section id="controls" data-reveal>
@@ -149,6 +149,7 @@
           <h2>先按现象排查，不要急着重置</h2>
           <p>删除配对、重置蓝牙和更新固件都不应该是第一步。先找到属于你的现象，再做下面的低风险检查。</p>
           <details><summary>从另一台电脑切换后，新电脑连接不上</summary><p>旧电脑“断开”不等于手柄已经切换。双击波轮中键进入 <code>Settings &gt; BLE Hosts</code>：如果新电脑以前配对过，短按它对应的 <code>SAVED</code> 槽位，等待 <code>WAIT → LINK</code>；如果从未配对，短按 <code>EMPTY</code> 槽位，看到 <code>PAIR</code> 后再在 120 秒内从新电脑添加 <code>CommunistKB-XXXX</code>。不要把开机按住中键 5 秒清空全部槽位当作普通切换。</p></details>
+          <details><summary>清空手柄槽位后，macOS 显示 PAIR 仍连接失败</summary><p>清槽会删除手柄中的蓝牙密钥，但 Mac 仍可能保留原来的配对密钥。打开 macOS 系统设置的蓝牙页面，只对当前完整名称 <code>CommunistKB-XXXX</code> 选择“忽略此设备”或移除；不要再次清空手柄。保持第一个空槽显示 <code>PAIR</code>，并在 120 秒内重新添加该设备，成功后等待小屏变为 <code>LINK</code>。</p></details>
           <details><summary>系统里搜不到 CommunistKB-XXXX</summary><p>先唤醒手柄并靠近电脑。进入 <code>Settings &gt; BLE Hosts</code>，选择 <code>EMPTY</code>，确认小屏出现 <code>PAIR</code> 后再重新扫描。如果三个槽位都已占用，先确认哪台电脑不再需要，再删除对应槽位。</p></details>
           <details><summary>已经配对，但宏键不能输入</summary><p>确认小屏显示 <code>LINK</code>，然后在记事本等纯文本编辑器里测试 <code>Enter</code> 或 <code>Ctrl+V</code>。先不要删除配对；也要确认当前 Profile 确实配置了这些宏。</p></details>
           <details><summary>宏键能输入，但 AutoClipboard 显示未连接</summary><p>这通常表示系统蓝牙键盘已经正常，但软件连接还没有就绪。启动或重启 AutoClipboard，保持手柄唤醒，并确认软件查找的是同一个 <code>CommunistKB-XXXX</code>。</p></details>
