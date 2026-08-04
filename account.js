@@ -20,6 +20,7 @@
   const selectAll = (selector) => [...document.querySelectorAll(selector)];
   const emailForm = select('[data-auth-form="email"]');
   const usernameForm = select('[data-auth-form="username"]');
+  const registrationForm = select('[data-auth-form="register"]');
   const emailInput = select('[data-auth-email]');
   const verificationStep = select('[data-verification-step]');
   const codeInput = select('[data-auth-code]');
@@ -28,6 +29,7 @@
   const resendButton = select('[data-resend-code]');
   const emailMessage = select('[data-email-auth-message]');
   const usernameMessage = select('[data-username-auth-message]');
+  const registrationMessage = select('[data-register-message]');
   const authState = select('[data-auth-state]');
   const workspace = select('[data-account-workspace]');
   const profileForm = select('[data-profile-form]');
@@ -41,6 +43,8 @@
   const rechargeMessage = select('[data-recharge-message]');
   const desktopRequest = readDesktopRequest(new URLSearchParams(location.search));
   let otpVerification = null;
+  let registrationVerification = null;
+  let pendingRegistration = null;
   let currentUser = null;
   let currentProfile = null;
   let pendingAvatarDataUrl = '';
@@ -63,19 +67,41 @@
   function setMessage(target, message, tone = '') {
     if (!target) return;
     target.textContent = message;
-    if (tone) target.dataset.tone = tone;
-    else delete target.dataset.tone;
+    if (tone) target.dataset.type = tone;
+    else delete target.dataset.type;
+  }
+
+  function errorDetails(error) {
+    const values = [
+      error?.code,
+      error?.error,
+      error?.errorCode,
+      error?.message,
+      error?.error_description,
+      error?.cause?.code,
+      error?.cause?.message,
+    ].filter((value) => value !== undefined && value !== null && value !== '');
+    return values.map(String).join(' ');
   }
 
   function friendlyError(error, fallback) {
-    const code = String(error?.code || error?.error || error?.message || '');
-    if (/frequency|limit|too_many/i.test(code)) return '操作过于频繁，请稍后再试。';
+    const code = errorDetails(error);
+    const retryAfter = Number(error?.retryAfter || error?.retry_after || error?.cause?.retryAfter || 0);
+    const requestId = String(error?.requestId || error?.request_id || error?.cause?.requestId || '').trim();
+    const reference = requestId ? `（请求 ID：${requestId.slice(0, 80)}）` : '';
+    if (/res_stopped|isolated|instance.*status|service.*unavailable|internal_server/i.test(code)) {
+      return `身份认证服务当前不可用，请稍后再试。${reference}`;
+    }
+    if (/frequency|rate.?limit|too_many|429/i.test(code)) {
+      return retryAfter > 0 ? `操作过于频繁，请 ${Math.ceil(retryAfter)} 秒后再试。${reference}` : `操作过于频繁，请稍后再试。${reference}`;
+    }
     if (/invalid.*otp|verification|token/i.test(code)) return '验证码不正确或已过期，请重新输入。';
     if (/invalid.*password|password.*invalid|wrong.*password/i.test(code)) return '用户名或密码不正确。';
-    if (/username.*exist|already.*registered|username_taken|23505/i.test(code)) return '这个用户名已被使用。';
+    if (/email.*exist|already.*registered|user.*exist|target.*not.?user/i.test(code)) return '这个邮箱已经注册，请直接登录。';
+    if (/username.*exist|username.*registered|username_taken|23505/i.test(code)) return '这个用户名已被使用。';
     if (/username/i.test(code)) return '用户名格式不正确，或该用户名暂不可用。';
     if (/email/i.test(code)) return '请输入有效的邮箱地址。';
-    return fallback;
+    return `${fallback}${reference}`;
   }
 
   function callResult(response) {
@@ -249,7 +275,7 @@
     sendButton.disabled = true;
     setMessage(emailMessage, '正在发送验证码……');
     try {
-      const response = await auth.signInWithOtp({ email, options: { shouldCreateUser: true } });
+      const response = await auth.signInWithOtp({ email, options: { shouldCreateUser: false } });
       if (response?.error || !response?.data?.verifyOtp) throw response?.error || new Error('otp_unavailable');
       otpVerification = response.data;
       verificationStep.hidden = false;
@@ -301,6 +327,102 @@
     }
   }
 
+  function registrationValues() {
+    return {
+      email: select('[data-register-email]').value.trim().toLowerCase(),
+      username: select('[data-register-username]').value.trim().toLowerCase(),
+      password: select('[data-register-password]').value,
+      passwordConfirm: select('[data-register-password-confirm]').value,
+      displayName: select('[data-register-display-name]').value.trim(),
+    };
+  }
+
+  async function sendRegistrationCode() {
+    const values = registrationValues();
+    if (!registrationForm.checkValidity()) return registrationForm.reportValidity();
+    if (values.password !== values.passwordConfirm) {
+      return setMessage(registrationMessage, '两次输入的密码不一致。', 'error');
+    }
+    const button = select('[data-register-send-code]');
+    button.disabled = true;
+    setMessage(registrationMessage, '正在发送注册验证码……');
+    try {
+      const verification = await auth.getVerification({ email: values.email });
+      if (!verification?.verification_id) throw new Error('registration_verification_unavailable');
+      if (verification.is_user) throw new Error('email_already_registered');
+      registrationVerification = verification;
+      pendingRegistration = values;
+      select('[data-register-verification-step]').hidden = false;
+      for (const input of registrationForm.querySelectorAll('input:not([data-register-code])')) input.disabled = true;
+      button.hidden = true;
+      select('[data-register-code]').focus();
+      setMessage(registrationMessage, `注册验证码已发送到 ${values.email}。`, 'success');
+      startResendCountdown(select('[data-register-resend-code]'));
+    } catch (error) {
+      setMessage(registrationMessage, friendlyError(error, '注册验证码发送失败，请稍后再试。'), 'error');
+      button.disabled = false;
+    }
+  }
+
+  async function completeRegistration() {
+    const token = select('[data-register-code]').value.trim();
+    if (!registrationVerification || !pendingRegistration || !/^\d{4,8}$/.test(token)) {
+      return setMessage(registrationMessage, '请输入邮件中的验证码。', 'error');
+    }
+    const button = select('[data-register-verify]');
+    button.disabled = true;
+    setMessage(registrationMessage, '正在验证并创建账户……');
+    try {
+      const verified = await auth.verify({
+        verification_id: registrationVerification.verification_id,
+        verification_code: token,
+      });
+      if (!verified?.verification_token) throw new Error('registration_verification_failed');
+      const registered = pendingRegistration;
+      await auth.signUp({
+        email: registered.email,
+        username: registered.username,
+        password: registered.password,
+        name: registered.displayName || registered.username,
+        verification_code: token,
+        verification_token: verified.verification_token,
+      });
+      pendingRegistration = null;
+      registrationVerification = null;
+      select('[data-register-password]').value = '';
+      select('[data-register-password-confirm]').value = '';
+      try {
+        await callAccountApi({
+          action: 'updateProfile',
+          displayName: registered.displayName || registered.username,
+          fullName: '',
+          username: registered.username,
+        });
+      } catch {
+        // Auth registration is authoritative; profile mirroring can retry after sign-in.
+      }
+      setMessage(registrationMessage, '注册成功，用户名和密码已经可以使用。', 'success');
+      await refreshUi({ autoHandoff: true });
+    } catch (error) {
+      setMessage(registrationMessage, friendlyError(error, '注册失败，请检查验证码和注册信息。'), 'error');
+    } finally {
+      button.disabled = false;
+    }
+  }
+
+  function resetRegistration() {
+    registrationVerification = null;
+    pendingRegistration = null;
+    select('[data-register-verification-step]').hidden = true;
+    select('[data-register-code]').value = '';
+    for (const input of registrationForm.querySelectorAll('input')) input.disabled = false;
+    const button = select('[data-register-send-code]');
+    button.hidden = false;
+    button.disabled = false;
+    select('[data-register-email]').focus();
+    setMessage(registrationMessage, '');
+  }
+
   function resetOtp() {
     otpVerification = null;
     verificationStep.hidden = true;
@@ -312,17 +434,17 @@
     setMessage(emailMessage, '');
   }
 
-  function startResendCountdown() {
+  function startResendCountdown(target = resendButton) {
     clearInterval(resendTimer);
     let remaining = 60;
-    resendButton.disabled = true;
-    resendButton.textContent = `${remaining} 秒后重发`;
+    target.disabled = true;
+    target.textContent = `${remaining} 秒后重发`;
     resendTimer = setInterval(() => {
       remaining -= 1;
-      resendButton.textContent = remaining > 0 ? `${remaining} 秒后重发` : '重新发送';
+      target.textContent = remaining > 0 ? `${remaining} 秒后重发` : '重新发送';
       if (remaining <= 0) {
         clearInterval(resendTimer);
-        resendButton.disabled = false;
+        target.disabled = false;
       }
     }, 1000);
   }
@@ -425,14 +547,20 @@
       for (const candidate of selectAll('[data-auth-tab]')) candidate.setAttribute('aria-selected', String(candidate === tab));
       emailForm.hidden = mode !== 'email';
       usernameForm.hidden = mode !== 'username';
-      (mode === 'email' ? emailInput : select('[data-login-username]')).focus();
+      registrationForm.hidden = mode !== 'register';
+      const focusTarget = mode === 'email' ? emailInput : mode === 'register' ? select('[data-register-email]') : select('[data-login-username]');
+      focusTarget.focus();
     });
   }
   emailForm.addEventListener('submit', (event) => { event.preventDefault(); void sendCode(); });
   usernameForm.addEventListener('submit', (event) => { event.preventDefault(); void loginWithUsername(); });
+  registrationForm.addEventListener('submit', (event) => { event.preventDefault(); void sendRegistrationCode(); });
   verifyButton.addEventListener('click', () => void verifyCode());
   resendButton.addEventListener('click', () => { resetOtp(); void sendCode(); });
   select('[data-change-identifier]').addEventListener('click', resetOtp);
+  select('[data-register-verify]').addEventListener('click', () => void completeRegistration());
+  select('[data-register-resend-code]').addEventListener('click', () => { resetRegistration(); void sendRegistrationCode(); });
+  select('[data-register-change]').addEventListener('click', resetRegistration);
   select('[data-sign-out]').addEventListener('click', async () => {
     await auth.signOut();
     resetOtp();

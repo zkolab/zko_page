@@ -212,16 +212,19 @@ test('pages have unique titles, main landmarks, and skip links', () => {
   assert.equal(new Set(titles).size, allPublicPageFiles.length, 'page titles should be unique');
 });
 
-test('account page exposes email and username login, profile settings, billing, and desktop authorization', () => {
+test('account page exposes complete registration, email and username login, profile settings, billing, and desktop authorization', () => {
   const html = stripHtmlComments(read('account.html'));
   const source = `${html}\n${read('account.js')}`;
   for (const phrase of [
     '公开内容无需登录',
     '登录 / 注册',
-    '邮箱',
-    '获取验证码',
+    '注册账号',
+    '设置密码',
+    '发送注册验证码',
+    '邮箱登录',
+    '获取登录验证码',
     '验证并登录',
-    '用户名密码',
+    '账号登录',
     '个人资料',
     '选择头像',
     '安全与登录',
@@ -242,7 +245,7 @@ test('account page exposes email and username login, profile settings, billing, 
   assert.match(html, /data-recharge-form/);
   assert.match(html, /data-authorize-desktop/);
   assert.match(html, /assets\/vendor\/cloudbase-3\.7\.1\.min\.js/);
-  assert.match(html, /type=["']password["']/i, 'username login should collect a CloudBase-managed password');
+  assert.ok((html.match(/type=["']password["']/gi) || []).length >= 3, 'login and registration should collect CloudBase-managed passwords');
 });
 
 test('account configuration is public-only and pins the CloudBase integration contract', () => {
@@ -264,6 +267,12 @@ test('account script keeps tokens out of desktop callbacks and fails closed arou
   const script = read('account.js');
   assert.match(script, /auth\.signInWithOtp\(/);
   assert.match(script, /auth\.signInWithPassword\(/);
+  assert.match(script, /auth\.getVerification\(/);
+  assert.match(script, /auth\.verify\(/);
+  assert.match(script, /auth\.signUp\(\{/);
+  assert.match(script, /username:\s*registered\.username/);
+  assert.match(script, /password:\s*registered\.password/);
+  assert.doesNotMatch(script, /target:\s*['"]NOT_USER['"]/);
   assert.match(script, /resetPasswordForEmail/);
   assert.match(script, /updateUsername|auth\.updateUser/);
   assert.match(script, /action:\s*['"]updateProfile['"]/);

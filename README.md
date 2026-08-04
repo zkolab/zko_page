@@ -100,7 +100,7 @@ git push
 - Windows 直接下载入口默认使用 Gitee，GitHub 作为备用。发布新 Windows 安装包后，必须同时更新 `script.js` 中的 `AUTOCLIPBOARD_WINDOWS_VERSION`、三个公开页面中的备用 `href` 和 `tests/site.test.mjs` 中的版本断言；不要使用可能指向无 EXE Release 的 `latest/download`。
 - 页面文案在 `index.html` 中维护，图片放在 `assets/images/`，样式在 `styles.css` 中维护。
 - 账户页公开配置只允许包含环境 ID、区域、函数名和回调协议。CloudBase 管理凭据、支付商户私钥、APIv3 key、平台证书和桌面 refresh token 禁止进入本仓库。
-- 全站右上角账户区展示头像、显示名称和用户名；账户中心支持邮箱验证码注册/登录、绑定用户名、用户名密码登录、姓名与头像设置。密码只由 CloudBase Auth 管理。
+- 全站右上角账户区展示头像、显示名称和用户名；账户中心把“注册账号”和“登录已有账号”明确分开。注册时一次填写邮箱、用户名和密码，邮箱验证码通过后由 CloudBase Auth 创建账户；已有用户可使用用户名密码或邮箱验证码登录。姓名与头像仍在个人资料中单独设置，业务数据库不保存密码。
 - `account-bridge.html` 只向 `zkolab.com` / `www.zkolab.com` 返回不含邮箱和 Token 的显示资料，用于跨域同步右上角登录状态；账户写操作仍只在 CloudBase 托管账户页执行。
 - 网页账户与授权依赖 `zko-account-api` 云函数；桌面端使用公开的 `zko-desktop-auth` HTTP 函数完成一次性 code + PKCE 换取会话。接口契约见 `docs/account-desktop-auth-contract.md`。
 - 产品展示页明确不展示商品售价；账户页的充值金额不属于商品定价。
