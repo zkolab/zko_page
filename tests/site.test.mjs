@@ -273,6 +273,9 @@ test('account script keeps tokens out of desktop callbacks and fails closed arou
   assert.match(script, /username:\s*registered\.username/);
   assert.match(script, /password:\s*registered\.password/);
   assert.doesNotMatch(script, /target:\s*['"]NOT_USER['"]/);
+  assert.match(script, /resendDelaySeconds\s*=\s*60/);
+  assert.match(script, /validitySeconds\s*=\s*600/);
+  assert.match(script, /还需要等待 \$\{resendRemaining\} 秒/);
   assert.match(script, /resetPasswordForEmail/);
   assert.match(script, /updateUsername|auth\.updateUser/);
   assert.match(script, /action:\s*['"]updateProfile['"]/);
@@ -285,6 +288,14 @@ test('account script keeps tokens out of desktop callbacks and fails closed arou
   assert.match(script, /codeChallenge/);
   assert.match(script, /deviceInstanceHash/);
   assert.doesNotMatch(script, /searchParams\.set\([^\n]*(?:access|refresh)[_-]?token/i);
+});
+
+test('account page explains verification resend delay and validity', () => {
+  const html = stripHtmlComments(read('account.html'));
+  assert.ok((html.match(/有效期 600 秒/g) || []).length >= 2);
+  assert.ok((html.match(/等待 60 秒/g) || []).length >= 2);
+  assert.match(html, /data-email-code-timer/);
+  assert.match(html, /data-register-code-timer/);
 });
 
 test('every public page exposes the upper-right account avatar area', () => {

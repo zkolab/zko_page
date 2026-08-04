@@ -27,9 +27,11 @@
   const sendButton = select('[data-send-code]');
   const verifyButton = select('[data-verify-code]');
   const resendButton = select('[data-resend-code]');
+  const emailCodeTimer = select('[data-email-code-timer]');
   const emailMessage = select('[data-email-auth-message]');
   const usernameMessage = select('[data-username-auth-message]');
   const registrationMessage = select('[data-register-message]');
+  const registrationCodeTimer = select('[data-register-code-timer]');
   const authState = select('[data-auth-state]');
   const workspace = select('[data-account-workspace]');
   const profileForm = select('[data-profile-form]');
@@ -48,7 +50,7 @@
   let currentUser = null;
   let currentProfile = null;
   let pendingAvatarDataUrl = '';
-  let resendTimer = 0;
+  const verificationTimers = new Map();
   let authorizing = false;
 
   function readDesktopRequest(query) {
@@ -283,7 +285,7 @@
       sendButton.hidden = true;
       codeInput.focus();
       setMessage(emailMessage, `验证码已发送到 ${email}。`, 'success');
-      startResendCountdown();
+      startVerificationCountdown(resendButton, emailCodeTimer);
     } catch (error) {
       setMessage(emailMessage, friendlyError(error, '验证码发送失败，请稍后再试。'), 'error');
       sendButton.disabled = false;
@@ -357,7 +359,7 @@
       button.hidden = true;
       select('[data-register-code]').focus();
       setMessage(registrationMessage, `注册验证码已发送到 ${values.email}。`, 'success');
-      startResendCountdown(select('[data-register-resend-code]'));
+      startVerificationCountdown(select('[data-register-resend-code]'), registrationCodeTimer);
     } catch (error) {
       setMessage(registrationMessage, friendlyError(error, '注册验证码发送失败，请稍后再试。'), 'error');
       button.disabled = false;
@@ -411,6 +413,7 @@
   }
 
   function resetRegistration() {
+    clearVerificationCountdown(select('[data-register-resend-code]'), registrationCodeTimer);
     registrationVerification = null;
     pendingRegistration = null;
     select('[data-register-verification-step]').hidden = true;
@@ -424,6 +427,7 @@
   }
 
   function resetOtp() {
+    clearVerificationCountdown(resendButton, emailCodeTimer);
     otpVerification = null;
     verificationStep.hidden = true;
     emailInput.disabled = false;
@@ -434,19 +438,47 @@
     setMessage(emailMessage, '');
   }
 
-  function startResendCountdown(target = resendButton) {
-    clearInterval(resendTimer);
-    let remaining = 60;
-    target.disabled = true;
-    target.textContent = `${remaining} 秒后重发`;
-    resendTimer = setInterval(() => {
-      remaining -= 1;
-      target.textContent = remaining > 0 ? `${remaining} 秒后重发` : '重新发送';
-      if (remaining <= 0) {
-        clearInterval(resendTimer);
-        target.disabled = false;
+  function clearVerificationCountdown(resendTarget, statusTarget) {
+    const timer = verificationTimers.get(resendTarget);
+    if (timer) clearInterval(timer);
+    verificationTimers.delete(resendTarget);
+    if (statusTarget) {
+      statusTarget.textContent = '';
+      delete statusTarget.dataset.type;
+    }
+  }
+
+  function startVerificationCountdown(resendTarget, statusTarget) {
+    clearVerificationCountdown(resendTarget, statusTarget);
+    const startedAt = Date.now();
+    const resendDelaySeconds = 60;
+    const validitySeconds = 600;
+
+    const renderCountdown = () => {
+      const elapsedSeconds = Math.floor((Date.now() - startedAt) / 1000);
+      const resendRemaining = Math.max(0, resendDelaySeconds - elapsedSeconds);
+      const validityRemaining = Math.max(0, validitySeconds - elapsedSeconds);
+
+      resendTarget.disabled = resendRemaining > 0;
+      resendTarget.textContent = resendRemaining > 0 ? `${resendRemaining} 秒后可重发` : '重新发送';
+
+      if (validityRemaining <= 0) {
+        statusTarget.textContent = '验证码已超过 600 秒有效期，请重新发送。';
+        statusTarget.dataset.type = 'warning';
+        const timer = verificationTimers.get(resendTarget);
+        if (timer) clearInterval(timer);
+        verificationTimers.delete(resendTarget);
+        return;
       }
-    }, 1000);
+
+      statusTarget.dataset.type = resendRemaining > 0 ? 'waiting' : 'ready';
+      statusTarget.textContent = resendRemaining > 0
+        ? `还需要等待 ${resendRemaining} 秒才能重新发送；验证码有效期还剩 ${validityRemaining} 秒。`
+        : `现在可以重新发送；验证码有效期还剩 ${validityRemaining} 秒。`;
+    };
+
+    renderCountdown();
+    verificationTimers.set(resendTarget, setInterval(renderCountdown, 1000));
   }
 
   async function compressAvatar(file) {

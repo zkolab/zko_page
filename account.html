@@ -89,12 +89,14 @@
           <label class="field-label" for="register-display-name">显示名称（选填）</label>
           <input class="account-input" id="register-display-name" name="display-name" type="text" autocomplete="nickname" maxlength="40" placeholder="网页右上角展示的名字" data-register-display-name>
           <button class="button auth-submit" type="submit" data-register-send-code>发送注册验证码</button>
+          <p class="verification-policy">验证码发送成功后有效期 600 秒；再次获取需要等待 60 秒。</p>
           <div class="verification-step" hidden data-register-verification-step>
             <label class="field-label" for="register-code">邮箱验证码</label>
             <div class="verification-row">
               <input class="account-input" id="register-code" name="code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="8" placeholder="输入验证码" data-register-code>
               <button class="text-button" type="button" data-register-resend-code disabled>重新发送</button>
             </div>
+            <p class="verification-countdown" role="timer" aria-live="polite" data-register-code-timer></p>
             <button class="button auth-submit" type="button" data-register-verify>验证并创建账户</button>
             <button class="text-button text-button--muted" type="button" data-register-change>修改注册信息</button>
           </div>
@@ -106,12 +108,14 @@
           <input class="account-input" id="auth-email" name="email" type="email" inputmode="email" autocomplete="email" placeholder="name@example.com" required data-auth-email>
           <p class="field-help">这是已有账户的免密码登录方式，不会自动注册新账户。</p>
           <button class="button auth-submit" type="submit" data-send-code>获取登录验证码</button>
+          <p class="verification-policy">验证码发送成功后有效期 600 秒；再次获取需要等待 60 秒。</p>
           <div class="verification-step" hidden data-verification-step>
             <label class="field-label" for="auth-code">验证码</label>
             <div class="verification-row">
               <input class="account-input" id="auth-code" name="code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="8" placeholder="输入验证码" data-auth-code>
               <button class="text-button" type="button" data-resend-code disabled>重新发送</button>
             </div>
+            <p class="verification-countdown" role="timer" aria-live="polite" data-email-code-timer></p>
             <button class="button auth-submit" type="button" data-verify-code>验证并登录</button>
             <button class="text-button text-button--muted" type="button" data-change-identifier>更换邮箱</button>
           </div>

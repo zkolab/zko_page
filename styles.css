@@ -1775,6 +1775,32 @@ details p {
   margin-bottom: 1rem;
 }
 
+.verification-policy,
+.verification-countdown {
+  margin: 0.65rem 0 0;
+  color: #929aa5;
+  font-size: 0.79rem;
+  line-height: 1.55;
+}
+
+.verification-countdown {
+  min-height: 1.3rem;
+  margin: -0.25rem 0 1rem;
+  color: #aeb8c5;
+}
+
+.verification-countdown[data-type="waiting"] {
+  color: #77eefb;
+}
+
+.verification-countdown[data-type="ready"] {
+  color: #84e5b1;
+}
+
+.verification-countdown[data-type="warning"] {
+  color: #ffd47a;
+}
+
 .text-button {
   padding: 0.45rem 0.2rem;
   color: var(--cyan);
