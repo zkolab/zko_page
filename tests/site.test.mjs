@@ -643,7 +643,8 @@ test('homepage and Skill page make the Agent install flow prominent and copyable
   await clickHandler();
 
   assert.match(copiedText, /codex plugin marketplace add https:\/\/gitee\.com/);
-  assert.match(copiedText, /npx skills add Lijinzh\/Communist-Manifesto-Releases/);
+  assert.match(copiedText, /npx skills add https:\/\/gitee\.com\/shan-yujun\/Communist-Manifesto-Releases\.git/);
+  assert.match(copiedText, /Lijinzh\/Communist-Manifesto-Releases/);
   assert.equal(button.textContent, '已复制，粘贴给 Agent');
   assert.match(status.textContent, /安装内容已复制/);
 });

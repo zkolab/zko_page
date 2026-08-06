@@ -8,14 +8,14 @@ const GITHUB_WINDOWS_DOWNLOAD_URL = `https://github.com/Lijinzh/Communist-Manife
 const INSTALL_COPY = {
   'agent-prompt': `请帮我安装并使用 ZKO 苍虬一键配置：
 1. Codex 优先运行 codex plugin marketplace add https://gitee.com/shan-yujun/Communist-Manifesto-Releases.git，然后运行 codex plugin add zko-ai-coding-handle@zko-lab；如果 Gitee Git 不可用，Marketplace 改用 Lijinzh/Communist-Manifesto-Releases。
-2. 如果当前 Agent 不支持 Codex 插件，运行 npx skills add Lijinzh/Communist-Manifesto-Releases --skill ai-coding-handle --agent '*' -g -y --copy。
+2. 如果当前 Agent 不支持 Codex 插件，优先运行 npx skills add https://gitee.com/shan-yujun/Communist-Manifesto-Releases.git --skill ai-coding-handle --agent '*' -g -y --copy；Gitee 不可用时再把来源换成 Lijinzh/Communist-Manifesto-Releases。
 3. 安装完成后调用 $ai-coding-handle，帮我安装或检查 AutoClipboard、识别苍虬 D4/V3、配置当前 Agent Hook 和按键。
 任何系统设置、驱动安装或固件写入前先向我确认。`,
   'codex-gitee': `codex plugin marketplace add https://gitee.com/shan-yujun/Communist-Manifesto-Releases.git
 codex plugin add zko-ai-coding-handle@zko-lab`,
   'codex-github': `codex plugin marketplace add Lijinzh/Communist-Manifesto-Releases
 codex plugin add zko-ai-coding-handle@zko-lab`,
-  'all-agents': `npx skills add Lijinzh/Communist-Manifesto-Releases --skill ai-coding-handle --agent '*' -g -y --copy`,
+  'all-agents': `npx skills add https://gitee.com/shan-yujun/Communist-Manifesto-Releases.git --skill ai-coding-handle --agent '*' -g -y --copy`,
 };
 
 const queryAll = (selector) => document.querySelectorAll?.(selector) ?? [];
