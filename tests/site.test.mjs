@@ -6,14 +6,15 @@ import { runInNewContext } from 'node:vm';
 const purchaseUrl = 'https://www.goofish.com/item?spm=a21ybx.personal.feeds.2.5a4e6ac2FqZlZf&id=1065574393669&categoryId=50023914';
 const downloadUrl = 'https://github.com/Lijinzh/Communist-Manifesto-Releases';
 const giteeReleaseUrl = 'https://gitee.com/shan-yujun/Communist-Manifesto-Releases';
-const autoClipboardWindowsVersion = '0.3.56';
-const giteeWindowsDownloadUrl = `https://gitee.com/shan-yujun/Communist-Manifesto-Releases/releases/download/v${autoClipboardWindowsVersion}/AutoClipboardSetup-${autoClipboardWindowsVersion}.exe`;
-const githubWindowsDownloadUrl = `https://github.com/Lijinzh/Communist-Manifesto-Releases/releases/download/v${autoClipboardWindowsVersion}/AutoClipboardSetup-${autoClipboardWindowsVersion}.exe`;
+const autoClipboardWindowsVersion = '0.3.64';
+const autoClipboardWindowsReleaseTag = 'v0.3.62';
+const giteeWindowsDownloadUrl = `https://gitee.com/shan-yujun/Communist-Manifesto-Releases/releases/download/${autoClipboardWindowsReleaseTag}/AutoClipboardSetup-${autoClipboardWindowsVersion}.exe`;
+const githubWindowsDownloadUrl = `https://github.com/Lijinzh/Communist-Manifesto-Releases/releases/download/${autoClipboardWindowsReleaseTag}/AutoClipboardSetup-${autoClipboardWindowsVersion}.exe`;
 const feedbackUrl = 'https://docs.qq.com/sheet/DQUFjTktqTmF0d1FG?tab=BB08J2';
 const djiMicUrl = 'https://www.dji.com/cn/mic';
 const djiMic2Url = 'https://www.dji.com/cn/mic-2';
 const officialDriverUrl = 'https://www.wch.cn/downloads/CH343SER_EXE.html';
-const pageFiles = ['index.html', 'shop.html', 'guide.html'];
+const pageFiles = ['index.html', 'shop.html', 'guide.html', 'skill.html'];
 const allPublicPageFiles = [...pageFiles, 'account.html'];
 const buyerKitDir = 'buyer-kit-7q4m9x2k6p8n3r5v';
 const buyerPageFiles = [
@@ -123,6 +124,7 @@ test('all pages expose the shared navigation and reviewed destinations', () => {
     ['产品', 'index.html'],
     ['商城', 'shop.html'],
     ['使用说明', 'guide.html'],
+    ['AI 一键配置', 'skill.html'],
     ['账户', 'account.html'],
   ];
 
@@ -522,7 +524,7 @@ test('pages do not copy DJI-hosted media or brand assets', () => {
 
 test('styles define flagship layouts, responsive behavior, focus, and reduced motion', () => {
   const css = read('styles.css').replace(/\/\*[^]*?\*\//g, '');
-  for (const selector of ['.global-header', '.hero', '.story-panel', '.product-gallery', '.guide-layout', '.site-footer']) {
+  for (const selector of ['.global-header', '.hero', '.skill-hero', '.story-panel', '.product-gallery', '.guide-layout', '.site-footer']) {
     assert.match(css, new RegExp(escapeRegExp(selector)));
   }
   assert.match(css, /@media\b[^{}]*\(\s*max-width\s*:/i);
@@ -547,6 +549,10 @@ test('script defines reviewed URLs and applies the purchase destination', () => 
   assert.match(
     script,
     new RegExp(`\\bconst\\s+AUTOCLIPBOARD_WINDOWS_VERSION\\s*=\\s*["']${escapeRegExp(autoClipboardWindowsVersion)}["']`),
+  );
+  assert.match(
+    script,
+    new RegExp(`\\bconst\\s+AUTOCLIPBOARD_WINDOWS_RELEASE_TAG\\s*=\\s*["']${escapeRegExp(autoClipboardWindowsReleaseTag)}["']`),
   );
 
   const purchaseLinks = [{ href: 'old://one' }, { href: 'old://two' }];
@@ -578,12 +584,13 @@ test('script defines reviewed URLs and applies the purchase destination', () => 
   };
   context.window = context;
   context.globalThis = context;
-  runInNewContext(`${script}\n;globalThis.__urls = { PURCHASE_URL, DOWNLOAD_URL, GITEE_RELEASE_URL, AUTOCLIPBOARD_WINDOWS_VERSION, GITEE_WINDOWS_DOWNLOAD_URL, GITHUB_WINDOWS_DOWNLOAD_URL };`, context);
+  runInNewContext(`${script}\n;globalThis.__urls = { PURCHASE_URL, DOWNLOAD_URL, GITEE_RELEASE_URL, AUTOCLIPBOARD_WINDOWS_VERSION, AUTOCLIPBOARD_WINDOWS_RELEASE_TAG, GITEE_WINDOWS_DOWNLOAD_URL, GITHUB_WINDOWS_DOWNLOAD_URL };`, context);
 
   assert.equal(context.__urls.PURCHASE_URL, purchaseUrl);
   assert.equal(context.__urls.DOWNLOAD_URL, downloadUrl);
   assert.equal(context.__urls.GITEE_RELEASE_URL, giteeReleaseUrl);
   assert.equal(context.__urls.AUTOCLIPBOARD_WINDOWS_VERSION, autoClipboardWindowsVersion);
+  assert.equal(context.__urls.AUTOCLIPBOARD_WINDOWS_RELEASE_TAG, autoClipboardWindowsReleaseTag);
   assert.equal(context.__urls.GITEE_WINDOWS_DOWNLOAD_URL, giteeWindowsDownloadUrl);
   assert.equal(context.__urls.GITHUB_WINDOWS_DOWNLOAD_URL, githubWindowsDownloadUrl);
   assert.deepEqual(purchaseLinks.map((link) => link.href), [purchaseUrl, purchaseUrl]);
@@ -591,6 +598,54 @@ test('script defines reviewed URLs and applies the purchase destination', () => 
   assert.deepEqual(giteeLinks.map((link) => link.href), [giteeReleaseUrl]);
   assert.deepEqual(giteeWindowsLinks.map((link) => link.href), [giteeWindowsDownloadUrl]);
   assert.deepEqual(githubWindowsLinks.map((link) => link.href), [githubWindowsDownloadUrl]);
+});
+
+test('homepage and Skill page make the Agent install flow prominent and copyable', async () => {
+  const home = stripHtmlComments(read('index.html'));
+  const skill = stripHtmlComments(read('skill.html'));
+  assert.match(home, /一句话，把苍虬配置好/);
+  assert.match(home, /data-copy-install=["']agent-prompt["']/);
+  assert.match(skill, /zko-ai-coding-handle@zko-lab/);
+  assert.match(skill, /--agent '\*' -g -y --copy/);
+  assert.match(skill, /Gitee 国内源/);
+
+  let clickHandler;
+  let copiedText = '';
+  const button = {
+    dataset: { copyInstall: 'agent-prompt' },
+    textContent: '复制给 Codex',
+    addEventListener(type, callback) { if (type === 'click') clickHandler = callback; },
+  };
+  const status = { textContent: '' };
+  const classList = { add() {}, remove() {}, toggle() {}, contains() { return false; } };
+  const document = {
+    documentElement: { classList },
+    querySelectorAll(selector) {
+      if (selector === '[data-copy-install]') return [button];
+      if (selector === '[data-copy-status]') return [status];
+      return [];
+    },
+    querySelector() { return null; },
+    addEventListener() {},
+  };
+  const context = {
+    document,
+    navigator: { clipboard: { async writeText(text) { copiedText = text; } } },
+    matchMedia() { return { matches: true }; },
+    addEventListener() {},
+    requestAnimationFrame(callback) { callback(); return 1; },
+    IntersectionObserver: undefined,
+    console,
+  };
+  context.window = context;
+  context.globalThis = context;
+  runInNewContext(read('script.js'), context);
+  await clickHandler();
+
+  assert.match(copiedText, /codex plugin marketplace add https:\/\/gitee\.com/);
+  assert.match(copiedText, /npx skills add Lijinzh\/Communist-Manifesto-Releases/);
+  assert.equal(button.textContent, '已复制，粘贴给 Agent');
+  assert.match(status.textContent, /安装内容已复制/);
 });
 
 test('script color selector updates pressed state and selected label', () => {

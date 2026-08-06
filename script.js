@@ -1,9 +1,22 @@
 const PURCHASE_URL = 'https://www.goofish.com/item?spm=a21ybx.personal.feeds.2.5a4e6ac2FqZlZf&id=1065574393669&categoryId=50023914';
 const DOWNLOAD_URL = 'https://github.com/Lijinzh/Communist-Manifesto-Releases';
 const GITEE_RELEASE_URL = 'https://gitee.com/shan-yujun/Communist-Manifesto-Releases';
-const AUTOCLIPBOARD_WINDOWS_VERSION = '0.3.56';
-const GITEE_WINDOWS_DOWNLOAD_URL = `https://gitee.com/shan-yujun/Communist-Manifesto-Releases/releases/download/v${AUTOCLIPBOARD_WINDOWS_VERSION}/AutoClipboardSetup-${AUTOCLIPBOARD_WINDOWS_VERSION}.exe`;
-const GITHUB_WINDOWS_DOWNLOAD_URL = `https://github.com/Lijinzh/Communist-Manifesto-Releases/releases/download/v${AUTOCLIPBOARD_WINDOWS_VERSION}/AutoClipboardSetup-${AUTOCLIPBOARD_WINDOWS_VERSION}.exe`;
+const AUTOCLIPBOARD_WINDOWS_VERSION = '0.3.64';
+const AUTOCLIPBOARD_WINDOWS_RELEASE_TAG = 'v0.3.62';
+const GITEE_WINDOWS_DOWNLOAD_URL = `https://gitee.com/shan-yujun/Communist-Manifesto-Releases/releases/download/${AUTOCLIPBOARD_WINDOWS_RELEASE_TAG}/AutoClipboardSetup-${AUTOCLIPBOARD_WINDOWS_VERSION}.exe`;
+const GITHUB_WINDOWS_DOWNLOAD_URL = `https://github.com/Lijinzh/Communist-Manifesto-Releases/releases/download/${AUTOCLIPBOARD_WINDOWS_RELEASE_TAG}/AutoClipboardSetup-${AUTOCLIPBOARD_WINDOWS_VERSION}.exe`;
+const INSTALL_COPY = {
+  'agent-prompt': `请帮我安装并使用 ZKO 苍虬一键配置：
+1. Codex 优先运行 codex plugin marketplace add https://gitee.com/shan-yujun/Communist-Manifesto-Releases.git，然后运行 codex plugin add zko-ai-coding-handle@zko-lab；如果 Gitee Git 不可用，Marketplace 改用 Lijinzh/Communist-Manifesto-Releases。
+2. 如果当前 Agent 不支持 Codex 插件，运行 npx skills add Lijinzh/Communist-Manifesto-Releases --skill ai-coding-handle --agent '*' -g -y --copy。
+3. 安装完成后调用 $ai-coding-handle，帮我安装或检查 AutoClipboard、识别苍虬 D4/V3、配置当前 Agent Hook 和按键。
+任何系统设置、驱动安装或固件写入前先向我确认。`,
+  'codex-gitee': `codex plugin marketplace add https://gitee.com/shan-yujun/Communist-Manifesto-Releases.git
+codex plugin add zko-ai-coding-handle@zko-lab`,
+  'codex-github': `codex plugin marketplace add Lijinzh/Communist-Manifesto-Releases
+codex plugin add zko-ai-coding-handle@zko-lab`,
+  'all-agents': `npx skills add Lijinzh/Communist-Manifesto-Releases --skill ai-coding-handle --agent '*' -g -y --copy`,
+};
 
 const queryAll = (selector) => document.querySelectorAll?.(selector) ?? [];
 
@@ -139,6 +152,52 @@ for (const link of queryAll('[data-windows-download-link]')) {
 
 for (const link of queryAll('[data-windows-download-fallback]')) {
   link.href = GITHUB_WINDOWS_DOWNLOAD_URL;
+}
+
+async function copyInstallText(text) {
+  if (globalThis.navigator?.clipboard?.writeText) {
+    await globalThis.navigator.clipboard.writeText(text);
+    return true;
+  }
+
+  if (!document.createElement || !document.body?.append || !document.execCommand) return false;
+  const textarea = document.createElement('textarea');
+  textarea.value = text;
+  textarea.setAttribute('readonly', '');
+  textarea.style.position = 'fixed';
+  textarea.style.opacity = '0';
+  document.body.append(textarea);
+  textarea.select();
+  const copied = document.execCommand('copy');
+  textarea.remove();
+  return copied;
+}
+
+for (const button of queryAll('[data-copy-install]')) {
+  button.addEventListener?.('click', async () => {
+    const key = button.dataset?.copyInstall;
+    const text = INSTALL_COPY[key];
+    if (!text) return;
+
+    let copied = false;
+    try {
+      copied = await copyInstallText(text);
+    } catch {
+      copied = false;
+    }
+
+    const original = button.dataset?.copyLabel || button.textContent;
+    button.dataset.copyLabel = original;
+    button.textContent = copied ? '已复制，粘贴给 Agent' : '复制失败，请手动选择命令';
+    for (const status of queryAll('[data-copy-status]')) {
+      status.textContent = copied
+        ? '安装内容已复制。打开 Codex 或其他 Agent 后直接粘贴即可。'
+        : '浏览器未允许访问剪贴板，请在下方安装页面手动复制命令。';
+    }
+    if (typeof setTimeout === 'function') {
+      setTimeout(() => { button.textContent = original; }, 3200);
+    }
+  });
 }
 
 const menuButton = document.querySelector?.('[data-menu-toggle]');

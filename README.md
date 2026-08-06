@@ -5,10 +5,11 @@
 ## 文件结构
 
 - `index.html`：页面结构、文案和购买链接的备用地址
+- `skill.html`：Codex 插件与通用 Agent Skill 的一键安装入口
 - `account.html`：CloudBase 验证码登录、钱包、充值和 AutoClipboard 授权页面
 - `account.js` / `account-config.js`：账户交互与公开的 CloudBase 环境/函数配置
 - `styles.css`：页面样式、响应式布局与动效
-- `script.js`：移动菜单、渐入增强和购买链接配置
+- `script.js`：移动菜单、渐入增强、下载地址和安装内容复制交互
 - `assets/images/`：页面图片资源
 - `assets/vendor/`：固定版本、自托管的 CloudBase Web SDK 及许可证
 - `docs/account-desktop-auth-contract.md`：网页、CloudBase 后端与桌面端的接口契约
@@ -97,7 +98,8 @@ git push
 ## 维护说明
 
 - 当前购买地址为 <https://m.tb.cn/h.802lN7o?tk=phNwgK0gm5B>。修改购买地址时，必须同时更新 `script.js` 中的 `PURCHASE_URL` 和 `index.html` 中各购买按钮的备用 `href`，保持两处一致。
-- Windows 直接下载入口默认使用 Gitee，GitHub 作为备用。发布新 Windows 安装包后，必须同时更新 `script.js` 中的 `AUTOCLIPBOARD_WINDOWS_VERSION`、三个公开页面中的备用 `href` 和 `tests/site.test.mjs` 中的版本断言；不要使用可能指向无 EXE Release 的 `latest/download`。
+- Windows 直接下载入口默认使用 Gitee，GitHub 作为备用。发布新 Windows 安装包后，必须同时更新 `script.js` 中的 `AUTOCLIPBOARD_WINDOWS_VERSION` 与 `AUTOCLIPBOARD_WINDOWS_RELEASE_TAG`、公开页面中的备用 `href` 和 `tests/site.test.mjs` 中的版本断言；Release 标签与 EXE 版本不一定相同，不要使用可能指向无 EXE Release 的 `latest/download`。
+- Codex 安装入口使用发布仓库中的 `zko-ai-coding-handle` Marketplace 插件；其他 Agent 使用同源 `ai-coding-handle` Skill。修改安装命令时必须同步检查首页、`skill.html`、复制交互和发布仓库 README。
 - 页面文案在 `index.html` 中维护，图片放在 `assets/images/`，样式在 `styles.css` 中维护。
 - 账户页公开配置只允许包含环境 ID、区域、函数名和回调协议。CloudBase 管理凭据、支付商户私钥、APIv3 key、平台证书和桌面 refresh token 禁止进入本仓库。
 - 全站右上角账户区展示头像、显示名称和用户名；账户中心把“注册账号”和“登录已有账号”明确分开。注册时一次填写邮箱、用户名和密码，邮箱验证码通过后由 CloudBase Auth 创建账户；已有用户可使用用户名密码或邮箱验证码登录。姓名与头像仍在个人资料中单独设置，业务数据库不保存密码。

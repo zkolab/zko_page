@@ -361,6 +361,50 @@ code {
   font-size: clamp(1.06rem, 1.55vw, 1.28rem);
 }
 
+.hero-skill {
+  width: min(100%, 38rem);
+  margin-top: 2.2rem;
+  padding: clamp(1.2rem, 2.4vw, 1.6rem);
+  background: linear-gradient(135deg, rgba(32, 204, 228, 0.2), rgba(255, 255, 255, 0.055));
+  border: 1px solid rgba(118, 236, 255, 0.38);
+  border-radius: 1.25rem;
+  box-shadow: 0 22px 65px rgba(0, 0, 0, 0.26);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.hero-skill > span {
+  color: #8af4ff;
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.13em;
+}
+
+.hero-skill h2 {
+  margin: 0.55rem 0 0.65rem;
+  font-size: clamp(1.65rem, 3vw, 2.35rem);
+  letter-spacing: -0.035em;
+}
+
+.hero-skill > p {
+  margin-bottom: 0;
+  color: #c2cbd2;
+  font-size: 0.9rem;
+}
+
+.hero-skill__actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.hero-skill__status {
+  margin-top: 0.85rem !important;
+  color: #98a7af !important;
+  font-size: 0.76rem !important;
+}
+
 .hero__actions,
 .inline-actions,
 .center-actions {
@@ -429,6 +473,7 @@ code {
   line-height: 1.2;
   text-align: center;
   transition: transform 180ms ease, box-shadow 180ms ease, filter 180ms ease;
+  cursor: pointer;
 }
 
 .release-button:hover {
@@ -724,7 +769,7 @@ code {
 
 .support-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 1rem;
 }
 
@@ -761,6 +806,222 @@ code {
 .support-card small {
   margin-top: auto;
   color: #757b83;
+}
+
+.support-card--featured {
+  color: #fff;
+  background: linear-gradient(145deg, #071216, #0e2730);
+  border-color: rgba(32, 204, 228, 0.35);
+}
+
+.support-card--featured span,
+.support-card--featured small {
+  color: #86eaf5;
+}
+
+/* Skill */
+.skill-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(360px, 1.05fr);
+  align-items: center;
+  gap: clamp(2rem, 7vw, 7rem);
+  min-height: calc(100svh - var(--header-height));
+  padding: clamp(5rem, 9vw, 8rem) max(1.5rem, calc((100vw - var(--content)) / 2));
+  color: #fff;
+  background: radial-gradient(circle at 76% 38%, rgba(32, 204, 228, 0.22), transparent 28%), linear-gradient(135deg, #05070b, #0d151a 62%, #050608);
+}
+
+.skill-hero h1 {
+  max-width: 10ch;
+}
+
+.skill-hero__lead {
+  max-width: 42rem;
+  color: #b8c1c8;
+  font-size: clamp(1.05rem, 1.55vw, 1.25rem);
+}
+
+.skill-hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  margin-top: 1.8rem;
+}
+
+.skill-hero__status {
+  margin-top: 1rem;
+  color: #8fa0a9;
+  font-size: 0.82rem;
+}
+
+.skill-command-panel {
+  overflow: hidden;
+  background: rgba(5, 8, 11, 0.78);
+  border: 1px solid rgba(118, 236, 255, 0.25);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-dark);
+}
+
+.skill-command-panel__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.2rem;
+  color: #aebac1;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.skill-command-panel pre,
+.install-card pre {
+  margin: 0;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.skill-command-panel pre {
+  padding: clamp(1.3rem, 3vw, 2rem);
+  color: #d8f7fa;
+  font-size: 0.83rem;
+  line-height: 1.75;
+}
+
+.skill-command-panel code,
+.install-card pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+}
+
+.skill-section {
+  padding: clamp(4.5rem, 9vw, 8rem) max(1.5rem, calc((100vw - var(--content)) / 2));
+}
+
+.skill-section--mist {
+  background: var(--mist);
+}
+
+.skill-section .section-heading p {
+  max-width: 48rem;
+}
+
+.skill-capability-grid,
+.skill-install-grid,
+.skill-safety-grid {
+  display: grid;
+  gap: 1rem;
+  margin-top: 2.5rem;
+}
+
+.skill-capability-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.skill-install-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.skill-safety-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.skill-capability-card,
+.install-card,
+.skill-safety-card {
+  padding: clamp(1.4rem, 2.5vw, 2rem);
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+}
+
+.skill-capability-card span,
+.install-card > span,
+.skill-safety-card span {
+  color: var(--cyan-deep);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+}
+
+.skill-capability-card h3,
+.install-card h3,
+.skill-safety-card h3 {
+  margin-top: 1rem;
+}
+
+.skill-capability-card p,
+.skill-safety-card p {
+  margin-bottom: 0;
+}
+
+.skill-workflow-visual {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.8fr) minmax(260px, 1.2fr);
+  align-items: center;
+  gap: clamp(2rem, 6vw, 6rem);
+  margin: clamp(3rem, 7vw, 6rem) 0 0;
+  padding: clamp(1.5rem, 4vw, 3rem);
+  color: #fff;
+  background: #080d10;
+  border-radius: var(--radius-lg);
+}
+
+.skill-workflow-visual img {
+  width: min(100%, 460px);
+  max-height: 560px;
+  margin-inline: auto;
+  object-fit: contain;
+}
+
+.skill-workflow-visual figcaption {
+  color: #c0c9cf;
+  font-size: clamp(1.25rem, 2.6vw, 2.25rem);
+  font-weight: 720;
+  line-height: 1.35;
+}
+
+.install-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.install-card pre {
+  margin: 1.1rem 0 1.4rem;
+  padding: 1rem;
+  color: #dffbff;
+  background: #0b1115;
+  border-radius: var(--radius-sm);
+  font-size: 0.78rem;
+  line-height: 1.65;
+}
+
+.install-card .button {
+  width: 100%;
+  margin-top: auto;
+}
+
+.skill-prompt-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 2rem;
+}
+
+.skill-prompt-list button {
+  padding: 0.75rem 1rem;
+  color: #064b57;
+  background: #e8fafc;
+  border: 1px solid #bdebf1;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.skill-prompt-list button:hover {
+  background: #d6f6fa;
 }
 
 .closing-cta {
@@ -2167,6 +2428,7 @@ details p {
   }
 
   .hero,
+  .skill-hero,
   .shop-hero,
   .guide-hero,
   .story-panel,
@@ -2177,6 +2439,7 @@ details p {
   }
 
   .hero--home,
+  .skill-hero,
   .shop-hero,
   .guide-hero {
     padding-bottom: 6rem;
@@ -2185,7 +2448,10 @@ details p {
 
   .hero__content h1,
   .hero__lead,
+  .hero-skill,
   .hero-release,
+  .skill-hero h1,
+  .skill-hero__lead,
   .shop-hero h1,
   .shop-hero__copy > p,
   .guide-hero h1,
@@ -2194,6 +2460,7 @@ details p {
   }
 
   .hero__actions,
+  .skill-hero__actions,
   .shop-hero__meta,
   .guide-hero .inline-actions {
     justify-content: center;
@@ -2208,6 +2475,20 @@ details p {
   .story-panel--reverse .story-panel__copy,
   .story-panel--reverse .story-panel__media {
     order: initial;
+  }
+
+  .skill-command-panel {
+    width: min(100%, 760px);
+    margin-inline: auto;
+    text-align: left;
+  }
+
+  .skill-capability-grid,
+  .skill-install-grid,
+  .skill-safety-grid,
+  .support-grid,
+  .skill-workflow-visual {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .story-panel__copy h2,
@@ -2320,7 +2601,11 @@ details p {
   .intro-strip,
   .feature-grid,
   .support-grid,
-  .mic-grid {
+  .mic-grid,
+  .skill-capability-grid,
+  .skill-install-grid,
+  .skill-safety-grid,
+  .skill-workflow-visual {
     grid-template-columns: 1fr;
   }
 
@@ -2409,6 +2694,7 @@ details p {
   }
 
   .hero--home,
+  .skill-hero,
   .shop-hero,
   .guide-hero,
   .story-panel,
@@ -2444,6 +2730,7 @@ details p {
   }
 
   .hero-release__actions,
+  .hero-skill__actions,
   .feedback-prompt-grid {
     grid-template-columns: 1fr;
   }
@@ -2484,6 +2771,7 @@ details p {
 
   .inline-actions,
   .hero__actions,
+  .skill-hero__actions,
   .center-actions {
     align-items: stretch;
     flex-direction: column;
@@ -2493,6 +2781,8 @@ details p {
   .inline-actions .text-link,
   .hero__actions .button,
   .hero__actions .text-link,
+  .skill-hero__actions .button,
+  .skill-hero__actions .text-link,
   .center-actions .button,
   .center-actions .text-link {
     width: 100%;
