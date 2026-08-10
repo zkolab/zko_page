@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="ZKO 苍虬 AI 编程手柄像素风界面预览。">
+  <meta name="theme-color" content="#302d67">
+  <meta property="og:title" content="ZKO 苍虬 · PIXEL CONTROL DECK">
+  <meta property="og:description" content="把 AI 工作流握在手里。">
+  <meta property="og:type" content="website">
+  <title>ZKO 苍虬 · 像素风界面预览</title>
+  <link rel="icon" href="assets/favicon.ico">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+  <link rel="stylesheet" href="pixel-preview.css">
+  <script src="account-config.js" defer></script>
+  <script src="script.js" defer></script>
+  <script src="pixel-preview.js" defer></script>
+</head>
+<body class="pixel-site">
+  <a class="skip-link" href="#main-content">跳到主要内容</a>
+
+  <div class="pixel-ticker" aria-hidden="true">
+    <div>ZKO CONTROL DECK // HUMAN INPUT · AGENT OUTPUT // READY PLAYER 01 // ZKO CONTROL DECK //</div>
+  </div>
+
+  <header class="pixel-header" data-header>
+    <a class="pixel-brand" href="pixel-preview.html" aria-label="ZKO 像素风预览首页">
+      <span class="pixel-brand__mark">ZKO</span>
+      <span><strong>苍虬控制台</strong><small>PIXEL PREVIEW / 2026</small></span>
+    </a>
+
+    <button class="pixel-menu" type="button" data-pixel-menu aria-expanded="false" aria-controls="pixel-nav">MENU</button>
+    <nav class="pixel-nav" id="pixel-nav" data-pixel-nav aria-label="主要导航">
+      <a href="#overview" aria-current="page">首页</a>
+      <a href="#quests">能力</a>
+      <a href="#gallery">图鉴</a>
+      <a href="guide.html">说明</a>
+      <a href="shop.html">商城</a>
+    </nav>
+
+    <a class="pixel-account" href="account.html" data-header-account>
+      <span class="pixel-account__avatar">
+        <img src="assets/favicon.svg" width="32" height="32" alt="账户头像" hidden data-header-account-image>
+        <span data-header-account-initial>Z</span>
+      </span>
+      <span><small data-header-account-eyebrow>PLAYER</small><strong data-header-account-name>登录 / 注册</strong></span>
+    </a>
+  </header>
+
+  <main id="main-content">
+    <section class="pixel-hero" id="overview" aria-labelledby="pixel-title">
+      <img class="pixel-hero__art" src="assets/images/pixel-hero.webp" alt="像素风 ZKO 苍虬 AI 编程手柄与麦克风" width="1536" height="1024" fetchpriority="high">
+      <div class="pixel-hero__shade" aria-hidden="true"></div>
+
+      <div class="pixel-hero__copy" data-pixel-reveal>
+        <p class="pixel-kicker"><span>PLAYER_01</span> ZKO AI CODING HANDLE</p>
+        <h1 id="pixel-title">把 AI 工作流<br><em>握在手里</em></h1>
+        <p class="pixel-hero__lead">实体确认、语音输入、宏键控制和 Agent 状态反馈，装进一只专为 Vibe Coding 打造的控制手柄。</p>
+
+        <div class="pixel-actions">
+          <a class="pixel-button pixel-button--primary" href="shop.html">进入装备商店</a>
+          <a class="pixel-button" href="#release-downloads">下载控制软件</a>
+        </div>
+
+        <div class="pixel-terminal" aria-label="设备状态演示">
+          <div class="pixel-terminal__top"><span>DEVICE_MONITOR.EXE</span><span class="pixel-terminal__lights"><i></i><i></i><i></i></span></div>
+          <div class="pixel-terminal__screen" aria-live="polite">
+            <p>&gt; DEVICE&nbsp;&nbsp;<strong>ONLINE</strong></p>
+            <p>&gt; MODE&nbsp;&nbsp;&nbsp;&nbsp;<strong data-mode-label>AGENT CONTROL</strong></p>
+            <p>&gt; STATUS&nbsp;&nbsp;<strong data-mode-status>WAITING FOR COMMAND</strong></p>
+            <div class="pixel-meter"><span data-mode-meter></span></div>
+          </div>
+          <div class="pixel-mode-switch" aria-label="切换状态演示">
+            <button type="button" class="is-active" data-pixel-mode="agent" aria-pressed="true">AGENT</button>
+            <button type="button" data-pixel-mode="voice" aria-pressed="false">VOICE</button>
+            <button type="button" data-pixel-mode="macro" aria-pressed="false">MACRO</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="pixel-hero__stamp" aria-hidden="true"><span>ZKO</span><strong>READY</strong><small>FOR BUILDERS</small></div>
+    </section>
+
+    <section class="pixel-stats" aria-label="产品概要">
+      <article><span class="pixel-icon">04</span><div><strong>实体宏键</strong><small>一按即达</small></div></article>
+      <article><span class="pixel-icon">AI</span><div><strong>Agent 状态</strong><small>灯环 + 小屏</small></div></article>
+      <article><span class="pixel-icon">VO</span><div><strong>语音输入</strong><small>说完即发送</small></div></article>
+      <article><span class="pixel-icon">PC</span><div><strong>跨平台</strong><small>Win / macOS / Linux</small></div></article>
+    </section>
+
+    <section class="pixel-section pixel-quests" id="quests" aria-labelledby="quests-title">
+      <header class="pixel-section__header" data-pixel-reveal>
+        <p class="pixel-kicker"><span>QUEST LOG</span> 选择你的工作方式</p>
+        <h2 id="quests-title">四项核心能力，组成你的 AI 控制台</h2>
+        <p>保留苍虬现有产品信息和入口，用更直接、更像游戏装备说明书的方式重新组织。</p>
+      </header>
+
+      <div class="pixel-quest-grid">
+        <article class="pixel-quest" data-pixel-reveal>
+          <div class="pixel-quest__badge" aria-hidden="true">A</div>
+          <div><p>QUEST 01</p><h3>按键即指令</h3><span>四枚实体宏键映射确认、取消、发送与自定义动作，减少窗口之间的反复切换。</span></div>
+          <strong>+40% FLOW</strong>
+        </article>
+        <article class="pixel-quest" data-pixel-reveal>
+          <div class="pixel-quest__badge" aria-hidden="true">V</div>
+          <div><p>QUEST 02</p><h3>语音变输入</h3><span>配合 AutoClipboard，把语音结果快速送入 Codex、Claude Code、Cursor 等工作流。</span></div>
+          <strong>VOICE READY</strong>
+        </article>
+        <article class="pixel-quest" data-pixel-reveal>
+          <div class="pixel-quest__badge" aria-hidden="true">!</div>
+          <div><p>QUEST 03</p><h3>状态可感知</h3><span>工作、等待、需要确认、完成等状态，由小屏、灯环和手柄提醒共同表达。</span></div>
+          <strong>NO MISSED PING</strong>
+        </article>
+        <article class="pixel-quest" data-pixel-reveal>
+          <div class="pixel-quest__badge" aria-hidden="true">∞</div>
+          <div><p>QUEST 04</p><h3>技能可扩展</h3><span>通过 ZKO Skill 与插件配置，把同一套实体交互接入更多编程 Agent 和个人流程。</span></div>
+          <strong>MOD FRIENDLY</strong>
+        </article>
+      </div>
+    </section>
+
+    <section class="pixel-section pixel-gallery" id="gallery" aria-labelledby="gallery-title">
+      <header class="pixel-section__header pixel-section__header--split" data-pixel-reveal>
+        <div>
+          <p class="pixel-kicker"><span>ITEM CODEX</span> 产品图鉴</p>
+          <h2 id="gallery-title">不是概念道具，是真正能工作的硬件</h2>
+        </div>
+        <p>像素 UI 负责讲故事，实拍图负责交代结构、按键和屏幕细节。</p>
+      </header>
+
+      <div class="pixel-gallery__grid">
+        <figure class="pixel-card pixel-card--large" data-pixel-reveal>
+          <div class="pixel-card__screen"><img src="assets/images/product-macros.webp" alt="苍虬手柄实体宏按键" width="1122" height="1402" loading="lazy"></div>
+          <figcaption><span>ITEM 001</span><strong>四键实体控制区</strong><small>确认 / 取消 / 发送 / 自定义</small></figcaption>
+        </figure>
+        <figure class="pixel-card" data-pixel-reveal>
+          <div class="pixel-card__screen"><img src="assets/images/product-status.webp" alt="苍虬手柄状态屏和灯环" width="1122" height="1402" loading="lazy"></div>
+          <figcaption><span>ITEM 002</span><strong>状态屏与灯环</strong><small>让 Agent 的下一步一眼可见</small></figcaption>
+        </figure>
+        <figure class="pixel-card" data-pixel-reveal>
+          <div class="pixel-card__screen"><img src="assets/images/product-workflow.webp" alt="苍虬手柄完整 AI 工作流" width="1122" height="1402" loading="lazy"></div>
+          <figcaption><span>ITEM 003</span><strong>桌面工作流套装</strong><small>硬件、软件和 Agent 串联</small></figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="pixel-section pixel-route" aria-labelledby="route-title">
+      <header class="pixel-section__header" data-pixel-reveal>
+        <p class="pixel-kicker"><span>START ROUTE</span> 三步开局</p>
+        <h2 id="route-title">装好软件，绑定动作，开始控制</h2>
+      </header>
+      <ol class="pixel-route__list">
+        <li data-pixel-reveal><span>01</span><div><strong>连接苍虬</strong><p>USB 或蓝牙连接设备，确认小屏进入待机界面。</p></div></li>
+        <li data-pixel-reveal><span>02</span><div><strong>安装 AutoClipboard</strong><p>Windows 可直接下载，macOS 与 Linux 可查看完整发布文件。</p></div></li>
+        <li data-pixel-reveal><span>03</span><div><strong>配置 Agent Skill</strong><p>让 Codex 或其他 Agent 自动检查软件、Hook 与按键映射。</p></div></li>
+      </ol>
+    </section>
+
+    <section class="pixel-download" id="release-downloads" aria-labelledby="download-title">
+      <div class="pixel-download__copy" data-pixel-reveal>
+        <p class="pixel-kicker"><span>DOWNLOAD STATION</span> AUTOCLIPBOARD v0.3.65</p>
+        <h2 id="download-title">控制软件已就绪，下一局从这里开始</h2>
+        <p>国内用户优先使用 Gitee；GitHub 提供备用下载与完整历史版本。</p>
+      </div>
+      <div class="pixel-download__actions" data-pixel-reveal>
+        <a class="pixel-button pixel-button--light" data-windows-download-link href="https://gitee.com/shan-yujun/Communist-Manifesto-Releases/releases/download/v0.3.65/AutoClipboardSetup-0.3.65.exe" target="_blank" rel="noopener noreferrer">Windows / Gitee</a>
+        <a class="pixel-button pixel-button--ghost" data-windows-download-fallback href="https://github.com/Lijinzh/Communist-Manifesto-Releases/releases/download/v0.3.65/AutoClipboardSetup-0.3.65.exe" target="_blank" rel="noopener noreferrer">GitHub 备用</a>
+        <a class="pixel-text-link" data-gitee-release-link href="https://gitee.com/shan-yujun/Communist-Manifesto-Releases" target="_blank" rel="noopener noreferrer">查看全部平台与版本 →</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="pixel-footer">
+    <div class="pixel-footer__brand"><span>ZKO</span><strong>苍虬 AI 编程手柄</strong><p>为语音编程、Vibe Coding 和 Agent 工作流打造的实体控制器。</p></div>
+    <nav aria-label="页脚导航"><a href="index.html">当前正式首页</a><a href="shop.html">商城</a><a href="guide.html">使用说明</a><a href="skill.html">AI 一键配置</a></nav>
+    <div class="pixel-footer__status"><span><i></i> PREVIEW BUILD</span><small>本页面是独立设计预览，不影响当前正式界面。</small></div>
+    <p class="pixel-footer__bottom">© 2026 ZKO 苍虬 // MADE FOR BUILDERS</p>
+  </footer>
+</body>
+</html>
