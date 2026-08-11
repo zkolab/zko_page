@@ -34,6 +34,8 @@
     <button class="pixel-menu" type="button" data-pixel-menu aria-expanded="false" aria-controls="pixel-nav">MENU</button>
     <nav class="pixel-nav" id="pixel-nav" data-pixel-nav aria-label="主要导航">
       <a href="index.html" aria-current="page">首页</a>
+      <a href="#quick-start">立即使用</a>
+      <a href="#release-downloads">下载</a>
       <a href="#quests">能力</a>
       <a href="#gallery">图鉴</a>
       <a href="guide.html">说明</a>
@@ -50,6 +52,43 @@
   </header>
 
   <main id="main-content">
+    <section class="pixel-quickstart" id="quick-start" aria-labelledby="quick-start-title" data-platform-recommendation>
+      <header class="pixel-quickstart__header">
+        <p class="pixel-kicker"><span>QUICK START</span> 打开页面，先把工具装好</p>
+        <h2 id="quick-start-title">下载、API、Skills，<br>全部放在最前面。</h2>
+        <p>优先完成最常用的操作，再继续了解苍虬。下载按钮会自动识别当前系统，国内网络默认使用 Gitee。</p>
+      </header>
+
+      <div class="pixel-quickstart__grid">
+        <article class="pixel-quick-card pixel-quick-card--download">
+          <span class="pixel-quick-card__number">01 / DOWNLOAD</span>
+          <small data-platform-recommendation-eyebrow>正在识别当前系统</small>
+          <h3>下载控制软件</h3>
+          <p data-platform-recommendation-detail>AutoClipboard · 自动推荐 Windows、macOS 或 Linux</p>
+          <a class="pixel-button pixel-button--primary" data-platform-recommendation-primary href="https://gitee.com/shan-yujun/Communist-Manifesto-Releases/releases/download/v0.3.65/AutoClipboardSetup-0.3.65.exe" download="AutoClipboardSetup-0.3.65.exe" rel="noopener noreferrer">Windows 推荐下载（Gitee）</a>
+          <a class="pixel-quick-card__link" href="#release-downloads">其他系统、备用源与历史版本 →</a>
+        </article>
+
+        <article class="pixel-quick-card pixel-quick-card--api">
+          <span class="pixel-quick-card__number">02 / API SETUP</span>
+          <small>SAFE CONFIG PROMPT</small>
+          <h3>复制 API 配置提示词</h3>
+          <p>让 Codex 帮你检查 CC-Switch、模型供应商和连接状态；真实 API Key 始终由你在本机填写。</p>
+          <button class="pixel-button" type="button" data-copy-install="api-prompt" data-copy-success="API 配置提示词已复制。打开 Codex 或其他 Agent 后直接粘贴即可。">复制 API 提示词</button>
+        </article>
+
+        <article class="pixel-quick-card pixel-quick-card--skill">
+          <span class="pixel-quick-card__number">03 / AGENT SKILL</span>
+          <small>ZKO-AI-CODING-HANDLE</small>
+          <h3>复制 Skills 安装提示词</h3>
+          <p>一句话让 Codex 安装 ZKO Skill，再检查 AutoClipboard、Hook、手柄型号和按键配置。</p>
+          <button class="pixel-button" type="button" data-copy-install="agent-prompt" data-copy-success="Skills 安装提示词已复制。打开 Codex 或其他 Agent 后直接粘贴即可。">复制 Skills 提示词</button>
+          <a class="pixel-quick-card__link" href="skill.html">查看完整安装方式 →</a>
+        </article>
+      </div>
+      <p class="pixel-quickstart__status" role="status" aria-live="polite" data-copy-status>提示词只会写入你的剪贴板，不会读取或上传任何 API Key。</p>
+    </section>
+
     <section class="pixel-hero" id="overview" aria-labelledby="pixel-title">
       <img class="pixel-hero__art" src="assets/images/pixel-hero.webp" alt="像素风 ZKO 苍虬 AI 编程手柄与麦克风" width="1536" height="1024" fetchpriority="high">
       <div class="pixel-hero__shade" aria-hidden="true"></div>
@@ -60,9 +99,9 @@
         <p class="pixel-hero__lead">实体确认、语音输入、宏键控制和 Agent 状态反馈，装进一只专为 Vibe Coding 打造的控制手柄。</p>
 
         <div class="pixel-actions">
-          <a class="pixel-button pixel-button--primary" href="shop.html">进入装备商店</a>
-          <a class="pixel-button" href="#release-downloads">下载控制软件</a>
-          <a class="pixel-button pixel-button--quiet" href="skill.html">AI 一键配置</a>
+          <a class="pixel-button pixel-button--primary" href="#quick-start">立即下载与配置</a>
+          <a class="pixel-button" href="shop.html">进入装备商店</a>
+          <a class="pixel-button pixel-button--quiet" href="skill.html">查看 Skill 详情</a>
         </div>
 
         <div class="pixel-terminal" aria-label="设备状态演示">

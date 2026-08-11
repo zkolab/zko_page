@@ -175,7 +175,7 @@ test('all pages expose a Gitee-first direct Windows download with GitHub backup'
     hasAttribute(tag, 'data-platform-recommendation-primary')
       || hasAttribute(tag, 'data-platform-recommendation-fallback'),
   );
-  assert.equal(releaseButtons.length, 2, 'homepage should expose primary and fallback download buttons');
+  assert.equal(releaseButtons.length, 3, 'homepage should expose a top-level primary download plus release primary and fallback buttons');
   assert.deepEqual(
     new Set(releaseButtons.map((tag) => attributeValue(tag, 'href'))),
     new Set([giteeWindowsDownloadUrl, githubWindowsDownloadUrl]),
@@ -681,7 +681,7 @@ test('styles define flagship layouts, responsive behavior, focus, and reduced mo
   assert.match(css, /@media\b[^{}]*\(\s*max-width\s*:/i);
   assert.match(css, /@media\b[^{}]*\(\s*prefers-reduced-motion\s*:\s*reduce\s*\)/i);
   assert.match(css, /:focus-visible[^{}]*\{[^}]*\b(?:outline|box-shadow)\s*:/i);
-  for (const selector of ['.pixel-header', '.pixel-hero', '.pixel-manifesto', '.pixel-quest-grid', '.pixel-download', '.pixel-footer']) {
+  for (const selector of ['.pixel-header', '.pixel-quickstart', '.pixel-hero', '.pixel-manifesto', '.pixel-quest-grid', '.pixel-download', '.pixel-footer']) {
     assert.match(pixelCss, new RegExp(escapeRegExp(selector)));
   }
   assert.match(pixelCss, /@media\b[^{}]*\(\s*max-width\s*:/i);
@@ -768,8 +768,16 @@ test('script defines reviewed URLs and applies the purchase destination', () => 
 test('homepage links the prominent Agent install flow and Skill page keeps it copyable', async () => {
   const home = stripHtmlComments(read('index.html'));
   const skill = stripHtmlComments(read('skill.html'));
-  assert.match(home, /AI 一键配置/);
+  assert.match(home, /下载、API、Skills/);
+  assert.match(home, /下载控制软件/);
+  assert.match(home, /data-platform-recommendation-primary/);
+  assert.match(home, /data-copy-install=["']api-prompt["']/);
+  assert.match(home, /data-copy-install=["']agent-prompt["']/);
+  assert.match(home, /复制 Skills 提示词/);
+  assert.match(home, /data-copy-status/);
   assert.match(home, /href=["']skill\.html["']/);
+  assert.match(read('script.js'), /'api-prompt'/);
+  assert.match(read('script.js'), /不要让我把真实 API Key 发到聊天里/);
   assert.match(skill, /zko-ai-coding-handle@zko-lab/);
   assert.match(skill, /--agent '\*' -g -y --copy/);
   assert.match(skill, /Gitee 国内源/);

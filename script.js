@@ -45,6 +45,12 @@ const AUTOCLIPBOARD_PLATFORM_DOWNLOADS = Object.freeze({
   },
 });
 const INSTALL_COPY = {
+  'api-prompt': `请帮我安全地配置当前电脑上的 AI API 使用环境：
+1. 先只读检查操作系统、已安装的 Codex / Claude Code / Gemini CLI / OpenCode，以及是否已经安装 CC-Switch；不要覆盖现有配置。
+2. 如果没有 CC-Switch，请只从 https://ccswitch.io 或 https://github.com/farion1231/cc-switch 的官方发布渠道指导我安装适合当前系统的版本。
+3. 询问我准备使用的模型供应商，然后依据该供应商的官方文档，指导我填写 Base URL、模型名称和 API Key，并测试连接。
+4. 不要让我把真实 API Key 发到聊天里、截图里或提交到 Git；让我在本机界面或安全凭据存储中亲自填写。
+5. 涉及覆盖配置、修改环境变量、安装软件或写入系统设置前，先说明目标和影响并向我确认。`,
   'agent-prompt': `请帮我安装并使用 ZKO 苍虬一键配置：
 1. Codex 优先运行 codex plugin marketplace add https://gitee.com/shan-yujun/Communist-Manifesto-Releases.git，然后运行 codex plugin add zko-ai-coding-handle@zko-lab；如果 Gitee Git 不可用，Marketplace 改用 Lijinzh/Communist-Manifesto-Releases。
 2. 如果当前 Agent 不支持 Codex 插件，优先运行 npx skills add https://gitee.com/shan-yujun/Communist-Manifesto-Releases.git --skill ai-coding-handle --agent '*' -g -y --copy；Gitee 不可用时再把来源换成 Lijinzh/Communist-Manifesto-Releases。
@@ -286,7 +292,7 @@ for (const button of queryAll('[data-copy-install]')) {
     button.textContent = copied ? '已复制，粘贴给 Agent' : '复制失败，请手动选择命令';
     for (const status of queryAll('[data-copy-status]')) {
       status.textContent = copied
-        ? '安装内容已复制。打开 Codex 或其他 Agent 后直接粘贴即可。'
+        ? (button.dataset?.copySuccess || '安装内容已复制。打开 Codex 或其他 Agent 后直接粘贴即可。')
         : '浏览器未允许访问剪贴板，请在下方安装页面手动复制命令。';
     }
     if (typeof setTimeout === 'function') {
