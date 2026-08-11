@@ -152,21 +152,27 @@
       </header>
       <ol class="pixel-route__list">
         <li data-pixel-reveal><span>01</span><div><strong>连接苍虬</strong><p>USB 或蓝牙连接设备，确认小屏进入待机界面。</p></div></li>
-        <li data-pixel-reveal><span>02</span><div><strong>安装 AutoClipboard</strong><p>Windows 可直接下载，macOS 与 Linux 可查看完整发布文件。</p></div></li>
+        <li data-pixel-reveal><span>02</span><div><strong>安装 AutoClipboard</strong><p>自动推荐当前系统，也可手动选择 Windows、macOS 或 Linux 安装包。</p></div></li>
         <li data-pixel-reveal><span>03</span><div><strong>配置 Agent Skill</strong><p>让 Codex 或其他 Agent 自动检查软件、Hook 与按键映射。</p></div></li>
       </ol>
     </section>
 
     <section class="pixel-download" id="release-downloads" aria-labelledby="download-title">
       <div class="pixel-download__copy" data-pixel-reveal>
-        <p class="pixel-kicker"><span>DOWNLOAD STATION</span> AUTOCLIPBOARD v0.3.65</p>
+        <p class="pixel-kicker"><span>DOWNLOAD STATION</span> AUTOCLIPBOARD / MULTI-OS</p>
         <h2 id="download-title">控制软件已就绪，下一局从这里开始</h2>
-        <p>国内用户优先使用 Gitee；GitHub 提供备用下载与完整历史版本。</p>
+        <p>自动识别 Windows、macOS 或 Linux，国内用户优先使用 Gitee；全部平台仍可手动选择。</p>
       </div>
-      <div class="pixel-download__actions" data-pixel-reveal>
-        <a class="pixel-button pixel-button--light" data-windows-download-link href="https://gitee.com/shan-yujun/Communist-Manifesto-Releases/releases/download/v0.3.65/AutoClipboardSetup-0.3.65.exe" target="_blank" rel="noopener noreferrer">Windows / Gitee</a>
-        <a class="pixel-button pixel-button--ghost" data-windows-download-fallback href="https://github.com/Lijinzh/Communist-Manifesto-Releases/releases/download/v0.3.65/AutoClipboardSetup-0.3.65.exe" target="_blank" rel="noopener noreferrer">GitHub 备用</a>
-        <a class="pixel-text-link" data-gitee-release-link href="https://gitee.com/shan-yujun/Communist-Manifesto-Releases" target="_blank" rel="noopener noreferrer">查看全部平台与版本 →</a>
+      <div class="pixel-download__actions" data-pixel-reveal data-platform-recommendation>
+        <div class="pixel-download__detected"><span data-platform-recommendation-eyebrow>SCANNING OPERATING SYSTEM...</span><strong data-platform-recommendation-title>推荐下载 Windows 版</strong><small data-platform-recommendation-detail>AutoClipboard v0.3.65 · EXE 安装包</small></div>
+        <a class="pixel-button pixel-button--light" data-platform-recommendation-primary href="https://gitee.com/shan-yujun/Communist-Manifesto-Releases/releases/download/v0.3.65/AutoClipboardSetup-0.3.65.exe" target="_blank" rel="noopener noreferrer">Windows 推荐下载（Gitee）</a>
+        <a class="pixel-button pixel-button--ghost" data-platform-recommendation-fallback href="https://github.com/Lijinzh/Communist-Manifesto-Releases/releases/download/v0.3.65/AutoClipboardSetup-0.3.65.exe" target="_blank" rel="noopener noreferrer">GitHub 备用下载</a>
+        <a class="pixel-text-link" data-gitee-release-link href="https://gitee.com/shan-yujun/Communist-Manifesto-Releases" target="_blank" rel="noopener noreferrer">打开完整 RELEASE ARCHIVE →</a>
+      </div>
+      <div class="pixel-download__platforms" aria-label="手动选择 AutoClipboard 系统版本" data-pixel-reveal>
+        <article><span>OS_01</span><strong>Windows</strong><small>v0.3.65 · EXE · 48.6 MB</small><div><a data-windows-download-link data-platform-download="windows" data-download-source="gitee" href="https://gitee.com/shan-yujun/Communist-Manifesto-Releases/releases/download/v0.3.65/AutoClipboardSetup-0.3.65.exe" target="_blank" rel="noopener noreferrer">GITEE</a><a data-windows-download-fallback data-platform-download="windows" data-download-source="github" href="https://github.com/Lijinzh/Communist-Manifesto-Releases/releases/download/v0.3.65/AutoClipboardSetup-0.3.65.exe" target="_blank" rel="noopener noreferrer">GITHUB</a></div></article>
+        <article><span>OS_02</span><strong>macOS</strong><small>v0.3.62 · 未公证 DMG 预览版 · 53.5 MB</small><div><a data-platform-download="macos" data-download-source="gitee" href="https://gitee.com/shan-yujun/Communist-Manifesto-Releases/releases/download/v0.3.62/AutoClipboard-0.3.62-macOS-unnotarized-preview.dmg" target="_blank" rel="noopener noreferrer">GITEE</a><a data-platform-download="macos" data-download-source="github" href="https://github.com/Lijinzh/Communist-Manifesto-Releases/releases/download/v0.3.62/AutoClipboard-0.3.62-macOS-unnotarized-preview.dmg" target="_blank" rel="noopener noreferrer">GITHUB</a></div></article>
+        <article><span>OS_03</span><strong>Ubuntu / Linux</strong><small>v0.3.65 · DEB x86_64 · 78.4 MB</small><div><a data-platform-download="linux" data-download-source="gitee" href="https://gitee.com/shan-yujun/Communist-Manifesto-Releases/releases/download/v0.3.65/auto-clipboard_0.3.65_amd64.deb" target="_blank" rel="noopener noreferrer">GITEE</a><a data-platform-download="linux" data-download-source="github" href="https://github.com/Lijinzh/Communist-Manifesto-Releases/releases/download/v0.3.65/auto-clipboard_0.3.65_amd64.deb" target="_blank" rel="noopener noreferrer">GITHUB</a></div></article>
       </div>
     </section>
   </main>

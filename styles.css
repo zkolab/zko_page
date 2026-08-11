@@ -442,6 +442,101 @@ code {
   gap: 0.75rem;
 }
 
+.hero-release__recommendation {
+  padding: 1rem;
+  background: linear-gradient(145deg, rgba(32, 204, 228, 0.13), rgba(255, 255, 255, 0.035));
+  border: 1px solid rgba(138, 244, 255, 0.22);
+  border-radius: 0.9rem;
+}
+
+.hero-release__recommendation-copy {
+  margin-bottom: 0.85rem;
+}
+
+.hero-release__recommendation-copy small,
+.hero-release__recommendation-copy strong {
+  display: block;
+}
+
+.hero-release__recommendation-copy small {
+  color: #86eaf5;
+  font-size: 0.7rem;
+  font-weight: 850;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.hero-release__recommendation-copy strong {
+  margin-top: 0.35rem;
+  color: #fff;
+  font-size: 1.08rem;
+}
+
+.hero-release__recommendation-copy p {
+  margin: 0.25rem 0 0;
+  color: #aeb7c2;
+  font-size: 0.76rem;
+}
+
+.hero-release__platforms {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.65rem;
+  margin-top: 0.75rem;
+}
+
+.hero-release__platforms article {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 0.8rem;
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.8rem;
+}
+
+.hero-release__platforms article > div:first-child {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.3rem;
+}
+
+.hero-release__platforms strong {
+  color: #fff;
+  font-size: 0.84rem;
+}
+
+.hero-release__platforms span {
+  color: #86eaf5;
+  font-size: 0.62rem;
+  font-weight: 800;
+}
+
+.hero-release__platforms p {
+  margin: 0.45rem 0 0.7rem;
+  color: #9fa9b3;
+  font-size: 0.68rem;
+  line-height: 1.5;
+}
+
+.hero-release__platforms article > div:last-child {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin-top: auto;
+}
+
+.hero-release__platforms a {
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-decoration: underline;
+  text-decoration-color: rgba(138, 244, 255, 0.5);
+  text-underline-offset: 0.18em;
+}
+
 .hero-release__note {
   margin: 0.8rem 0 0;
   color: #aeb7c2;
@@ -2606,6 +2701,10 @@ details p {
   .skill-install-grid,
   .skill-safety-grid,
   .skill-workflow-visual {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-release__platforms {
     grid-template-columns: 1fr;
   }
 

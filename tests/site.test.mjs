@@ -10,6 +10,15 @@ const autoClipboardWindowsVersion = '0.3.65';
 const autoClipboardWindowsReleaseTag = 'v0.3.65';
 const giteeWindowsDownloadUrl = `https://gitee.com/shan-yujun/Communist-Manifesto-Releases/releases/download/${autoClipboardWindowsReleaseTag}/AutoClipboardSetup-${autoClipboardWindowsVersion}.exe`;
 const githubWindowsDownloadUrl = `https://github.com/Lijinzh/Communist-Manifesto-Releases/releases/download/${autoClipboardWindowsReleaseTag}/AutoClipboardSetup-${autoClipboardWindowsVersion}.exe`;
+const autoClipboardLinuxVersion = '0.3.65';
+const autoClipboardLinuxReleaseTag = 'v0.3.65';
+const giteeLinuxDownloadUrl = `https://gitee.com/shan-yujun/Communist-Manifesto-Releases/releases/download/${autoClipboardLinuxReleaseTag}/auto-clipboard_${autoClipboardLinuxVersion}_amd64.deb`;
+const githubLinuxDownloadUrl = `https://github.com/Lijinzh/Communist-Manifesto-Releases/releases/download/${autoClipboardLinuxReleaseTag}/auto-clipboard_${autoClipboardLinuxVersion}_amd64.deb`;
+const autoClipboardMacosVersion = '0.3.62';
+const autoClipboardMacosReleaseTag = 'v0.3.62';
+const macosFilename = `AutoClipboard-${autoClipboardMacosVersion}-macOS-unnotarized-preview.dmg`;
+const giteeMacosDownloadUrl = `https://gitee.com/shan-yujun/Communist-Manifesto-Releases/releases/download/${autoClipboardMacosReleaseTag}/${macosFilename}`;
+const githubMacosDownloadUrl = `https://github.com/Lijinzh/Communist-Manifesto-Releases/releases/download/${autoClipboardMacosReleaseTag}/${macosFilename}`;
 const feedbackUrl = 'https://docs.qq.com/sheet/DQUFjTktqTmF0d1FG?tab=BB08J2';
 const djiMicUrl = 'https://www.dji.com/cn/mic';
 const djiMic2Url = 'https://www.dji.com/cn/mic-2';
@@ -92,10 +101,14 @@ test('required public files exist', () => {
     'account-bridge.html',
     'account-bridge.js',
     'account-config.js',
+    'pixel-preview.html',
+    'pixel-preview.css',
+    'pixel-preview.js',
     'README.md',
     'assets/favicon.ico',
     'assets/favicon.svg',
     'assets/apple-touch-icon.png',
+    'assets/images/pixel-hero.webp',
     'assets/vendor/cloudbase-3.7.1.min.js',
     'assets/vendor/cloudbase-3.7.1.min.js.LEGAL.txt',
     'assets/vendor/cloudbase-3.7.1.LICENSE.txt',
@@ -172,7 +185,7 @@ test('all pages expose a Gitee-first direct Windows download with GitHub backup'
     new Set([giteeWindowsDownloadUrl, githubWindowsDownloadUrl]),
   );
   assert.equal(attributeValue(releaseButtons[0], 'href'), giteeWindowsDownloadUrl);
-  assert.match(home, /国内用户默认使用 Gitee/);
+  assert.match(home, /Gitee 国内优先/);
 
   const guide = stripHtmlComments(read('guide.html'));
   const githubFallbacks = openingTags(guide, 'a').filter((tag) =>
@@ -181,6 +194,89 @@ test('all pages expose a Gitee-first direct Windows download with GitHub backup'
   assert.ok(githubFallbacks.length >= 1, 'guide should expose a GitHub direct-download fallback');
   for (const anchor of githubFallbacks) {
     assert.equal(attributeValue(anchor, 'href'), githubWindowsDownloadUrl);
+  }
+});
+
+test('homepage and pixel preview expose automatic recommendations plus every desktop platform', () => {
+  const expectedUrls = new Map([
+    ['windows:gitee', giteeWindowsDownloadUrl],
+    ['windows:github', githubWindowsDownloadUrl],
+    ['macos:gitee', giteeMacosDownloadUrl],
+    ['macos:github', githubMacosDownloadUrl],
+    ['linux:gitee', giteeLinuxDownloadUrl],
+    ['linux:github', githubLinuxDownloadUrl],
+  ]);
+
+  for (const page of ['index.html', 'pixel-preview.html']) {
+    const html = stripHtmlComments(read(page));
+    const anchors = openingTags(html, 'a');
+    assert.match(html, /data-platform-recommendation/);
+    assert.match(html, /data-platform-recommendation-primary/);
+    assert.match(html, /data-platform-recommendation-fallback/);
+    assert.match(html, /未公证[^<]{0,40}(?:DMG|预览版)|DMG[^<]{0,40}未公证/);
+
+    for (const [key, url] of expectedUrls) {
+      const [platform, source] = key.split(':');
+      const matching = anchors.filter((tag) =>
+        attributeValue(tag, 'data-platform-download') === platform
+        && attributeValue(tag, 'data-download-source') === source,
+      );
+      assert.ok(matching.length >= 1, `${page} should expose ${platform} ${source}`);
+      for (const anchor of matching) assert.equal(attributeValue(anchor, 'href'), url);
+    }
+  }
+});
+
+test('download recommendation detects Windows, macOS, and Linux without hiding manual choices', () => {
+  const script = read('script.js');
+  const cases = [
+    { platform: 'Win32', expectedKey: 'windows', expectedName: 'Windows', expectedUrl: giteeWindowsDownloadUrl },
+    { platform: 'MacIntel', expectedKey: 'macos', expectedName: 'macOS', expectedUrl: giteeMacosDownloadUrl },
+    { platform: 'Linux x86_64', expectedKey: 'linux', expectedName: 'Ubuntu / Linux', expectedUrl: giteeLinuxDownloadUrl },
+  ];
+
+  for (const testCase of cases) {
+    const panel = { setAttribute(name, value) { this[name] = value; } };
+    const eyebrow = { textContent: '' };
+    const title = { textContent: '' };
+    const detail = { textContent: '' };
+    const primary = { href: '', textContent: '' };
+    const fallback = { href: '', textContent: '' };
+    const selectors = new Map([
+      ['[data-platform-recommendation]', [panel]],
+      ['[data-platform-recommendation-eyebrow]', [eyebrow]],
+      ['[data-platform-recommendation-title]', [title]],
+      ['[data-platform-recommendation-detail]', [detail]],
+      ['[data-platform-recommendation-primary]', [primary]],
+      ['[data-platform-recommendation-fallback]', [fallback]],
+    ]);
+    const classList = { add() {}, remove() {}, toggle() {}, contains() { return false; } };
+    const document = {
+      documentElement: { classList },
+      querySelectorAll(selector) { return selectors.get(selector) ?? []; },
+      querySelector() { return null; },
+      addEventListener() {},
+    };
+    const context = {
+      document,
+      navigator: { platform: testCase.platform, userAgent: testCase.platform },
+      matchMedia() { return { matches: true }; },
+      addEventListener() {},
+      requestAnimationFrame(callback) { callback(); return 1; },
+      IntersectionObserver: undefined,
+      console,
+    };
+    context.window = context;
+    context.globalThis = context;
+    runInNewContext(`${script}\n;globalThis.__detectedPlatform = detectDownloadPlatform();`, context);
+
+    assert.equal(context.__detectedPlatform, testCase.expectedKey);
+    assert.equal(panel['data-detected-platform'], testCase.expectedKey);
+    assert.match(eyebrow.textContent, new RegExp(escapeRegExp(testCase.expectedName)));
+    assert.match(title.textContent, new RegExp(escapeRegExp(testCase.expectedName)));
+    assert.equal(primary.href, testCase.expectedUrl);
+    assert.match(primary.textContent, /Gitee/);
+    assert.match(fallback.href, /^https:\/\/github\.com\//);
   }
 });
 

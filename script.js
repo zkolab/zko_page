@@ -5,6 +5,42 @@ const AUTOCLIPBOARD_WINDOWS_VERSION = '0.3.65';
 const AUTOCLIPBOARD_WINDOWS_RELEASE_TAG = 'v0.3.65';
 const GITEE_WINDOWS_DOWNLOAD_URL = `https://gitee.com/shan-yujun/Communist-Manifesto-Releases/releases/download/${AUTOCLIPBOARD_WINDOWS_RELEASE_TAG}/AutoClipboardSetup-${AUTOCLIPBOARD_WINDOWS_VERSION}.exe`;
 const GITHUB_WINDOWS_DOWNLOAD_URL = `https://github.com/Lijinzh/Communist-Manifesto-Releases/releases/download/${AUTOCLIPBOARD_WINDOWS_RELEASE_TAG}/AutoClipboardSetup-${AUTOCLIPBOARD_WINDOWS_VERSION}.exe`;
+const AUTOCLIPBOARD_LINUX_VERSION = '0.3.65';
+const AUTOCLIPBOARD_LINUX_RELEASE_TAG = 'v0.3.65';
+const AUTOCLIPBOARD_LINUX_FILENAME = `auto-clipboard_${AUTOCLIPBOARD_LINUX_VERSION}_amd64.deb`;
+const GITEE_LINUX_DOWNLOAD_URL = `https://gitee.com/shan-yujun/Communist-Manifesto-Releases/releases/download/${AUTOCLIPBOARD_LINUX_RELEASE_TAG}/${AUTOCLIPBOARD_LINUX_FILENAME}`;
+const GITHUB_LINUX_DOWNLOAD_URL = `https://github.com/Lijinzh/Communist-Manifesto-Releases/releases/download/${AUTOCLIPBOARD_LINUX_RELEASE_TAG}/${AUTOCLIPBOARD_LINUX_FILENAME}`;
+const AUTOCLIPBOARD_MACOS_VERSION = '0.3.62';
+const AUTOCLIPBOARD_MACOS_RELEASE_TAG = 'v0.3.62';
+const AUTOCLIPBOARD_MACOS_FILENAME = `AutoClipboard-${AUTOCLIPBOARD_MACOS_VERSION}-macOS-unnotarized-preview.dmg`;
+const GITEE_MACOS_DOWNLOAD_URL = `https://gitee.com/shan-yujun/Communist-Manifesto-Releases/releases/download/${AUTOCLIPBOARD_MACOS_RELEASE_TAG}/${AUTOCLIPBOARD_MACOS_FILENAME}`;
+const GITHUB_MACOS_DOWNLOAD_URL = `https://github.com/Lijinzh/Communist-Manifesto-Releases/releases/download/${AUTOCLIPBOARD_MACOS_RELEASE_TAG}/${AUTOCLIPBOARD_MACOS_FILENAME}`;
+const AUTOCLIPBOARD_PLATFORM_DOWNLOADS = Object.freeze({
+  windows: {
+    name: 'Windows',
+    version: AUTOCLIPBOARD_WINDOWS_VERSION,
+    format: 'EXE 安装包',
+    detail: 'Windows 10 / 11 · 约 48.6 MB',
+    gitee: GITEE_WINDOWS_DOWNLOAD_URL,
+    github: GITHUB_WINDOWS_DOWNLOAD_URL,
+  },
+  macos: {
+    name: 'macOS',
+    version: AUTOCLIPBOARD_MACOS_VERSION,
+    format: 'DMG 未公证预览版',
+    detail: 'macOS 预览版 · 约 53.5 MB',
+    gitee: GITEE_MACOS_DOWNLOAD_URL,
+    github: GITHUB_MACOS_DOWNLOAD_URL,
+  },
+  linux: {
+    name: 'Ubuntu / Linux',
+    version: AUTOCLIPBOARD_LINUX_VERSION,
+    format: 'DEB x86_64',
+    detail: 'Ubuntu / Debian x86_64 · 约 78.4 MB',
+    gitee: GITEE_LINUX_DOWNLOAD_URL,
+    github: GITHUB_LINUX_DOWNLOAD_URL,
+  },
+});
 const INSTALL_COPY = {
   'agent-prompt': `请帮我安装并使用 ZKO 苍虬一键配置：
 1. Codex 优先运行 codex plugin marketplace add https://gitee.com/shan-yujun/Communist-Manifesto-Releases.git，然后运行 codex plugin add zko-ai-coding-handle@zko-lab；如果 Gitee Git 不可用，Marketplace 改用 Lijinzh/Communist-Manifesto-Releases。
@@ -19,6 +55,47 @@ codex plugin add zko-ai-coding-handle@zko-lab`,
 };
 
 const queryAll = (selector) => document.querySelectorAll?.(selector) ?? [];
+
+function detectDownloadPlatform(navigatorObject = globalThis.navigator ?? {}) {
+  const platform = [
+    navigatorObject.userAgentData?.platform,
+    navigatorObject.platform,
+    navigatorObject.userAgent,
+  ].filter(Boolean).join(' ').toLowerCase();
+
+  if (/iphone|ipad|ipod|android/.test(platform)) return 'other';
+  if (/macintosh|macintel|macppc|mac68k|mac os/.test(platform)) return 'macos';
+  if (/windows|win32|win64|wow64/.test(platform)) return 'windows';
+  if (!/android/.test(platform) && /linux|x11/.test(platform)) return 'linux';
+  return 'other';
+}
+
+function renderPlatformRecommendation() {
+  const detectedPlatform = detectDownloadPlatform();
+  const recommendedPlatform = detectedPlatform === 'other' ? 'windows' : detectedPlatform;
+  const download = AUTOCLIPBOARD_PLATFORM_DOWNLOADS[recommendedPlatform];
+
+  for (const panel of queryAll('[data-platform-recommendation]')) {
+    panel.setAttribute?.('data-detected-platform', detectedPlatform);
+  }
+  for (const element of queryAll('[data-platform-recommendation-eyebrow]')) {
+    element.textContent = detectedPlatform === 'other' ? '未识别当前系统 · 显示常用版本' : `已识别 ${download.name}`;
+  }
+  for (const element of queryAll('[data-platform-recommendation-title]')) {
+    element.textContent = `推荐下载 ${download.name} 版`;
+  }
+  for (const element of queryAll('[data-platform-recommendation-detail]')) {
+    element.textContent = `AutoClipboard v${download.version} · ${download.format} · ${download.detail}`;
+  }
+  for (const link of queryAll('[data-platform-recommendation-primary]')) {
+    link.href = download.gitee;
+    link.textContent = `${download.name} 推荐下载（Gitee）`;
+  }
+  for (const link of queryAll('[data-platform-recommendation-fallback]')) {
+    link.href = download.github;
+    link.textContent = 'GitHub 备用下载';
+  }
+}
 
 const ACCOUNT_PROFILE_KEY = 'zko.account.profile.v1';
 const ACCOUNT_PROFILE_TTL_MS = 50 * 60 * 1000;
@@ -153,6 +230,15 @@ for (const link of queryAll('[data-windows-download-link]')) {
 for (const link of queryAll('[data-windows-download-fallback]')) {
   link.href = GITHUB_WINDOWS_DOWNLOAD_URL;
 }
+
+for (const link of queryAll('[data-platform-download]')) {
+  const platform = link.dataset?.platformDownload;
+  const source = link.dataset?.downloadSource;
+  const download = AUTOCLIPBOARD_PLATFORM_DOWNLOADS[platform];
+  if (download?.[source]) link.href = download[source];
+}
+
+renderPlatformRecommendation();
 
 async function copyInstallText(text) {
   if (globalThis.navigator?.clipboard?.writeText) {
