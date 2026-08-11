@@ -1,6 +1,7 @@
 globalThis.ZKO_ACCOUNT_CONFIG = Object.freeze({
   websiteUrl: 'https://zkolab.com/',
   hostedAccountUrl: 'https://zkolab-dev-d8gzrr41k9b933d9e-1462162031.tcloudbaseapp.com/account.html',
+  hostedAccountVersion: '20260812-account-pixel',
   hostedBridgeUrl: 'https://zkolab-dev-d8gzrr41k9b933d9e-1462162031.tcloudbaseapp.com/account-bridge.html',
   cloudbase: Object.freeze({
     envId: 'zkolab-dev-d8gzrr41k9b933d9e',

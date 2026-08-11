@@ -6,6 +6,7 @@
   if (config?.hostedAccountUrl && websiteHosts.has(location.hostname)) {
     const destination = new URL(config.hostedAccountUrl);
     destination.search = location.search;
+    if (config.hostedAccountVersion) destination.searchParams.set('v', config.hostedAccountVersion);
     destination.hash = location.hash;
     location.replace(destination.toString());
     return;
