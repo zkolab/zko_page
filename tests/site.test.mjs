@@ -484,6 +484,21 @@ test('homepage presents flagship product storytelling', () => {
   assert.match(html, /old-page\.html/);
 });
 
+test('current public surfaces use the ZKO 字库 brand name', () => {
+  const currentFiles = [
+    ...allPublicPageFiles,
+    ...buyerPageFiles,
+    'pixel-preview.html',
+    'script.js',
+    'assets/favicon.svg',
+  ];
+  const combined = currentFiles.map((file) => read(file)).join('\n');
+  assert.match(combined, /ZKO 字库/);
+  assert.match(read('index.html'), /字库控制台/);
+  assert.match(read('script.js'), /ZKO 字库一键配置/);
+  assert.doesNotMatch(combined, /苍虬|苍穹/);
+});
+
 test('shared account header uses the pixel favicon when no custom avatar exists', () => {
   const script = read('script.js');
   assert.match(script, /assets\/favicon-pixel\.png\?v=20260811-pixel/);
@@ -493,7 +508,7 @@ test('shared account header uses the pixel favicon when no custom avatar exists'
 
 test('classic homepage remains available as a separate archived page', () => {
   const html = stripHtmlComments(read('old-page.html'));
-  assert.match(html, /<title>苍虬 ZKO · 经典版主页<\/title>/);
+  assert.match(html, /<title>字库 ZKO · 经典版主页<\/title>/);
   assert.match(html, /href=["']index\.html["'][^>]*>像素主页<\/a>/);
   assert.match(html, /href=["']old-page\.html["'][^>]*aria-current=["']page["']/);
   for (const id of ['overview', 'macros', 'status', 'software', 'compatibility', 'support']) {
@@ -1012,7 +1027,7 @@ test('voice guide covers only the approved OpenLess and Typeless products', () =
     '第一次语音转文字',
     '麦克风权限',
     '快捷键冲突',
-    '苍虬手柄',
+    '字库手柄',
     'AutoClipboard',
   ]) assert.match(html, new RegExp(escapeRegExp(phrase)));
   assert.doesNotMatch(html, /Openiless/);
