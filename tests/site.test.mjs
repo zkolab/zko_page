@@ -355,6 +355,29 @@ test('pages have unique titles, main landmarks, and skip links', () => {
   assert.equal(new Set(titles).size, allPublicPageFiles.length, 'page titles should be unique');
 });
 
+test('account, guide, and AI configuration routes use the shared pixel theme', () => {
+  const themedPages = [
+    ['account.html', '账户'],
+    ['guide.html', '使用说明'],
+    ['skill.html', 'AI 一键配置'],
+  ];
+
+  for (const [page, currentLabel] of themedPages) {
+    const html = stripHtmlComments(read(page));
+    assert.match(html, /<body\b[^>]*class="[^"]*pixel-site[^"]*pixel-subpage[^"]*"/i);
+    assert.match(html, /<link\b[^>]*href="pixel-preview\.css\?v=20260812-subpages"[^>]*>/i);
+    assert.match(html, /<script\b[^>]*src="pixel-preview\.js\?v=20260812-subpages"[^>]*>/i);
+    assert.match(html, /<header\b[^>]*class="pixel-header"/i);
+    assert.match(html, /<footer\b[^>]*class="pixel-footer"/i);
+    assert.match(html, new RegExp(`<a\\b[^>]*aria-current="page"[^>]*>${escapeRegExp(currentLabel)}<\\/a>|<a\\b[^>]*aria-current="page"[^>]*data-header-account`, 'i'));
+  }
+
+  const home = stripHtmlComments(read('index.html'));
+  assert.match(home, /href="guide\.html"[^>]*>说明<\/a>/i);
+  assert.match(home, /href="skill\.html"/i);
+  assert.match(home, /href="account\.html"/i);
+});
+
 test('account page exposes complete registration, email and username login, profile settings, billing, and desktop authorization', () => {
   const html = stripHtmlComments(read('account.html'));
   const source = `${html}\n${read('account.js')}`;
