@@ -1,14 +1,17 @@
 # 苍虬 AI 编程手柄
 
-苍虬 AI 编程手柄的静态产品落地页，用于部署到 GitHub Pages。项目不需要构建步骤，浏览器可直接加载页面文件。
+苍虬 AI 编程手柄的静态产品落地页，源代码托管在 GitHub，并通过 EdgeOne Pages 发布到 `zkolab.com`。项目不需要构建步骤，浏览器可直接加载页面文件。
 
 ## 文件结构
 
-- `index.html`：页面结构、文案和购买链接的备用地址
+- `index.html`：正式像素风主页、产品叙事与多平台下载入口
+- `old-page.html`：改版前的普通风格主页存档
+- `pixel-preview.html`：旧像素预览网址兼容跳转，自动转到正式主页
 - `skill.html`：Codex 插件与通用 Agent Skill 的一键安装入口
 - `account.html`：CloudBase 验证码登录、钱包、充值和 AutoClipboard 授权页面
 - `account.js` / `account-config.js`：账户交互与公开的 CloudBase 环境/函数配置
-- `styles.css`：页面样式、响应式布局与动效
+- `pixel-preview.css` / `pixel-preview.js`：正式像素主页的视觉系统、响应式布局与交互
+- `styles.css`：经典版主页及其他标准页面的样式、响应式布局与动效
 - `script.js`：移动菜单、渐入增强、下载地址和安装内容复制交互
 - `assets/images/`：页面图片资源
 - `assets/vendor/`：固定版本、自托管的 CloudBase Web SDK 及许可证
@@ -45,9 +48,9 @@ node --test tests/site.test.mjs
 
 运行后，当前测试应全部通过。
 
-## 部署到 GitHub Pages
+## 源代码与页面部署
 
-以下步骤从当前本地仓库开始：
+源代码推送到 GitHub 的 `main` 分支后，由已绑定的 EdgeOne Pages 项目发布到 `zkolab.com`。以下 GitHub Pages 步骤仅供迁移或备用部署参考：
 
 1. 在 GitHub 新建一个空的公开仓库，不要初始化 README、License 或 `.gitignore`。
 2. 在改动分支名前，先查看当前分支和工作区状态：
@@ -97,10 +100,10 @@ git push
 
 ## 维护说明
 
-- 当前购买地址为 <https://m.tb.cn/h.802lN7o?tk=phNwgK0gm5B>。修改购买地址时，必须同时更新 `script.js` 中的 `PURCHASE_URL` 和 `index.html` 中各购买按钮的备用 `href`，保持两处一致。
-- `index.html` 与 `pixel-preview.html` 会根据浏览器报告的平台推荐 Windows、macOS 或 Linux，同时始终展示三个系统的手动下载入口。最新版安装包链接使用同页附件下载（不打开 Gitee / GitHub 新页面），完整 Release / 历史版本链接仍保留为新窗口跳转。所有下载地址集中在 `script.js` 的 `AUTOCLIPBOARD_PLATFORM_DOWNLOADS`；Gitee 为国内主链接，GitHub 为备用。每次发布都必须按准确文件名核对 Release 资产、状态码和大小，不能假设三个平台使用相同版本或同一个 Release 标签。当前 macOS 为明确标注的未公证预览版。
+- 当前购买地址为 <https://www.goofish.com/item?id=1065574393669>。修改购买地址时，必须同时更新 `script.js` 中的 `PURCHASE_URL` 和页面中各购买按钮的备用 `href`，保持两处一致。
+- `index.html` 会根据浏览器报告的平台推荐 Windows、macOS 或 Linux，同时始终展示三个系统的手动下载入口；`pixel-preview.html` 仅保留为旧网址兼容跳转。最新版安装包链接使用同页附件下载（不打开 Gitee / GitHub 新页面），完整 Release / 历史版本链接仍保留为新窗口跳转。所有下载地址集中在 `script.js` 的 `AUTOCLIPBOARD_PLATFORM_DOWNLOADS`；Gitee 为国内主链接，GitHub 为备用。每次发布都必须按准确文件名核对 Release 资产、状态码和大小，不能假设三个平台使用相同版本或同一个 Release 标签。当前 macOS 为明确标注的未公证预览版。
 - Codex 安装入口使用发布仓库中的 `zko-ai-coding-handle` Marketplace 插件；其他 Agent 使用同源 `ai-coding-handle` Skill。修改安装命令时必须同步检查首页、`skill.html`、复制交互和发布仓库 README。
-- 页面文案在 `index.html` 中维护，图片放在 `assets/images/`，样式在 `styles.css` 中维护。
+- 正式主页文案在 `index.html` 中维护，像素样式在 `pixel-preview.css` 中维护；经典版保存在 `old-page.html`，仍使用 `styles.css`。图片统一放在 `assets/images/`。
 - 账户页公开配置只允许包含环境 ID、区域、函数名和回调协议。CloudBase 管理凭据、支付商户私钥、APIv3 key、平台证书和桌面 refresh token 禁止进入本仓库。
 - 全站右上角账户区展示头像、显示名称和用户名；账户中心把“注册账号”和“登录已有账号”明确分开。注册时一次填写邮箱、用户名和密码，邮箱验证码通过后由 CloudBase Auth 创建账户；已有用户可使用用户名密码或邮箱验证码登录。姓名与头像仍在个人资料中单独设置，业务数据库不保存密码。
 - `account-bridge.html` 只向 `zkolab.com` / `www.zkolab.com` 返回不含邮箱和 Token 的显示资料，用于跨域同步右上角登录状态；账户写操作仍只在 CloudBase 托管账户页执行。

@@ -26,7 +26,7 @@ const djiMicUrl = 'https://www.dji.com/cn/mic';
 const djiMic2Url = 'https://www.dji.com/cn/mic-2';
 const officialDriverUrl = 'https://www.wch.cn/downloads/CH343SER_EXE.html';
 const pageFiles = ['index.html', 'shop.html', 'guide.html', 'skill.html'];
-const allPublicPageFiles = [...pageFiles, 'account.html'];
+const allPublicPageFiles = [...pageFiles, 'account.html', 'old-page.html'];
 const buyerKitDir = 'buyer-kit-7q4m9x2k6p8n3r5v';
 const buyerPageFiles = [
   `${buyerKitDir}/index.html`,
@@ -134,24 +134,17 @@ test('all pages expose the shared ZKO favicon', () => {
   }
 });
 
-test('all pages expose the shared navigation and reviewed destinations', () => {
-  const sharedLinks = [
-    ['产品', 'index.html'],
-    ['商城', 'shop.html'],
-    ['使用说明', 'guide.html'],
-    ['AI 一键配置', 'skill.html'],
-    ['账户', 'account.html'],
-  ];
+test('all pages expose the shared navigation destinations', () => {
+  const sharedHrefs = ['index.html', 'shop.html', 'guide.html', 'skill.html', 'account.html'];
 
   for (const page of allPublicPageFiles) {
     const html = stripHtmlComments(read(page));
     const anchors = openingTags(html, 'a');
 
-    for (const [label, href] of sharedLinks) {
-      assert.match(
-        html,
-        new RegExp(`<a\\b[^>]*href=["']${escapeRegExp(href)}["'][^>]*>${label}<\\/a>`, 'i'),
-        `${page} should link ${label} to ${href}`,
+    for (const href of sharedHrefs) {
+      assert.ok(
+        anchors.some((tag) => attributeValue(tag, 'href') === href),
+        `${page} should link to ${href}`,
       );
     }
 
@@ -179,7 +172,8 @@ test('all pages expose a Gitee-first direct Windows download with GitHub backup'
   const home = stripHtmlComments(read('index.html'));
   assert.match(home, /id=["']release-downloads["']/);
   const releaseButtons = openingTags(home, 'a').filter((tag) =>
-    /(?:^|\s)release-button(?:\s|$)/.test(attributeValue(tag, 'class') ?? ''),
+    hasAttribute(tag, 'data-platform-recommendation-primary')
+      || hasAttribute(tag, 'data-platform-recommendation-fallback'),
   );
   assert.equal(releaseButtons.length, 2, 'homepage should expose primary and fallback download buttons');
   assert.deepEqual(
@@ -187,7 +181,7 @@ test('all pages expose a Gitee-first direct Windows download with GitHub backup'
     new Set([giteeWindowsDownloadUrl, githubWindowsDownloadUrl]),
   );
   assert.equal(attributeValue(releaseButtons[0], 'href'), giteeWindowsDownloadUrl);
-  assert.match(home, /Gitee 国内优先/);
+  assert.match(home, /国内用户优先使用 Gitee/);
 
   const guide = stripHtmlComments(read('guide.html'));
   const githubFallbacks = openingTags(guide, 'a').filter((tag) =>
@@ -199,7 +193,7 @@ test('all pages expose a Gitee-first direct Windows download with GitHub backup'
   }
 });
 
-test('homepage and pixel preview expose automatic recommendations plus every desktop platform', () => {
+test('homepage exposes automatic recommendations plus every desktop platform', () => {
   const expectedDownloads = new Map([
     ['windows:gitee', { url: giteeWindowsDownloadUrl, filename: windowsFilename }],
     ['windows:github', { url: githubWindowsDownloadUrl, filename: windowsFilename }],
@@ -209,7 +203,7 @@ test('homepage and pixel preview expose automatic recommendations plus every des
     ['linux:github', { url: githubLinuxDownloadUrl, filename: linuxFilename }],
   ]);
 
-  for (const page of ['index.html', 'pixel-preview.html']) {
+  for (const page of ['index.html']) {
     const html = stripHtmlComments(read(page));
     const anchors = openingTags(html, 'a');
     assert.match(html, /data-platform-recommendation/);
@@ -243,6 +237,10 @@ test('homepage and pixel preview expose automatic recommendations plus every des
     assert.equal(attributeValue(archive, 'target'), '_blank');
     assert.equal(attributeValue(archive, 'download'), undefined);
   }
+
+  const legacyPreview = read('pixel-preview.html');
+  assert.match(legacyPreview, /location\.replace\(`index\.html\$\{location\.search\}\$\{location\.hash\}`\)/);
+  assert.match(legacyPreview, /rel="canonical" href="https:\/\/zkolab\.com\/"/);
 });
 
 test('download recommendation detects Windows, macOS, and Linux without hiding manual choices', () => {
@@ -347,7 +345,7 @@ test('pages have unique titles, main landmarks, and skip links', () => {
     titles.push(title);
     assert.match(html, /<main\b[^>]*id="main-content"/i);
     assert.match(html, /<a\b[^>]*class="skip-link"[^>]*href="#main-content"/i);
-    assert.match(html, /<footer\b[^>]*class="site-footer"/i);
+    assert.match(html, /<footer\b[^>]*class="(?:site-footer|pixel-footer)"/i);
   }
   assert.equal(new Set(titles).size, allPublicPageFiles.length, 'page titles should be unique');
 });
@@ -467,16 +465,30 @@ test('vendored CloudBase SDK is local, pinned, and carries license notices', () 
 
 test('homepage presents flagship product storytelling', () => {
   const html = stripHtmlComments(read('index.html'));
-  for (const id of ['overview', 'macros', 'status', 'software', 'compatibility', 'support']) {
+  for (const id of ['overview', 'manifesto-title', 'quests', 'gallery', 'release-downloads']) {
     assert.match(html, new RegExp(`id=["']${id}["']`), `homepage should expose #${id}`);
   }
   assert.match(html, /把 AI 工作流握在手里/);
-  assert.match(html, /4 枚实体宏键/);
+  assert.match(html, /AI, MADE PHYSICAL/);
+  assert.match(html, /四枚实体宏键/);
   assert.match(html, /Agent 状态/);
-  assert.match(html, /大疆麦克风仅作为适配与使用场景展示，不包含在包装内/);
-  assert.match(html, /product-hero\.webp/);
+  assert.match(html, /AutoClipboard/);
+  assert.match(html, /pixel-hero\.webp/);
   assert.match(html, /product-macros\.webp/);
   assert.match(html, /product-status\.webp/);
+  assert.match(html, /old-page\.html/);
+});
+
+test('classic homepage remains available as a separate archived page', () => {
+  const html = stripHtmlComments(read('old-page.html'));
+  assert.match(html, /<title>苍虬 ZKO · 经典版主页<\/title>/);
+  assert.match(html, /href=["']index\.html["'][^>]*>像素主页<\/a>/);
+  assert.match(html, /href=["']old-page\.html["'][^>]*aria-current=["']page["']/);
+  for (const id of ['overview', 'macros', 'status', 'software', 'compatibility', 'support']) {
+    assert.match(html, new RegExp(`id=["']${id}["']`), `classic homepage should preserve #${id}`);
+  }
+  assert.match(html, /product-hero\.webp/);
+  assert.match(html, /software-main\.webp/);
 });
 
 test('shop presents preorder colors and reviewed microphone compatibility', () => {
@@ -618,7 +630,7 @@ test('authorized product and guide images are local and web optimized', () => {
 });
 
 test('numbered software screenshots use the approved files and dimensions', () => {
-  const pageHtml = pageFiles.map((page) => stripHtmlComments(read(page))).join('\n');
+  const pageHtml = [...pageFiles, 'old-page.html'].map((page) => stripHtmlComments(read(page))).join('\n');
 
   for (const [src, expected] of replacementImages) {
     assert.equal(statSync(fileUrl(src)).size, expected.bytes, `${src} should match the approved file`);
@@ -662,12 +674,18 @@ test('pages do not copy DJI-hosted media or brand assets', () => {
 
 test('styles define flagship layouts, responsive behavior, focus, and reduced motion', () => {
   const css = read('styles.css').replace(/\/\*[^]*?\*\//g, '');
+  const pixelCss = read('pixel-preview.css').replace(/\/\*[^]*?\*\//g, '');
   for (const selector of ['.global-header', '.hero', '.skill-hero', '.story-panel', '.product-gallery', '.guide-layout', '.site-footer']) {
     assert.match(css, new RegExp(escapeRegExp(selector)));
   }
   assert.match(css, /@media\b[^{}]*\(\s*max-width\s*:/i);
   assert.match(css, /@media\b[^{}]*\(\s*prefers-reduced-motion\s*:\s*reduce\s*\)/i);
   assert.match(css, /:focus-visible[^{}]*\{[^}]*\b(?:outline|box-shadow)\s*:/i);
+  for (const selector of ['.pixel-header', '.pixel-hero', '.pixel-manifesto', '.pixel-quest-grid', '.pixel-download', '.pixel-footer']) {
+    assert.match(pixelCss, new RegExp(escapeRegExp(selector)));
+  }
+  assert.match(pixelCss, /@media\b[^{}]*\(\s*max-width\s*:/i);
+  assert.match(pixelCss, /@media\b[^{}]*\(\s*prefers-reduced-motion\s*:\s*reduce\s*\)/i);
 });
 
 test('script defines reviewed URLs and applies the purchase destination', () => {
@@ -747,11 +765,11 @@ test('script defines reviewed URLs and applies the purchase destination', () => 
   assert.equal(githubWindowsLinks[0].target, undefined);
 });
 
-test('homepage and Skill page make the Agent install flow prominent and copyable', async () => {
+test('homepage links the prominent Agent install flow and Skill page keeps it copyable', async () => {
   const home = stripHtmlComments(read('index.html'));
   const skill = stripHtmlComments(read('skill.html'));
-  assert.match(home, /一句话，把苍虬配置好/);
-  assert.match(home, /data-copy-install=["']agent-prompt["']/);
+  assert.match(home, /AI 一键配置/);
+  assert.match(home, /href=["']skill\.html["']/);
   assert.match(skill, /zko-ai-coding-handle@zko-lab/);
   assert.match(skill, /--agent '\*' -g -y --copy/);
   assert.match(skill, /Gitee 国内源/);
