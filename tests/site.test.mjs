@@ -109,6 +109,7 @@ test('required public files exist', () => {
     'README.md',
     'assets/favicon.ico',
     'assets/favicon.svg',
+    'assets/favicon-pixel.png',
     'assets/apple-touch-icon.png',
     'assets/images/pixel-hero.webp',
     'assets/vendor/cloudbase-3.7.1.min.js',
@@ -121,17 +122,21 @@ test('required public files exist', () => {
 test('all pages expose the shared ZKO favicon', () => {
   for (const page of allPublicPageFiles) {
     const html = read(page);
-    assert.match(html, /<link\s+rel="icon"\s+href="assets\/favicon\.ico">/i);
-    assert.match(html, /<link\s+rel="icon"\s+href="assets\/favicon\.svg"\s+type="image\/svg\+xml">/i);
-    assert.match(html, /<link\s+rel="apple-touch-icon"\s+href="assets\/apple-touch-icon\.png">/i);
+    assert.match(html, /<link\s+rel="icon"\s+href="assets\/favicon\.ico(?:\?[^" ]+)?">/i);
+    assert.match(html, /<link\s+rel="icon"\s+href="assets\/favicon\.svg(?:\?[^" ]+)?"\s+type="image\/svg\+xml">/i);
+    assert.match(html, /<link\s+rel="apple-touch-icon"\s+href="assets\/apple-touch-icon\.png(?:\?[^" ]+)?">/i);
   }
 
   for (const page of buyerPageFiles) {
     const html = read(page);
-    assert.match(html, /<link\s+rel="icon"\s+href="\.\.\/assets\/favicon\.ico">/i);
-    assert.match(html, /<link\s+rel="icon"\s+href="\.\.\/assets\/favicon\.svg"\s+type="image\/svg\+xml">/i);
-    assert.match(html, /<link\s+rel="apple-touch-icon"\s+href="\.\.\/assets\/apple-touch-icon\.png">/i);
+    assert.match(html, /<link\s+rel="icon"\s+href="\.\.\/assets\/favicon\.ico(?:\?[^" ]+)?">/i);
+    assert.match(html, /<link\s+rel="icon"\s+href="\.\.\/assets\/favicon\.svg(?:\?[^" ]+)?"\s+type="image\/svg\+xml">/i);
+    assert.match(html, /<link\s+rel="apple-touch-icon"\s+href="\.\.\/assets\/apple-touch-icon\.png(?:\?[^" ]+)?">/i);
   }
+
+  const favicon = read('assets/favicon.svg');
+  assert.match(favicon, /shape-rendering="crispEdges"/);
+  for (const color of ['#292756', '#fff8e8', '#ed7a3a', '#73cfc0']) assert.match(favicon, new RegExp(color, 'i'));
 });
 
 test('all pages expose the shared navigation destinations', () => {
@@ -477,6 +482,13 @@ test('homepage presents flagship product storytelling', () => {
   assert.match(html, /product-macros\.webp/);
   assert.match(html, /product-status\.webp/);
   assert.match(html, /old-page\.html/);
+});
+
+test('shared account header uses the pixel favicon when no custom avatar exists', () => {
+  const script = read('script.js');
+  assert.match(script, /assets\/favicon-pixel\.png\?v=20260811-pixel/);
+  assert.match(script, /image\.dataset\.defaultAvatar/);
+  assert.match(script, /image\.src = value\.avatarUrl \|\| defaultAvatarUrl/);
 });
 
 test('classic homepage remains available as a separate archived page', () => {

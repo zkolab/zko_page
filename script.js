@@ -165,12 +165,13 @@ function renderHeaderAccount(value = {}) {
     if (eyebrow) eyebrow.textContent = signedIn && value.username ? `@${value.username}` : 'ZKO ACCOUNT';
     if (initialElement) {
       initialElement.textContent = initial;
-      initialElement.hidden = Boolean(value.avatarUrl);
+      initialElement.hidden = Boolean(value.avatarUrl || image?.getAttribute?.('src'));
     }
     if (image) {
-      image.hidden = !value.avatarUrl;
-      if (value.avatarUrl) image.src = value.avatarUrl;
-      else image.removeAttribute?.('src');
+      const defaultAvatarUrl = image.dataset?.defaultAvatar || image.getAttribute?.('src') || 'assets/favicon-pixel.png?v=20260811-pixel';
+      image.dataset.defaultAvatar = defaultAvatarUrl;
+      image.hidden = false;
+      image.src = value.avatarUrl || defaultAvatarUrl;
     }
   }
 }
