@@ -1,8 +1,8 @@
 const PURCHASE_URL = 'https://www.goofish.com/item?spm=a21ybx.personal.feeds.2.5a4e6ac2FqZlZf&id=1065574393669&categoryId=50023914';
 const DOWNLOAD_URL = 'https://github.com/Lijinzh/Communist-Manifesto-Releases';
 const GITEE_RELEASE_URL = 'https://gitee.com/shan-yujun/Communist-Manifesto-Releases';
-const AUTOCLIPBOARD_WINDOWS_VERSION = '0.3.65';
-const AUTOCLIPBOARD_WINDOWS_RELEASE_TAG = 'v0.3.65';
+const AUTOCLIPBOARD_WINDOWS_VERSION = '0.3.67';
+const AUTOCLIPBOARD_WINDOWS_RELEASE_TAG = 'v0.3.67';
 const GITEE_WINDOWS_DOWNLOAD_URL = `https://gitee.com/shan-yujun/Communist-Manifesto-Releases/releases/download/${AUTOCLIPBOARD_WINDOWS_RELEASE_TAG}/AutoClipboardSetup-${AUTOCLIPBOARD_WINDOWS_VERSION}.exe`;
 const GITHUB_WINDOWS_DOWNLOAD_URL = `https://github.com/Lijinzh/Communist-Manifesto-Releases/releases/download/${AUTOCLIPBOARD_WINDOWS_RELEASE_TAG}/AutoClipboardSetup-${AUTOCLIPBOARD_WINDOWS_VERSION}.exe`;
 const AUTOCLIPBOARD_LINUX_VERSION = '0.3.65';
@@ -21,7 +21,7 @@ const AUTOCLIPBOARD_PLATFORM_DOWNLOADS = Object.freeze({
     version: AUTOCLIPBOARD_WINDOWS_VERSION,
     filename: `AutoClipboardSetup-${AUTOCLIPBOARD_WINDOWS_VERSION}.exe`,
     format: 'EXE 安装包',
-    detail: 'Windows 10 / 11 · 约 48.6 MB',
+    detail: 'Windows 10 / 11 · 约 48.3 MB',
     gitee: GITEE_WINDOWS_DOWNLOAD_URL,
     github: GITHUB_WINDOWS_DOWNLOAD_URL,
   },

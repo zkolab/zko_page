@@ -292,6 +292,9 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .pixel-download { display: grid; grid-template-columns: 1.2fr .8fr; gap: 56px; align-items: center; padding: clamp(78px, 9vw, 124px) max(22px, calc((100vw - var(--max)) / 2)); color: var(--paper-light); background: var(--ink); border-top: 4px solid var(--orange); border-bottom: 4px solid var(--mint); }
 .pixel-download .pixel-kicker { color: var(--mint-light); }
 .pixel-download .pixel-kicker span { color: var(--ink); background: var(--mint); box-shadow-color: var(--orange); }
+.pixel-download__identity { display: flex; align-items: center; gap: 22px; margin-bottom: 20px; }
+.pixel-download__identity .pixel-kicker { margin: 0; }
+.pixel-download__app-icon { width: clamp(88px, 10vw, 132px); height: auto; flex: 0 0 auto; image-rendering: pixelated; filter: drop-shadow(6px 6px 0 #090b24); }
 .pixel-download__copy > p:last-child { color: var(--mint-light); }
 .pixel-download__actions { display: flex; flex-direction: column; align-items: stretch; gap: 14px; }
 .pixel-download__detected { padding: 19px; background: rgba(198, 255, 211, .07); border: 2px solid var(--mint); box-shadow: 4px 4px 0 #090b24; }
@@ -395,6 +398,8 @@ button, a { -webkit-tap-highlight-color: transparent; }
   .pixel-card--large .pixel-card__screen { aspect-ratio: 4 / 5; }
   .pixel-route__list li::after { top: auto; right: 20px; bottom: -21px; content: "VV"; }
   .pixel-download { padding: 68px 18px; }
+  .pixel-download__identity { align-items: flex-start; gap: 14px; }
+  .pixel-download__app-icon { width: 82px; }
   .pixel-footer { grid-template-columns: 1fr; padding: 48px 18px 24px; }
 }
 

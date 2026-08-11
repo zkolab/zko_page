@@ -6,8 +6,8 @@ import { runInNewContext } from 'node:vm';
 const purchaseUrl = 'https://www.goofish.com/item?spm=a21ybx.personal.feeds.2.5a4e6ac2FqZlZf&id=1065574393669&categoryId=50023914';
 const downloadUrl = 'https://github.com/Lijinzh/Communist-Manifesto-Releases';
 const giteeReleaseUrl = 'https://gitee.com/shan-yujun/Communist-Manifesto-Releases';
-const autoClipboardWindowsVersion = '0.3.65';
-const autoClipboardWindowsReleaseTag = 'v0.3.65';
+const autoClipboardWindowsVersion = '0.3.67';
+const autoClipboardWindowsReleaseTag = 'v0.3.67';
 const windowsFilename = `AutoClipboardSetup-${autoClipboardWindowsVersion}.exe`;
 const giteeWindowsDownloadUrl = `https://gitee.com/shan-yujun/Communist-Manifesto-Releases/releases/download/${autoClipboardWindowsReleaseTag}/AutoClipboardSetup-${autoClipboardWindowsVersion}.exe`;
 const githubWindowsDownloadUrl = `https://github.com/Lijinzh/Communist-Manifesto-Releases/releases/download/${autoClipboardWindowsReleaseTag}/AutoClipboardSetup-${autoClipboardWindowsVersion}.exe`;
@@ -113,6 +113,7 @@ test('required public files exist', () => {
     'assets/favicon.svg',
     'assets/favicon-pixel.png',
     'assets/apple-touch-icon.png',
+    'assets/autoclipboard-icon.png',
     'assets/images/pixel-hero.webp',
     'assets/vendor/cloudbase-3.7.1.min.js',
     'assets/vendor/cloudbase-3.7.1.min.js.LEGAL.txt',
@@ -139,6 +140,12 @@ test('all pages expose the shared ZKO favicon', () => {
   const favicon = read('assets/favicon.svg');
   assert.match(favicon, /shape-rendering="crispEdges"/);
   for (const color of ['#292756', '#fff8e8', '#ed7a3a', '#73cfc0']) assert.match(favicon, new RegExp(color, 'i'));
+});
+
+test('home download station shows the current AutoClipboard app icon', () => {
+  const html = read('index.html');
+  assert.match(html, /<img[^>]+class="pixel-download__app-icon"[^>]+src="assets\/autoclipboard-icon\.png\?v=20260812-rgb8"/i);
+  assert.ok(statSync(fileUrl('assets/autoclipboard-icon.png')).size > 5_000);
 });
 
 test('all pages expose the shared navigation destinations', () => {
