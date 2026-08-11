@@ -163,7 +163,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
   isolation: isolate;
   border-bottom: 2px solid var(--ink);
 }
-.pixel-hero__art { position: absolute; inset: 0; z-index: -3; width: 100%; height: 100%; object-fit: cover; object-position: center; image-rendering: pixelated; }
+.pixel-hero__art { position: absolute; inset: 0; z-index: -3; width: 100%; height: 100%; object-fit: cover; object-position: center top; image-rendering: auto; }
 .pixel-hero__shade { position: absolute; inset: 0; z-index: -2; background: linear-gradient(90deg, rgba(255, 248, 232, .98) 0%, rgba(255, 248, 232, .92) 34%, rgba(255, 248, 232, .15) 66%, rgba(255, 248, 232, .04) 100%); }
 .pixel-hero__shade::after { position: absolute; inset: 0; content: ""; background: linear-gradient(transparent 95%, rgba(41, 39, 86, .12) 95%); background-size: 100% 5px; opacity: .28; }
 .pixel-hero__copy { width: min(720px, calc(100% - 40px)); margin-left: max(22px, calc((100vw - var(--max)) / 2)); padding: clamp(82px, 8vw, 126px) 0 82px; }
@@ -338,7 +338,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
   .pixel-nav a { padding: 12px; border-bottom: 1px dashed var(--line); }
   .pixel-account { justify-self: end; }
   .pixel-hero { min-height: 760px; }
-  .pixel-hero__art { object-position: 60% center; }
+  .pixel-hero__art { object-position: 60% top; }
   .pixel-hero__shade { background: linear-gradient(90deg, rgba(255, 248, 232, .98) 0%, rgba(255, 248, 232, .91) 47%, rgba(255, 248, 232, .2) 78%); }
   .pixel-hero__copy { width: min(620px, calc(100% - 44px)); }
   .pixel-hero__stamp { display: none; }
@@ -369,7 +369,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
   .pixel-quick-card { min-height: 0; padding: 21px; }
   .pixel-quick-card > small { margin-top: 17px; }
   .pixel-hero { min-height: auto; padding-bottom: 360px; background: var(--paper-light); }
-  .pixel-hero__art { inset: auto 0 0; height: 390px; object-position: 64% bottom; }
+  .pixel-hero__art { inset: auto 0 0; height: 390px; object-position: 100% bottom; transform: scale(1.08); transform-origin: center bottom; }
   .pixel-hero__shade { background: linear-gradient(180deg, var(--paper-light) 0%, rgba(255,248,232,.94) 48%, rgba(255,248,232,.1) 76%); }
   .pixel-hero__copy { width: auto; margin: 0; padding: 60px 20px 20px; }
   .pixel-hero h1 { font-size: clamp(48px, 15vw, 72px); }
