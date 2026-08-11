@@ -1096,3 +1096,50 @@ test('buyer guide assets provide responsive focus-safe progressive enhancement',
   assert.match(script, /navigator\.clipboard/);
   assert.match(script, /复制成功/);
 });
+
+test('Tennis Video Helper page puts the fixed Windows installer in the first viewport', () => {
+  const html = stripHtmlComments(read('tennis-video-helper.html'));
+  const installerUrl = 'https://github.com/Lijinzh/TennisVideoHelper/releases/download/v0.1.0/TennisVideoHelper-Setup-0.1.0.exe';
+  const heroEnd = html.indexOf('</section>');
+  assert.ok(heroEnd > 0);
+  assert.match(html.slice(0, heroEnd), /data-tv-download/);
+  assert.match(html.slice(0, heroEnd), new RegExp(escapeRegExp(installerUrl)));
+  assert.match(html, /当前安装包位于私有 GitHub Release/);
+  assert.match(html, /156\.2 MiB/);
+  assert.match(html, /1D5101A6F1341D1AF6BAEC17A15FBBB68A94895EB0E1F2ABEF40FAD85D255B37/);
+  assert.match(html, /当前安装包没有数字签名/);
+});
+
+test('Tennis Video Helper page covers features, settings, progress, installation, and local UI assets', () => {
+  const html = stripHtmlComments(read('tennis-video-helper.html'));
+  for (const id of ['overview', 'features', 'settings', 'progress', 'install']) {
+    assert.match(html, new RegExp(`id=["']${id}["']`));
+  }
+  for (const phrase of ['声音', '人体骨架', '球拍检测', '击球时间线', '覆盖同名旧结果', '研发进度', 'SmartScreen']) {
+    assert.match(html, new RegExp(escapeRegExp(phrase)));
+  }
+  for (const asset of [
+    'assets/images/tennis-video-helper/app-icon.png',
+    'assets/images/tennis-video-helper/app-review.webp',
+    'assets/images/tennis-video-helper/app-settings.webp',
+    'tennis-video-helper.css',
+    'tennis-video-helper.js',
+  ]) requireFile(asset);
+  assert.ok(statSync(fileUrl('assets/images/tennis-video-helper/app-review.webp')).size > 50_000);
+  assert.ok(statSync(fileUrl('assets/images/tennis-video-helper/app-settings.webp')).size > 50_000);
+  assert.doesNotMatch(html, /C:\\Users\\admin/i);
+  assert.match(read('index.html'), /href="tennis-video-helper\.html"/);
+});
+
+test('Tennis Video Helper pixel theme is responsive and its release metadata is centralized', () => {
+  const css = read('tennis-video-helper.css').replace(/\/\*[^]*?\*\//g, '');
+  for (const selector of ['.tennis-hero', '.tennis-signal-strip', '.tennis-feature-row', '.tennis-settings-section', '.tennis-timeline', '.tennis-install-section']) {
+    assert.match(css, new RegExp(escapeRegExp(selector)));
+  }
+  assert.match(css, /@media\b[^{}]*\(\s*max-width\s*:/i);
+  assert.match(css, /@media\b[^{}]*\(\s*prefers-reduced-motion\s*:\s*reduce\s*\)/i);
+  const script = read('tennis-video-helper.js');
+  assert.match(script, /TennisVideoHelper-Setup-0\.1\.0\.exe/);
+  assert.match(script, /navigator\.clipboard\.writeText/);
+  assert.match(script, /data-tv-download/);
+});
