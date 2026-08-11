@@ -365,7 +365,7 @@ test('account, guide, and AI configuration routes use the shared pixel theme', (
   for (const [page, currentLabel] of themedPages) {
     const html = stripHtmlComments(read(page));
     assert.match(html, /<body\b[^>]*class="[^"]*pixel-site[^"]*pixel-subpage[^"]*"/i);
-    assert.match(html, /<link\b[^>]*href="pixel-preview\.css\?v=20260812-subpages"[^>]*>/i);
+    assert.match(html, /<link\b[^>]*href="pixel-preview\.css\?v=20260812-subpages-v2"[^>]*>/i);
     assert.match(html, /<script\b[^>]*src="pixel-preview\.js\?v=20260812-subpages"[^>]*>/i);
     assert.match(html, /<header\b[^>]*class="pixel-header"/i);
     assert.match(html, /<footer\b[^>]*class="pixel-footer"/i);
