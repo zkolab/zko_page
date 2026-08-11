@@ -3,43 +3,44 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="登录或注册 ZKO 苍虬账户，管理头像和个人资料，并安全同步登录 AutoClipboard。">
-  <meta name="theme-color" content="#0a0b0d">
-  <title>账户中心 · ZKO 苍虬</title>
+  <meta name="description" content="登录或注册 ZKO 字库账户，管理头像和个人资料，并安全同步登录 AutoClipboard。">
+  <meta name="theme-color" content="#292756">
+  <title>账户中心 · ZKO 字库</title>
   <link rel="icon" href="assets/favicon.ico?v=20260811-pixel">
-  <link rel="icon" href="assets/favicon.svg?v=20260811-pixel" type="image/svg+xml">
+  <link rel="icon" href="assets/favicon.svg?v=20260812-ziku" type="image/svg+xml">
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=20260811-pixel">
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="pixel-preview.css?v=20260812-subpages-v2">
   <script src="assets/vendor/cloudbase-3.7.1.min.js" defer></script>
-  <script src="account-config.js" defer></script>
-  <script src="script.js?v=20260811-pixel" defer></script>
-  <script src="account.js" defer></script>
+  <script src="account-config.js?v=20260812-account-pixel" defer></script>
+  <script src="script.js?v=20260812-ziku" defer></script>
+  <script src="pixel-preview.js?v=20260812-subpages" defer></script>
+  <script src="account.js?v=20260812-account-pixel" defer></script>
 </head>
-<body class="page page--account">
+<body class="pixel-site pixel-subpage page page--account">
   <a class="skip-link" href="#main-content">跳到主要内容</a>
 
-  <header class="global-header" data-header>
-    <div class="global-header__inner">
-      <a class="brand" href="index.html" aria-label="苍虬首页" data-public-site-link="index.html"><span class="brand__mark">ZKO</span><small>苍虬 · AI 编程手柄</small></a>
-      <button class="menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-controls="global-nav">菜单</button>
-      <nav class="global-nav" id="global-nav" data-global-nav aria-label="主要导航">
-        <a href="index.html" data-public-site-link="index.html">产品</a>
-        <a href="shop.html" data-public-site-link="shop.html">商城</a>
-        <a href="guide.html" data-public-site-link="guide.html">使用说明</a>
-        <a href="skill.html" data-public-site-link="skill.html">AI 一键配置</a>
-        <a href="index.html#release-downloads" data-public-site-link="index.html#release-downloads">软件下载</a>
-        <a href="account.html" aria-current="page">账户</a>
-      </nav>
-      <div class="global-header__actions">
-        <a class="button button--header" data-purchase-link href="https://www.goofish.com/item?spm=a21ybx.personal.feeds.2.5a4e6ac2FqZlZf&amp;id=1065574393669&amp;categoryId=50023914" target="_blank" rel="noopener noreferrer">立即购买</a>
-        <div class="header-account" data-header-account>
-          <a class="header-account__trigger" href="account.html" aria-label="打开账户中心" data-header-account-trigger>
-            <span class="header-account__avatar" aria-hidden="true"><img src="assets/favicon-pixel.png?v=20260811-pixel" width="36" height="36" alt="账户头像" hidden data-header-account-image><span data-header-account-initial>Z</span></span>
-            <span class="header-account__copy"><small data-header-account-eyebrow>ZKO ACCOUNT</small><strong data-header-account-name>登录 / 注册</strong></span>
-          </a>
-        </div>
-      </div>
-    </div>
+  <div class="pixel-ticker" aria-hidden="true">
+    <div>ZKO ACCOUNT TERMINAL // PLAYER ACCESS · SECURE SYNC // READY PLAYER 01 // ZKO ACCOUNT TERMINAL //</div>
+  </div>
+
+  <header class="pixel-header" data-header>
+    <a class="pixel-brand" href="index.html" aria-label="ZKO 字库首页" data-public-site-link="index.html">
+      <span class="pixel-brand__mark">ZKO</span>
+      <span><strong>字库控制台</strong><small>CONTROL DECK / 2026</small></span>
+    </a>
+    <button class="pixel-menu" type="button" data-pixel-menu aria-expanded="false" aria-controls="pixel-nav">MENU</button>
+    <nav class="pixel-nav" id="pixel-nav" data-pixel-nav aria-label="主要导航">
+      <a href="index.html" data-public-site-link="index.html">首页</a>
+      <a href="guide.html" data-public-site-link="guide.html">使用说明</a>
+      <a href="skill.html" data-public-site-link="skill.html">AI 一键配置</a>
+      <a href="index.html#release-downloads" data-public-site-link="index.html#release-downloads">下载</a>
+      <a href="shop.html" data-public-site-link="shop.html">商城</a>
+    </nav>
+    <a class="pixel-account" href="account.html" aria-current="page" data-header-account>
+      <span class="pixel-account__avatar"><img src="assets/favicon-pixel.png?v=20260811-pixel" width="32" height="32" alt="账户头像" hidden data-header-account-image><span data-header-account-initial>Z</span></span>
+      <span><small data-header-account-eyebrow>PLAYER</small><strong data-header-account-name>登录 / 注册</strong></span>
+    </a>
   </header>
 
   <main id="main-content" class="account-main">
@@ -223,12 +224,11 @@
     </section>
   </main>
 
-  <footer class="site-footer">
-    <div class="site-footer__lead"><strong>ZKO 苍虬</strong><p>为 AI 编程、语音输入和 Agent 工作流打造的实体控制手柄。</p></div>
-    <div><h2>产品</h2><a href="skill.html" data-public-site-link="skill.html">AI 一键配置</a><a href="index.html#macros" data-public-site-link="index.html#macros">实体宏键</a><a href="index.html#status" data-public-site-link="index.html#status">状态反馈</a><a href="index.html#software" data-public-site-link="index.html#software">AutoClipboard</a></div>
-    <div><h2>账户与购买</h2><a href="account.html">账户中心</a><a href="shop.html" data-public-site-link="shop.html">在线商城</a><a data-purchase-link href="https://www.goofish.com/item?spm=a21ybx.personal.feeds.2.5a4e6ac2FqZlZf&amp;id=1065574393669&amp;categoryId=50023914" target="_blank" rel="noopener noreferrer">闲鱼商品页</a></div>
-    <div><h2>使用支持</h2><a href="guide.html#quick-start" data-public-site-link="guide.html#quick-start">首次使用</a><a href="guide.html#bluetooth" data-public-site-link="guide.html#bluetooth">蓝牙连接</a><a href="guide.html#troubleshooting" data-public-site-link="guide.html#troubleshooting">常见问题</a></div>
-    <div class="site-footer__bottom"><span>© 2026 ZKO 苍虬</span><span>账户、充值与桌面端授权以 CloudBase 后端实际部署状态为准。</span></div>
+  <footer class="pixel-footer">
+    <div class="pixel-footer__brand"><span>ZKO</span><strong>字库 AI 编程手柄</strong><p>一个像素账户，连接网页资料、余额和 AutoClipboard。</p></div>
+    <nav aria-label="页脚导航"><a href="index.html" data-public-site-link="index.html">像素主页</a><a href="guide.html" data-public-site-link="guide.html">使用说明</a><a href="skill.html" data-public-site-link="skill.html">AI 一键配置</a><a href="shop.html" data-public-site-link="shop.html">商城</a><a data-purchase-link href="https://www.goofish.com/item?spm=a21ybx.personal.feeds.2.5a4e6ac2FqZlZf&amp;id=1065574393669&amp;categoryId=50023914" target="_blank" rel="noopener noreferrer">前往闲鱼购买</a></nav>
+    <div class="pixel-footer__status"><span><i></i> ACCOUNT SYSTEM</span><small>公开内容无需登录；账户功能以 CloudBase 后端实际状态为准。</small></div>
+    <p class="pixel-footer__bottom">© 2026 ZKO 字库 // PLAYER DATA SECURED</p>
   </footer>
 </body>
 </html>

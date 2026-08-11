@@ -3,42 +3,48 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="苍虬 AI 编程手柄新手使用说明：Windows、Ubuntu 与 macOS 安装，蓝牙配对、三台电脑切换、宏键、AutoClipboard 与故障排查。">
-  <meta name="theme-color" content="#0a0b0d">
-  <title>使用说明 · 苍虬 ZKO AI 编程手柄</title>
+  <meta name="description" content="字库 AI 编程手柄新手使用说明：Windows、Ubuntu 与 macOS 安装，蓝牙配对、三台电脑切换、宏键、AutoClipboard 与故障排查。">
+  <meta name="theme-color" content="#292756">
+  <title>使用说明 · 字库 ZKO AI 编程手柄</title>
   <link rel="icon" href="assets/favicon.ico?v=20260811-pixel">
-  <link rel="icon" href="assets/favicon.svg?v=20260811-pixel" type="image/svg+xml">
+  <link rel="icon" href="assets/favicon.svg?v=20260812-ziku" type="image/svg+xml">
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=20260811-pixel">
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="pixel-preview.css?v=20260812-subpages-v2">
   <script src="account-config.js" defer></script>
-  <script src="script.js?v=20260811-pixel" defer></script>
+  <script src="script.js?v=20260812-ziku" defer></script>
+  <script src="pixel-preview.js?v=20260812-subpages" defer></script>
 </head>
-<body class="page page--guide">
+<body class="pixel-site pixel-subpage page page--guide">
   <a class="skip-link" href="#main-content">跳到主要内容</a>
 
-  <header class="global-header" data-header>
-    <div class="global-header__inner">
-      <a class="brand" href="index.html" aria-label="苍虬首页"><span class="brand__mark">ZKO</span><small>苍虬 · AI 编程手柄</small></a>
-      <button class="menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-controls="global-nav">菜单</button>
-      <nav class="global-nav" id="global-nav" data-global-nav aria-label="主要导航">
-        <a href="index.html">产品</a>
-        <a href="shop.html">商城</a>
-        <a href="guide.html" aria-current="page">使用说明</a>
-        <a href="skill.html">AI 一键配置</a>
-        <a href="index.html#release-downloads">软件下载</a>
-        <a href="account.html">账户</a>
-      </nav>
-      <div class="global-header__actions">
-        <a class="button button--header" data-purchase-link href="https://www.goofish.com/item?spm=a21ybx.personal.feeds.2.5a4e6ac2FqZlZf&amp;id=1065574393669&amp;categoryId=50023914" target="_blank" rel="noopener noreferrer">立即购买</a>
-        <div class="header-account" data-header-account><a class="header-account__trigger" href="account.html" aria-label="打开账户中心" data-header-account-trigger><span class="header-account__avatar" aria-hidden="true"><img src="assets/favicon-pixel.png?v=20260811-pixel" width="36" height="36" alt="账户头像" hidden data-header-account-image><span data-header-account-initial>Z</span></span><span class="header-account__copy"><small data-header-account-eyebrow>ZKO ACCOUNT</small><strong data-header-account-name>登录 / 注册</strong></span></a></div>
-      </div>
-    </div>
+  <div class="pixel-ticker" aria-hidden="true">
+    <div>ZKO PLAYER MANUAL // CONNECT · CONFIGURE · CREATE // GUIDE MODE ONLINE // ZKO PLAYER MANUAL //</div>
+  </div>
+
+  <header class="pixel-header" data-header>
+    <a class="pixel-brand" href="index.html" aria-label="ZKO 字库首页">
+      <span class="pixel-brand__mark">ZKO</span>
+      <span><strong>字库控制台</strong><small>CONTROL DECK / 2026</small></span>
+    </a>
+    <button class="pixel-menu" type="button" data-pixel-menu aria-expanded="false" aria-controls="pixel-nav">MENU</button>
+    <nav class="pixel-nav" id="pixel-nav" data-pixel-nav aria-label="主要导航">
+      <a href="index.html">首页</a>
+      <a href="guide.html" aria-current="page">使用说明</a>
+      <a href="skill.html">AI 一键配置</a>
+      <a href="index.html#release-downloads">下载</a>
+      <a href="shop.html">商城</a>
+    </nav>
+    <a class="pixel-account" href="account.html" data-header-account>
+      <span class="pixel-account__avatar"><img src="assets/favicon-pixel.png?v=20260811-pixel" width="32" height="32" alt="账户头像" hidden data-header-account-image><span data-header-account-initial>Z</span></span>
+      <span><small data-header-account-eyebrow>PLAYER</small><strong data-header-account-name>登录 / 注册</strong></span>
+    </a>
   </header>
 
   <main id="main-content">
     <section class="guide-hero" aria-labelledby="guide-title">
       <div data-reveal><p class="kicker">BEGINNER GUIDE</p><h1 id="guide-title">第一次使用，从这里开始</h1><p>先选对安装包，再完成蓝牙配对，最后在纯文本输入框里测试一次宏键。Windows 和 Ubuntu 已成熟测试；macOS 已提供安装包，目前仍在测试中。</p><div class="inline-actions"><a class="button" href="skill.html">让 Codex 一键配置</a><a class="text-link" data-windows-download-link href="https://gitee.com/shan-yujun/Communist-Manifesto-Releases/releases/download/v0.3.65/AutoClipboardSetup-0.3.65.exe" download="AutoClipboardSetup-0.3.65.exe" rel="noopener noreferrer">Windows 直接下载（Gitee）</a><a class="text-link" data-windows-download-fallback href="https://github.com/Lijinzh/Communist-Manifesto-Releases/releases/download/v0.3.65/AutoClipboardSetup-0.3.65.exe" download="AutoClipboardSetup-0.3.65.exe" rel="noopener noreferrer">GitHub 备用下载</a><a class="text-link" href="#platforms">其他系统安装包</a></div></div>
-      <figure data-reveal><img src="assets/images/hero.webp" alt="苍虬 AI 编程手柄使用说明产品概览" width="1122" height="1402" loading="eager" fetchpriority="high"></figure>
+      <figure data-reveal><img src="assets/images/hero.webp" alt="字库 AI 编程手柄使用说明产品概览" width="1122" height="1402" loading="eager" fetchpriority="high"></figure>
     </section>
 
     <div class="guide-layout">
@@ -128,7 +134,7 @@
           <p class="kicker">CONTROLS</p>
           <h2>波轮与小屏操作</h2>
           <p>波轮用于切换 Profile 和移动菜单，中键用于确认、进入设置或返回；小屏会同步显示当前 Profile、蓝牙状态和菜单提示。</p>
-          <figure class="guide-figure" data-source-figure="21.png"><img src="assets/images/guide-hardware.jpg" alt="苍虬手柄 USB Type-C 接口、开关、波轮和中键标注" width="1672" height="941" loading="lazy"><figcaption>波轮与中键位于手柄背面；配合小屏提示完成 Profile 切换和 Settings 操作。</figcaption></figure>
+          <figure class="guide-figure" data-source-figure="21.png"><img src="assets/images/guide-hardware.jpg" alt="字库手柄 USB Type-C 接口、开关、波轮和中键标注" width="1672" height="941" loading="lazy"><figcaption>波轮与中键位于手柄背面；配合小屏提示完成 Profile 切换和 Settings 操作。</figcaption></figure>
           <div class="guide-table-wrap"><table><thead><tr><th>操作</th><th>平时看到主界面时</th><th>进入 Settings 后</th></tr></thead><tbody><tr><td>向上或向下拨动</td><td>切换 Profile</td><td>移动选项或调整数值</td></tr><tr><td>单击中键</td><td>打开 Profile 绑定的应用、快捷方式或网页</td><td>进入项目、开始编辑、确认或保存</td></tr><tr><td>双击中键</td><td>进入 Settings</td><td>通常不需要</td></tr><tr><td>长按中键</td><td>也可以进入 Settings</td><td>取消、返回上一页或退出</td></tr></tbody></table></div>
           <p class="notice">不要尝试按住中键同时拨动波轮；机械结构不支持这种组合动作。</p>
           <h3>默认 Vibe Coding Profile 的四枚宏按键</h3>
@@ -166,12 +172,11 @@
     </div>
   </main>
 
-  <footer class="site-footer">
-    <div class="site-footer__lead"><strong>ZKO 苍虬</strong><p>先连接，再配置，最后把 AI 工作流变成肌肉记忆。</p></div>
-    <div><h2>产品</h2><a href="index.html">产品首页</a><a href="shop.html">商城</a><a href="index.html#software">AutoClipboard</a></div>
-    <div><h2>购买与下载</h2><a href="skill.html">AI 一键配置</a><a data-purchase-link href="https://www.goofish.com/item?spm=a21ybx.personal.feeds.2.5a4e6ac2FqZlZf&amp;id=1065574393669&amp;categoryId=50023914" target="_blank" rel="noopener noreferrer">闲鱼商品页</a><a data-windows-download-link href="https://gitee.com/shan-yujun/Communist-Manifesto-Releases/releases/download/v0.3.65/AutoClipboardSetup-0.3.65.exe" download="AutoClipboardSetup-0.3.65.exe" rel="noopener noreferrer">Windows 直接下载</a><a data-gitee-release-link href="https://gitee.com/shan-yujun/Communist-Manifesto-Releases" target="_blank" rel="noopener noreferrer">Gitee 全部版本</a><a data-download-link href="https://github.com/Lijinzh/Communist-Manifesto-Releases" target="_blank" rel="noopener noreferrer">GitHub 发布仓库</a><a href="https://www.wch.cn/downloads/CH343SER_EXE.html" target="_blank" rel="noopener noreferrer">Windows CH343 官方驱动</a></div>
-    <div><h2>使用支持</h2><a href="account.html">账户中心</a><a href="#platforms">选择系统</a><a href="#quick-start">首次使用</a><a href="#bluetooth">蓝牙连接</a><a href="#troubleshooting">遇到问题</a></div>
-    <div class="site-footer__bottom"><span>© 2026 ZKO 苍虬</span><span>本页为快速说明，完整信息以正式发布仓库为准。</span></div>
+  <footer class="pixel-footer">
+    <div class="pixel-footer__brand"><span>ZKO</span><strong>字库玩家说明书</strong><p>先连接，再配置，最后把 AI 工作流变成肌肉记忆。</p></div>
+    <nav aria-label="页脚导航"><a href="index.html">像素主页</a><a href="skill.html">AI 一键配置</a><a href="#quick-start">首次使用</a><a href="#troubleshooting">遇到问题</a></nav>
+    <div class="pixel-footer__status"><span><i></i> GUIDE MODE ONLINE</span><small>完整系统说明、驱动与固件维护仍以正式发布仓库为准。</small></div>
+    <p class="pixel-footer__bottom">© 2026 ZKO 字库 // PLAYER MANUAL</p>
   </footer>
 </body>
 </html>

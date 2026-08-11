@@ -51,10 +51,10 @@ const INSTALL_COPY = {
 3. 询问我准备使用的模型供应商，然后依据该供应商的官方文档，指导我填写 Base URL、模型名称和 API Key，并测试连接。
 4. 不要让我把真实 API Key 发到聊天里、截图里或提交到 Git；让我在本机界面或安全凭据存储中亲自填写。
 5. 涉及覆盖配置、修改环境变量、安装软件或写入系统设置前，先说明目标和影响并向我确认。`,
-  'agent-prompt': `请帮我安装并使用 ZKO 苍虬一键配置：
+  'agent-prompt': `请帮我安装并使用 ZKO 字库一键配置：
 1. Codex 优先运行 codex plugin marketplace add https://gitee.com/shan-yujun/Communist-Manifesto-Releases.git，然后运行 codex plugin add zko-ai-coding-handle@zko-lab；如果 Gitee Git 不可用，Marketplace 改用 Lijinzh/Communist-Manifesto-Releases。
 2. 如果当前 Agent 不支持 Codex 插件，优先运行 npx skills add https://gitee.com/shan-yujun/Communist-Manifesto-Releases.git --skill ai-coding-handle --agent '*' -g -y --copy；Gitee 不可用时再把来源换成 Lijinzh/Communist-Manifesto-Releases。
-3. 安装完成后调用 $ai-coding-handle，帮我安装或检查 AutoClipboard、识别苍虬 D4/V3、配置当前 Agent Hook 和按键。
+3. 安装完成后调用 $ai-coding-handle，帮我安装或检查 AutoClipboard、识别字库 D4/V3、配置当前 Agent Hook 和按键。
 任何系统设置、驱动安装或固件写入前先向我确认。`,
   'codex-gitee': `codex plugin marketplace add https://gitee.com/shan-yujun/Communist-Manifesto-Releases.git
 codex plugin add zko-ai-coding-handle@zko-lab`,

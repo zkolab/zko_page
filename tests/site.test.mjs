@@ -357,6 +357,29 @@ test('pages have unique titles, main landmarks, and skip links', () => {
   assert.equal(new Set(titles).size, allPublicPageFiles.length, 'page titles should be unique');
 });
 
+test('account, guide, and AI configuration routes use the shared pixel theme', () => {
+  const themedPages = [
+    ['account.html', '账户'],
+    ['guide.html', '使用说明'],
+    ['skill.html', 'AI 一键配置'],
+  ];
+
+  for (const [page, currentLabel] of themedPages) {
+    const html = stripHtmlComments(read(page));
+    assert.match(html, /<body\b[^>]*class="[^"]*pixel-site[^"]*pixel-subpage[^"]*"/i);
+    assert.match(html, /<link\b[^>]*href="pixel-preview\.css\?v=20260812-subpages-v2"[^>]*>/i);
+    assert.match(html, /<script\b[^>]*src="pixel-preview\.js\?v=20260812-subpages"[^>]*>/i);
+    assert.match(html, /<header\b[^>]*class="pixel-header"/i);
+    assert.match(html, /<footer\b[^>]*class="pixel-footer"/i);
+    assert.match(html, new RegExp(`<a\\b[^>]*aria-current="page"[^>]*>${escapeRegExp(currentLabel)}<\\/a>|<a\\b[^>]*aria-current="page"[^>]*data-header-account`, 'i'));
+  }
+
+  const home = stripHtmlComments(read('index.html'));
+  assert.match(home, /href="guide\.html"[^>]*>说明<\/a>/i);
+  assert.match(home, /href="skill\.html"/i);
+  assert.match(home, /href="account\.html"/i);
+});
+
 test('account page exposes complete registration, email and username login, profile settings, billing, and desktop authorization', () => {
   const html = stripHtmlComments(read('account.html'));
   const source = `${html}\n${read('account.js')}`;
@@ -505,6 +528,21 @@ test('homepage presents flagship product storytelling', () => {
   assert.match(html, /old-page\.html/);
 });
 
+test('current public surfaces use the ZKO 字库 brand name', () => {
+  const currentFiles = [
+    ...allPublicPageFiles,
+    ...buyerPageFiles,
+    'pixel-preview.html',
+    'script.js',
+    'assets/favicon.svg',
+  ];
+  const combined = currentFiles.map((file) => read(file)).join('\n');
+  assert.match(combined, /ZKO 字库/);
+  assert.match(read('index.html'), /字库控制台/);
+  assert.match(read('script.js'), /ZKO 字库一键配置/);
+  assert.doesNotMatch(combined, /苍虬|苍穹/);
+});
+
 test('shared account header uses the pixel favicon when no custom avatar exists', () => {
   const script = read('script.js');
   assert.match(script, /assets\/favicon-pixel\.png\?v=20260811-pixel/);
@@ -514,7 +552,7 @@ test('shared account header uses the pixel favicon when no custom avatar exists'
 
 test('classic homepage remains available as a separate archived page', () => {
   const html = stripHtmlComments(read('old-page.html'));
-  assert.match(html, /<title>苍虬 ZKO · 经典版主页<\/title>/);
+  assert.match(html, /<title>字库 ZKO · 经典版主页<\/title>/);
   assert.match(html, /href=["']index\.html["'][^>]*>像素主页<\/a>/);
   assert.match(html, /href=["']old-page\.html["'][^>]*aria-current=["']page["']/);
   for (const id of ['overview', 'macros', 'status', 'software', 'compatibility', 'support']) {
@@ -1033,7 +1071,7 @@ test('voice guide covers only the approved OpenLess and Typeless products', () =
     '第一次语音转文字',
     '麦克风权限',
     '快捷键冲突',
-    '苍虬手柄',
+    '字库手柄',
     'AutoClipboard',
   ]) assert.match(html, new RegExp(escapeRegExp(phrase)));
   assert.doesNotMatch(html, /Openiless/);
@@ -1078,4 +1116,51 @@ test('buyer guide assets provide responsive focus-safe progressive enhancement',
   assert.match(script, /data-copy-button/);
   assert.match(script, /navigator\.clipboard/);
   assert.match(script, /复制成功/);
+});
+
+test('Tennis Video Helper page puts the fixed Windows installer in the first viewport', () => {
+  const html = stripHtmlComments(read('tennis-video-helper.html'));
+  const installerUrl = 'https://github.com/Lijinzh/TennisVideoHelper/releases/download/v0.1.0/TennisVideoHelper-Setup-0.1.0.exe';
+  const heroEnd = html.indexOf('</section>');
+  assert.ok(heroEnd > 0);
+  assert.match(html.slice(0, heroEnd), /data-tv-download/);
+  assert.match(html.slice(0, heroEnd), new RegExp(escapeRegExp(installerUrl)));
+  assert.match(html, /当前安装包位于私有 GitHub Release/);
+  assert.match(html, /156\.2 MiB/);
+  assert.match(html, /1D5101A6F1341D1AF6BAEC17A15FBBB68A94895EB0E1F2ABEF40FAD85D255B37/);
+  assert.match(html, /当前安装包没有数字签名/);
+});
+
+test('Tennis Video Helper page covers features, settings, progress, installation, and local UI assets', () => {
+  const html = stripHtmlComments(read('tennis-video-helper.html'));
+  for (const id of ['overview', 'features', 'settings', 'progress', 'install']) {
+    assert.match(html, new RegExp(`id=["']${id}["']`));
+  }
+  for (const phrase of ['声音', '人体骨架', '球拍检测', '击球时间线', '覆盖同名旧结果', '研发进度', 'SmartScreen']) {
+    assert.match(html, new RegExp(escapeRegExp(phrase)));
+  }
+  for (const asset of [
+    'assets/images/tennis-video-helper/app-icon.png',
+    'assets/images/tennis-video-helper/app-review.webp',
+    'assets/images/tennis-video-helper/app-settings.webp',
+    'tennis-video-helper.css',
+    'tennis-video-helper.js',
+  ]) requireFile(asset);
+  assert.ok(statSync(fileUrl('assets/images/tennis-video-helper/app-review.webp')).size > 50_000);
+  assert.ok(statSync(fileUrl('assets/images/tennis-video-helper/app-settings.webp')).size > 50_000);
+  assert.doesNotMatch(html, /C:\\Users\\admin/i);
+  assert.match(read('index.html'), /href="tennis-video-helper\.html"/);
+});
+
+test('Tennis Video Helper pixel theme is responsive and its release metadata is centralized', () => {
+  const css = read('tennis-video-helper.css').replace(/\/\*[^]*?\*\//g, '');
+  for (const selector of ['.tennis-hero', '.tennis-signal-strip', '.tennis-feature-row', '.tennis-settings-section', '.tennis-timeline', '.tennis-install-section']) {
+    assert.match(css, new RegExp(escapeRegExp(selector)));
+  }
+  assert.match(css, /@media\b[^{}]*\(\s*max-width\s*:/i);
+  assert.match(css, /@media\b[^{}]*\(\s*prefers-reduced-motion\s*:\s*reduce\s*\)/i);
+  const script = read('tennis-video-helper.js');
+  assert.match(script, /TennisVideoHelper-Setup-0\.1\.0\.exe/);
+  assert.match(script, /navigator\.clipboard\.writeText/);
+  assert.match(script, /data-tv-download/);
 });
