@@ -98,7 +98,7 @@ git push
 ## 维护说明
 
 - 当前购买地址为 <https://m.tb.cn/h.802lN7o?tk=phNwgK0gm5B>。修改购买地址时，必须同时更新 `script.js` 中的 `PURCHASE_URL` 和 `index.html` 中各购买按钮的备用 `href`，保持两处一致。
-- `index.html` 与 `pixel-preview.html` 会根据浏览器报告的平台推荐 Windows、macOS 或 Linux，同时始终展示三个系统的手动下载入口。所有下载地址集中在 `script.js` 的 `AUTOCLIPBOARD_PLATFORM_DOWNLOADS`；Gitee 为国内主链接，GitHub 为备用。每次发布都必须按准确文件名核对 Release 资产、状态码和大小，不能假设三个平台使用相同版本或同一个 Release 标签。当前 macOS 为明确标注的未公证预览版。
+- `index.html` 与 `pixel-preview.html` 会根据浏览器报告的平台推荐 Windows、macOS 或 Linux，同时始终展示三个系统的手动下载入口。最新版安装包链接使用同页附件下载（不打开 Gitee / GitHub 新页面），完整 Release / 历史版本链接仍保留为新窗口跳转。所有下载地址集中在 `script.js` 的 `AUTOCLIPBOARD_PLATFORM_DOWNLOADS`；Gitee 为国内主链接，GitHub 为备用。每次发布都必须按准确文件名核对 Release 资产、状态码和大小，不能假设三个平台使用相同版本或同一个 Release 标签。当前 macOS 为明确标注的未公证预览版。
 - Codex 安装入口使用发布仓库中的 `zko-ai-coding-handle` Marketplace 插件；其他 Agent 使用同源 `ai-coding-handle` Skill。修改安装命令时必须同步检查首页、`skill.html`、复制交互和发布仓库 README。
 - 页面文案在 `index.html` 中维护，图片放在 `assets/images/`，样式在 `styles.css` 中维护。
 - 账户页公开配置只允许包含环境 ID、区域、函数名和回调协议。CloudBase 管理凭据、支付商户私钥、APIv3 key、平台证书和桌面 refresh token 禁止进入本仓库。

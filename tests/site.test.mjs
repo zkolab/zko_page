@@ -8,10 +8,12 @@ const downloadUrl = 'https://github.com/Lijinzh/Communist-Manifesto-Releases';
 const giteeReleaseUrl = 'https://gitee.com/shan-yujun/Communist-Manifesto-Releases';
 const autoClipboardWindowsVersion = '0.3.65';
 const autoClipboardWindowsReleaseTag = 'v0.3.65';
+const windowsFilename = `AutoClipboardSetup-${autoClipboardWindowsVersion}.exe`;
 const giteeWindowsDownloadUrl = `https://gitee.com/shan-yujun/Communist-Manifesto-Releases/releases/download/${autoClipboardWindowsReleaseTag}/AutoClipboardSetup-${autoClipboardWindowsVersion}.exe`;
 const githubWindowsDownloadUrl = `https://github.com/Lijinzh/Communist-Manifesto-Releases/releases/download/${autoClipboardWindowsReleaseTag}/AutoClipboardSetup-${autoClipboardWindowsVersion}.exe`;
 const autoClipboardLinuxVersion = '0.3.65';
 const autoClipboardLinuxReleaseTag = 'v0.3.65';
+const linuxFilename = `auto-clipboard_${autoClipboardLinuxVersion}_amd64.deb`;
 const giteeLinuxDownloadUrl = `https://gitee.com/shan-yujun/Communist-Manifesto-Releases/releases/download/${autoClipboardLinuxReleaseTag}/auto-clipboard_${autoClipboardLinuxVersion}_amd64.deb`;
 const githubLinuxDownloadUrl = `https://github.com/Lijinzh/Communist-Manifesto-Releases/releases/download/${autoClipboardLinuxReleaseTag}/auto-clipboard_${autoClipboardLinuxVersion}_amd64.deb`;
 const autoClipboardMacosVersion = '0.3.62';
@@ -198,13 +200,13 @@ test('all pages expose a Gitee-first direct Windows download with GitHub backup'
 });
 
 test('homepage and pixel preview expose automatic recommendations plus every desktop platform', () => {
-  const expectedUrls = new Map([
-    ['windows:gitee', giteeWindowsDownloadUrl],
-    ['windows:github', githubWindowsDownloadUrl],
-    ['macos:gitee', giteeMacosDownloadUrl],
-    ['macos:github', githubMacosDownloadUrl],
-    ['linux:gitee', giteeLinuxDownloadUrl],
-    ['linux:github', githubLinuxDownloadUrl],
+  const expectedDownloads = new Map([
+    ['windows:gitee', { url: giteeWindowsDownloadUrl, filename: windowsFilename }],
+    ['windows:github', { url: githubWindowsDownloadUrl, filename: windowsFilename }],
+    ['macos:gitee', { url: giteeMacosDownloadUrl, filename: macosFilename }],
+    ['macos:github', { url: githubMacosDownloadUrl, filename: macosFilename }],
+    ['linux:gitee', { url: giteeLinuxDownloadUrl, filename: linuxFilename }],
+    ['linux:github', { url: githubLinuxDownloadUrl, filename: linuxFilename }],
   ]);
 
   for (const page of ['index.html', 'pixel-preview.html']) {
@@ -215,15 +217,31 @@ test('homepage and pixel preview expose automatic recommendations plus every des
     assert.match(html, /data-platform-recommendation-fallback/);
     assert.match(html, /未公证[^<]{0,40}(?:DMG|预览版)|DMG[^<]{0,40}未公证/);
 
-    for (const [key, url] of expectedUrls) {
+    for (const [key, download] of expectedDownloads) {
       const [platform, source] = key.split(':');
       const matching = anchors.filter((tag) =>
         attributeValue(tag, 'data-platform-download') === platform
         && attributeValue(tag, 'data-download-source') === source,
       );
       assert.ok(matching.length >= 1, `${page} should expose ${platform} ${source}`);
-      for (const anchor of matching) assert.equal(attributeValue(anchor, 'href'), url);
+      for (const anchor of matching) {
+        assert.equal(attributeValue(anchor, 'href'), download.url);
+        assert.equal(attributeValue(anchor, 'download'), download.filename);
+        assert.equal(attributeValue(anchor, 'target'), undefined);
+      }
     }
+
+    for (const selector of ['data-platform-recommendation-primary', 'data-platform-recommendation-fallback']) {
+      const recommendation = anchors.find((tag) => hasAttribute(tag, selector));
+      assert.ok(recommendation, `${page} should expose ${selector}`);
+      assert.equal(attributeValue(recommendation, 'download'), windowsFilename);
+      assert.equal(attributeValue(recommendation, 'target'), undefined);
+    }
+
+    const archive = anchors.find((tag) => hasAttribute(tag, 'data-gitee-release-link'));
+    assert.ok(archive, `${page} should retain a release archive link`);
+    assert.equal(attributeValue(archive, 'target'), '_blank');
+    assert.equal(attributeValue(archive, 'download'), undefined);
   }
 });
 
@@ -240,8 +258,14 @@ test('download recommendation detects Windows, macOS, and Linux without hiding m
     const eyebrow = { textContent: '' };
     const title = { textContent: '' };
     const detail = { textContent: '' };
-    const primary = { href: '', textContent: '' };
-    const fallback = { href: '', textContent: '' };
+    const createDownloadLink = () => ({
+      href: '',
+      textContent: '',
+      target: '_blank',
+      removeAttribute(name) { delete this[name]; },
+    });
+    const primary = createDownloadLink();
+    const fallback = createDownloadLink();
     const selectors = new Map([
       ['[data-platform-recommendation]', [panel]],
       ['[data-platform-recommendation-eyebrow]', [eyebrow]],
@@ -275,8 +299,12 @@ test('download recommendation detects Windows, macOS, and Linux without hiding m
     assert.match(eyebrow.textContent, new RegExp(escapeRegExp(testCase.expectedName)));
     assert.match(title.textContent, new RegExp(escapeRegExp(testCase.expectedName)));
     assert.equal(primary.href, testCase.expectedUrl);
+    assert.ok(primary.download);
+    assert.equal(primary.target, undefined);
     assert.match(primary.textContent, /Gitee/);
     assert.match(fallback.href, /^https:\/\/github\.com\//);
+    assert.equal(fallback.download, primary.download);
+    assert.equal(fallback.target, undefined);
   }
 });
 
@@ -289,6 +317,20 @@ test('external links use safe new-window attributes', () => {
     assert.ok(externalAnchors.length > 0, `${page} should expose external links`);
 
     for (const anchor of externalAnchors) {
+      const isDirectInstaller = [
+        'data-windows-download-link',
+        'data-windows-download-fallback',
+        'data-platform-download',
+        'data-platform-recommendation-primary',
+        'data-platform-recommendation-fallback',
+      ].some((attribute) => hasAttribute(anchor, attribute));
+
+      if (isDirectInstaller) {
+        assert.equal(attributeValue(anchor, 'target'), undefined);
+        assert.ok(attributeValue(anchor, 'download'), `${page} direct installers should name the downloaded file`);
+        continue;
+      }
+
       assert.equal(attributeValue(anchor, 'target'), '_blank');
       assert.match(attributeValue(anchor, 'rel') ?? '', /(?:^|\s)noopener(?:\s|$)/);
       assert.match(attributeValue(anchor, 'rel') ?? '', /(?:^|\s)noreferrer(?:\s|$)/);
@@ -654,8 +696,13 @@ test('script defines reviewed URLs and applies the purchase destination', () => 
   const purchaseLinks = [{ href: 'old://one' }, { href: 'old://two' }];
   const downloadLinks = [{ href: 'old://download' }];
   const giteeLinks = [{ href: 'old://gitee' }];
-  const giteeWindowsLinks = [{ href: 'old://windows-gitee' }];
-  const githubWindowsLinks = [{ href: 'old://windows-github' }];
+  const createDownloadLink = (href) => ({
+    href,
+    target: '_blank',
+    removeAttribute(name) { delete this[name]; },
+  });
+  const giteeWindowsLinks = [createDownloadLink('old://windows-gitee')];
+  const githubWindowsLinks = [createDownloadLink('old://windows-github')];
   const classList = { add() {}, remove() {}, toggle() {}, contains() { return false; } };
   const document = {
     documentElement: { classList },
@@ -694,6 +741,10 @@ test('script defines reviewed URLs and applies the purchase destination', () => 
   assert.deepEqual(giteeLinks.map((link) => link.href), [giteeReleaseUrl]);
   assert.deepEqual(giteeWindowsLinks.map((link) => link.href), [giteeWindowsDownloadUrl]);
   assert.deepEqual(githubWindowsLinks.map((link) => link.href), [githubWindowsDownloadUrl]);
+  assert.deepEqual(giteeWindowsLinks.map((link) => link.download), [windowsFilename]);
+  assert.deepEqual(githubWindowsLinks.map((link) => link.download), [windowsFilename]);
+  assert.equal(giteeWindowsLinks[0].target, undefined);
+  assert.equal(githubWindowsLinks[0].target, undefined);
 });
 
 test('homepage and Skill page make the Agent install flow prominent and copyable', async () => {

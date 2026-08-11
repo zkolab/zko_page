@@ -19,6 +19,7 @@ const AUTOCLIPBOARD_PLATFORM_DOWNLOADS = Object.freeze({
   windows: {
     name: 'Windows',
     version: AUTOCLIPBOARD_WINDOWS_VERSION,
+    filename: `AutoClipboardSetup-${AUTOCLIPBOARD_WINDOWS_VERSION}.exe`,
     format: 'EXE 安装包',
     detail: 'Windows 10 / 11 · 约 48.6 MB',
     gitee: GITEE_WINDOWS_DOWNLOAD_URL,
@@ -27,6 +28,7 @@ const AUTOCLIPBOARD_PLATFORM_DOWNLOADS = Object.freeze({
   macos: {
     name: 'macOS',
     version: AUTOCLIPBOARD_MACOS_VERSION,
+    filename: AUTOCLIPBOARD_MACOS_FILENAME,
     format: 'DMG 未公证预览版',
     detail: 'macOS 预览版 · 约 53.5 MB',
     gitee: GITEE_MACOS_DOWNLOAD_URL,
@@ -35,6 +37,7 @@ const AUTOCLIPBOARD_PLATFORM_DOWNLOADS = Object.freeze({
   linux: {
     name: 'Ubuntu / Linux',
     version: AUTOCLIPBOARD_LINUX_VERSION,
+    filename: AUTOCLIPBOARD_LINUX_FILENAME,
     format: 'DEB x86_64',
     detail: 'Ubuntu / Debian x86_64 · 约 78.4 MB',
     gitee: GITEE_LINUX_DOWNLOAD_URL,
@@ -70,6 +73,12 @@ function detectDownloadPlatform(navigatorObject = globalThis.navigator ?? {}) {
   return 'other';
 }
 
+function configureDirectDownload(link, url, filename) {
+  link.href = url;
+  link.download = filename;
+  link.removeAttribute?.('target');
+}
+
 function renderPlatformRecommendation() {
   const detectedPlatform = detectDownloadPlatform();
   const recommendedPlatform = detectedPlatform === 'other' ? 'windows' : detectedPlatform;
@@ -88,11 +97,11 @@ function renderPlatformRecommendation() {
     element.textContent = `AutoClipboard v${download.version} · ${download.format} · ${download.detail}`;
   }
   for (const link of queryAll('[data-platform-recommendation-primary]')) {
-    link.href = download.gitee;
+    configureDirectDownload(link, download.gitee, download.filename);
     link.textContent = `${download.name} 推荐下载（Gitee）`;
   }
   for (const link of queryAll('[data-platform-recommendation-fallback]')) {
-    link.href = download.github;
+    configureDirectDownload(link, download.github, download.filename);
     link.textContent = 'GitHub 备用下载';
   }
 }
@@ -224,18 +233,18 @@ for (const link of queryAll('[data-gitee-release-link]')) {
 }
 
 for (const link of queryAll('[data-windows-download-link]')) {
-  link.href = GITEE_WINDOWS_DOWNLOAD_URL;
+  configureDirectDownload(link, GITEE_WINDOWS_DOWNLOAD_URL, AUTOCLIPBOARD_PLATFORM_DOWNLOADS.windows.filename);
 }
 
 for (const link of queryAll('[data-windows-download-fallback]')) {
-  link.href = GITHUB_WINDOWS_DOWNLOAD_URL;
+  configureDirectDownload(link, GITHUB_WINDOWS_DOWNLOAD_URL, AUTOCLIPBOARD_PLATFORM_DOWNLOADS.windows.filename);
 }
 
 for (const link of queryAll('[data-platform-download]')) {
   const platform = link.dataset?.platformDownload;
   const source = link.dataset?.downloadSource;
   const download = AUTOCLIPBOARD_PLATFORM_DOWNLOADS[platform];
-  if (download?.[source]) link.href = download[source];
+  if (download?.[source]) configureDirectDownload(link, download[source], download.filename);
 }
 
 renderPlatformRecommendation();
