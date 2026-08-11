@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="ZKO 管理后台：管理 AutoClipboard 高级版权益、闲鱼人工订单和云端模型配置。">
+  <meta name="theme-color" content="#0a0b0d">
+  <title>管理后台 · ZKO 苍虬</title>
+  <link rel="icon" href="assets/favicon.ico">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+  <link rel="stylesheet" href="styles.css">
+  <script src="assets/vendor/cloudbase-3.7.1.min.js" defer></script>
+  <script src="account-config.js" defer></script>
+  <script src="script.js" defer></script>
+  <script src="admin.js" defer></script>
+</head>
+<body class="page page--account page--admin">
+  <a class="skip-link" href="#main-content">跳到主要内容</a>
+  <header class="global-header" data-header>
+    <div class="global-header__inner">
+      <a class="brand" href="index.html" aria-label="苍虬首页"><span class="brand__mark">ZKO</span><small>苍虬 · AI 编程手柄</small></a>
+      <nav class="global-nav" aria-label="管理导航"><a href="account.html">账户中心</a><a href="#orders">人工订单</a><a href="#users">客户权益</a><a href="#providers">模型配置</a></nav>
+      <div class="global-header__actions"><a class="button button--header" href="account.html">返回账户</a></div>
+    </div>
+  </header>
+
+  <main id="main-content" class="account-main admin-main">
+    <section class="account-section admin-hero">
+      <div><p class="account-label">ADMIN CONSOLE</p><h1>ZKO 管理后台</h1><p>人工授权和未来自动支付共用同一权益流水。供应商密钥只能替换，不能读取或回显。</p></div>
+      <span class="auth-state" data-admin-state>正在验证管理员身份</span>
+    </section>
+
+    <div hidden data-admin-workspace>
+      <section class="account-section" id="orders">
+        <div class="account-section__heading"><div><p class="account-label">GOOFISH</p><h2>闲鱼订单人工发放</h2></div><span>订单号全局幂等，重复提交不会重复加时</span></div>
+        <form class="admin-form admin-form--grid" data-manual-order-form>
+          <label><span>客户绑定码</span><input class="account-input" name="bindingCode" placeholder="ZKO-XXXX-XXXX-XXXX-XXXX" autocomplete="off" required></label>
+          <label><span>闲鱼订单号</span><input class="account-input" name="externalOrderNo" maxlength="120" autocomplete="off" required></label>
+          <label><span>产品</span><select class="account-input" name="productCode" data-admin-products required></select></label>
+          <label><span>备注（可选）</span><input class="account-input" name="note" maxlength="240" autocomplete="off"></label>
+          <div class="form-actions"><button class="button" type="submit">核对并发放权益</button><p class="form-status" data-manual-order-message></p></div>
+        </form>
+        <div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>时间</th><th>渠道订单号</th><th>用户</th><th>产品</th><th>状态</th></tr></thead><tbody data-order-rows></tbody></table></div>
+      </section>
+
+      <section class="account-section" id="users">
+        <div class="account-section__heading"><div><p class="account-label">ENTITLEMENTS</p><h2>客户与权益</h2></div><span>延期按 max(现在, 当前到期时间) 继续累加</span></div>
+        <form class="admin-search" data-user-search-form><input class="account-input" name="query" placeholder="邮箱、用户名、显示名称或用户 ID"><button class="button button--light" type="submit">查询</button></form>
+        <div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>客户</th><th>状态</th><th>高级版到期</th><th>操作</th></tr></thead><tbody data-user-rows></tbody></table></div>
+        <form class="admin-form admin-form--grid" data-entitlement-form>
+          <label><span>目标用户 ID</span><input class="account-input" name="targetUserId" readonly required></label>
+          <label><span>操作</span><select class="account-input" name="entitlementAction"><option value="extend">延期/开通</option><option value="restore">恢复并延期</option><option value="revoke">立即撤销</option></select></label>
+          <label><span>天数</span><input class="account-input" name="days" type="number" min="1" max="3650" value="30"></label>
+          <label><span>原因</span><input class="account-input" name="reason" maxlength="240" required></label>
+          <div class="form-actions"><button class="button" type="submit">提交权益变更</button><p class="form-status" data-entitlement-message>先在上表选择客户。</p></div>
+        </form>
+      </section>
+
+      <section class="account-section" id="providers">
+        <div class="account-section__heading"><div><p class="account-label">PROVIDERS</p><h2>语音识别与润色模型</h2></div><span>密钥写入后由云端 AES-256-GCM 加密，页面永不回显</span></div>
+        <div class="provider-grid">
+          <form class="provider-card" data-provider-form="tencent_asr" autocomplete="off">
+            <div class="provider-card__heading"><div><h3>腾讯云实时语音识别</h3><p>客户端音频直达腾讯云，ZKO 只签发 5 分钟单次地址。</p></div><span data-provider-status="tencent_asr">未配置</span></div>
+            <label><span>App ID</span><input class="account-input" name="appId" inputmode="numeric" autocomplete="new-password"></label>
+            <label><span>Secret ID</span><input class="account-input" name="secretId" type="password" autocomplete="new-password"></label>
+            <label><span>Secret Key</span><input class="account-input" name="secretKey" type="password" autocomplete="new-password"></label>
+            <label><span>识别模型</span><select class="account-input" name="engineModelType"><option value="16k_zh">16k 中文普通话</option><option value="16k_en">16k 英语</option></select></label>
+            <label class="provider-toggle"><input type="checkbox" name="enabled"> 启用</label>
+            <button class="button" type="submit">保存 / 替换腾讯云配置</button><p class="form-status" data-provider-message="tencent_asr"></p>
+          </form>
+          <form class="provider-card" data-provider-form="deepseek" autocomplete="off">
+            <div class="provider-card__heading"><div><h3>DeepSeek 文本润色</h3><p>ZKO 只转发文本且不记录正文；失败时客户端使用原始转写。</p></div><span data-provider-status="deepseek">未配置</span></div>
+            <label><span>API Key</span><input class="account-input" name="apiKey" type="password" autocomplete="new-password"></label>
+            <label><span>模型</span><select class="account-input" name="model"><option value="deepseek-chat">deepseek-chat</option><option value="deepseek-reasoner">deepseek-reasoner</option></select></label>
+            <label class="provider-toggle"><input type="checkbox" name="enabled"> 启用</label>
+            <button class="button" type="submit">保存 / 替换 DeepSeek 配置</button><p class="form-status" data-provider-message="deepseek"></p>
+          </form>
+        </div>
+      </section>
+    </div>
+  </main>
+</body>
+</html>

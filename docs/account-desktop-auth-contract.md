@@ -9,6 +9,7 @@
 - Web SDK：`@cloudbase/js-sdk@3.7.1`
 - 已登录网页事件函数：`zko-account-api`
 - 桌面会话 HTTP 函数：`zko-desktop-auth`
+- 高级语音 HTTP 函数：`zko-voice-control`
 - HTTP 地址：`https://zkolab-dev-d8gzrr41k9b933d9e-1462162031.ap-shanghai.app.tcloudbase.com/desktop-auth`
 
 `account-config.js` 只能包含这些公开标识。CloudBase 管理凭据、支付商户密钥、验证码和桌面 refresh token 都不得进入仓库、URL 或日志。
@@ -30,11 +31,13 @@
 
 网页登录后调用 `zko-account-api`：
 
-- `action=overview`：幂等创建业务账户与钱包并返回余额、最近账目和支付配置状态。
+- `action=overview`：幂等创建业务账户与钱包并返回余额、产品、`voice.premium` 和购买绑定状态。
 - `action=checkUsername`：在保存前检查业务用户名是否可用。
 - `action=updateProfile`：更新显示名称、姓名、用户名和经过大小与格式校验的头像。
 - `action=authorizeDesktop`：将当前 CloudBase 用户绑定到一次性桌面登录票据。
 - `action=createRecharge`：只在支付宝或微信商户 API 真正配置后创建订单；当前 fail closed，不使用普通收款码伪造自动到账。
+- `action=createPurchaseBinding`：生成 7 天有效的一次性闲鱼购买绑定码，数据库只保存 SHA-256。
+- 管理员 action：查询客户/订单、按闲鱼订单幂等发放或调整权益、写入/替换供应商密钥。
 
 云函数必须从 CloudBase 调用上下文获取用户 UID，不接受前端提交的用户 ID。
 
@@ -81,10 +84,21 @@ AutoClipboard 向 `zko-desktop-auth` POST：
 
 桌面端用 `Authorization: Bearer <refreshToken>` 调用同一 HTTP 函数：
 
-- `action=me`：读取账户与余额；
+- `action=me`：读取账户、余额、`voice.premium` 和服务端下发的 voice-control URL；
 - `action=logout`：撤销当前桌面会话。
 
 ## 支付边界
+
+当前人工流程为：客户生成绑定码并跳转闲鱼；管理员核对订单号后调用统一事务，按
+`max(now, current_period_end) + duration` 延长权益。同一闲鱼订单号只能生效一次。未来支付宝或
+微信验签回调必须复用同一权益事件入口。
+
+## 高级语音边界
+
+AutoClipboard 使用桌面 refresh token 向 `zko-voice-control` 请求短期能力。服务端重新校验
+账户、桌面会话和 `voice.premium`，签发 5 分钟腾讯 ASR WebSocket 地址；客户端音频直接发往
+腾讯云，ZKO 不提供音频上传接口。raw transcript 使用一次性 capability 调用 DeepSeek 文本
+代理，失败时客户端保留原文。供应商密钥由管理员写入且只保存 AES-256-GCM 密文，页面不回显。
 
 支付宝电脑网站支付和微信 Native 支付需要各自的商户 API 权限、私钥/证书、回调验签和正式可访问的回调地址。现有个人或商家静态收款码只能人工收款，不能证明某个网站订单已支付，也不能自动给钱包入账。
 

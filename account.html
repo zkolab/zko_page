@@ -137,8 +137,10 @@
           <a href="#overview">账户总览</a>
           <a href="#profile">个人资料</a>
           <a href="#security">安全与登录</a>
+          <a href="#premium">高级版权益</a>
           <a href="#desktop">AutoClipboard</a>
           <a href="#billing">充值与账单</a>
+          <a href="admin.html" hidden data-admin-link>管理后台</a>
         </nav>
         <button class="text-button account-signout" type="button" data-sign-out>退出登录</button>
       </aside>
@@ -146,7 +148,7 @@
       <div class="account-content">
         <section class="account-section account-overview" id="overview">
           <div><p class="account-label">OVERVIEW</p><h2>欢迎回来，<span data-overview-name>ZKO 用户</span></h2><p>公开功能保持免登录；账户只为充值、云端权益与多端同步服务。</p></div>
-          <div class="overview-metrics"><article><small>账户状态</small><strong>正常</strong></article><article><small>当前余额</small><strong data-wallet-balance>¥ 0.00</strong></article><article><small>桌面端</small><strong data-desktop-summary>等待登录</strong></article></div>
+          <div class="overview-metrics"><article><small>账户状态</small><strong>正常</strong></article><article><small>高级版</small><strong data-premium-summary>未开通</strong></article><article><small>当前余额</small><strong data-wallet-balance>¥ 0.00</strong></article><article><small>桌面端</small><strong data-desktop-summary>等待登录</strong></article></div>
         </section>
 
         <section class="account-section" id="profile">
@@ -173,6 +175,21 @@
             <article><div><strong>账户密码</strong><p>通过绑定邮箱收到安全链接来设置或修改密码，网站不接触密码明文。</p></div><button class="button button--small button--light" type="button" data-reset-password>发送设置密码邮件</button></article>
           </div>
           <p class="form-status" role="status" aria-live="polite" data-security-message></p>
+        </section>
+
+        <section class="account-section account-section--premium" id="premium">
+          <div class="account-section__heading"><div><p class="account-label">PREMIUM</p><h2>AutoClipboard 高级版权益</h2></div><span data-premium-status>正在读取权益……</span></div>
+          <div class="premium-grid">
+            <article class="premium-status-card">
+              <small>当前状态</small><strong data-premium-state>未开通</strong><p data-premium-expiry>购买后由管理员人工发放，后续自动支付也会进入同一权益流水。</p>
+            </article>
+            <form class="premium-purchase-card" data-premium-purchase-form>
+              <label><span>选择套餐</span><select class="account-input" data-premium-product></select></label>
+              <div class="premium-actions"><button class="button" type="button" data-create-binding>生成购买绑定码</button><a class="button button--light" href="https://www.goofish.com/item?id=1065574393669" target="_blank" rel="noopener noreferrer" data-goofish-purchase>前往闲鱼购买</a></div>
+              <output class="binding-code" hidden data-binding-code></output>
+              <p class="form-status" role="status" aria-live="polite" data-binding-message>购买后把绑定码发给卖家；管理员核对闲鱼订单后发放权益。</p>
+            </form>
+          </div>
         </section>
 
         <section class="account-section account-section--desktop" id="desktop" data-desktop-handoff>

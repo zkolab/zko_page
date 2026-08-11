@@ -100,6 +100,8 @@ test('required public files exist', () => {
     'styles.css',
     'script.js',
     'account.js',
+    'admin.html',
+    'admin.js',
     'account-bridge.html',
     'account-bridge.js',
     'account-config.js',
@@ -379,6 +381,9 @@ test('account page exposes complete registration, email and username login, prof
     '当前没有桌面端登录请求',
     '允许并返回 AutoClipboard',
     '一次性授权码',
+    '高级版权益',
+    '生成购买绑定码',
+    '前往闲鱼购买',
   ]) {
     assert.match(source, new RegExp(escapeRegExp(phrase)), `account page should mention ${phrase}`);
   }
@@ -387,8 +392,24 @@ test('account page exposes complete registration, email and username login, prof
   assert.match(html, /data-avatar-input/);
   assert.match(html, /data-recharge-form/);
   assert.match(html, /data-authorize-desktop/);
+  assert.match(html, /data-create-binding/);
   assert.match(html, /assets\/vendor\/cloudbase-3\.7\.1\.min\.js/);
   assert.ok((html.match(/type=["']password["']/gi) || []).length >= 3, 'login and registration should collect CloudBase-managed passwords');
+});
+
+test('admin page manages manual orders, entitlements, and write-only provider secrets', () => {
+  const html = stripHtmlComments(read('admin.html'));
+  const script = read('admin.js');
+  for (const phrase of ['闲鱼订单人工发放', '客户与权益', '腾讯云实时语音识别', 'DeepSeek 文本润色', '页面永不回显']) {
+    assert.match(html, new RegExp(escapeRegExp(phrase)));
+  }
+  for (const action of ['adminOverview', 'adminGrantManualOrder', 'adminAdjustEntitlement', 'adminSetProviderConfig']) {
+    assert.match(script, new RegExp(`action:\\s*['"]${action}['"]`));
+  }
+  assert.ok((html.match(/type="password"/g) || []).length >= 3);
+  assert.match(script, /input\[type="password"\]/);
+  assert.doesNotMatch(script, /console\.(?:log|debug).*secret/i);
+  assert.doesNotMatch(html, /value="(?:sk-|AKID)[^"]+"/i);
 });
 
 test('account configuration is public-only and pins the CloudBase integration contract', () => {

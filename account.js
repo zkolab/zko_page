@@ -43,6 +43,11 @@
   const rechargeForm = select('[data-recharge-form]');
   const rechargeButton = select('[data-recharge-submit]');
   const rechargeMessage = select('[data-recharge-message]');
+  const bindingButton = select('[data-create-binding]');
+  const bindingMessage = select('[data-binding-message]');
+  const bindingOutput = select('[data-binding-code]');
+  const productSelect = select('[data-premium-product]');
+  const goofishLink = select('[data-goofish-purchase]');
   const desktopRequest = readDesktopRequest(new URLSearchParams(location.search));
   let otpVerification = null;
   let registrationVerification = null;
@@ -235,6 +240,8 @@
       const cents = Number(response.wallet?.balance_cents || 0);
       select('[data-wallet-balance]').textContent = `¥ ${(cents / 100).toFixed(2)}`;
       renderEntries(response.entries || []);
+      renderPremium(response.subscription || {}, response.products || [], response.purchaseBinding);
+      select('[data-admin-link]').hidden = response.account?.role !== 'admin';
       const paymentReady = Boolean(response.payment?.configured);
       rechargeButton.disabled = !paymentReady;
       setMessage(
@@ -245,6 +252,52 @@
     } catch {
       setMessage(select('[data-profile-message]'), '账户服务暂时不可用，请稍后刷新。', 'error');
       rechargeButton.disabled = true;
+    }
+  }
+
+  function renderPremium(subscription, products, binding) {
+    const active = subscription.active === true;
+    const expiry = subscription.validUntil ? new Date(subscription.validUntil).toLocaleString('zh-CN') : '';
+    select('[data-premium-summary]').textContent = active ? '有效' : '未开通';
+    select('[data-premium-status]').textContent = active ? `有效至 ${expiry}` : '当前没有有效权益';
+    select('[data-premium-state]').textContent = active ? '高级版可用' : '未开通';
+    select('[data-premium-expiry]').textContent = active
+      ? `到期时间：${expiry}。续费会从当前到期时间继续顺延。`
+      : '购买后由管理员人工发放；未来自动支付也会进入同一权益流水。';
+    productSelect.replaceChildren();
+    for (const product of products) {
+      const option = document.createElement('option');
+      option.value = product.productCode;
+      option.textContent = `${product.displayName}（${product.durationDays} 天）`;
+      option.dataset.purchaseUrl = product.purchaseUrl || '';
+      productSelect.append(option);
+    }
+    const updatePurchaseUrl = () => {
+      const selected = productSelect.selectedOptions[0];
+      if (selected?.dataset.purchaseUrl) goofishLink.href = selected.dataset.purchaseUrl;
+    };
+    productSelect.onchange = updatePurchaseUrl;
+    updatePurchaseUrl();
+    if (binding) {
+      bindingOutput.hidden = true;
+      setMessage(bindingMessage, `已有未使用绑定码（尾号 ${binding.suffix}），有效至 ${new Date(binding.expiresAt).toLocaleString('zh-CN')}；重新生成会让旧码失效。`, 'warning');
+    }
+  }
+
+  async function createPurchaseBinding() {
+    bindingButton.disabled = true;
+    bindingOutput.hidden = true;
+    setMessage(bindingMessage, '正在生成一次性购买绑定码……');
+    try {
+      const response = await callAccountApi({ action: 'createPurchaseBinding' });
+      if (!response.ok || !response.bindingCode) throw new Error(response.code || 'binding_failed');
+      bindingOutput.textContent = response.bindingCode;
+      bindingOutput.hidden = false;
+      setMessage(bindingMessage, `绑定码有效至 ${new Date(response.expiresAt).toLocaleString('zh-CN')}。请只发给闲鱼卖家用于本次订单绑定。`, 'success');
+    } catch (error) {
+      setMessage(bindingMessage, friendlyError(error, '绑定码生成失败，请稍后重试。'), 'error');
+    } finally {
+      bindingButton.disabled = false;
     }
   }
 
@@ -628,6 +681,7 @@
     }
   });
   authorizeButton.addEventListener('click', () => void authorizeDesktop());
+  bindingButton.addEventListener('click', () => void createPurchaseBinding());
   rechargeForm.addEventListener('submit', async (event) => {
     event.preventDefault();
     const form = new FormData(rechargeForm);

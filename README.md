@@ -9,6 +9,7 @@
 - `pixel-preview.html`：旧像素预览网址兼容跳转，自动转到正式主页
 - `skill.html`：Codex 插件与通用 Agent Skill 的一键安装入口
 - `account.html`：CloudBase 验证码登录、钱包、充值和 AutoClipboard 授权页面
+- `admin.html` / `admin.js`：管理员人工订单、客户权益与云端模型密钥配置页面
 - `account.js` / `account-config.js`：账户交互与公开的 CloudBase 环境/函数配置
 - `pixel-preview.css` / `pixel-preview.js`：正式像素主页的视觉系统、响应式布局与交互
 - `styles.css`：经典版主页及其他标准页面的样式、响应式布局与动效

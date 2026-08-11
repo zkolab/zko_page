@@ -633,7 +633,7 @@ code {
 
 .intro-strip {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   color: #fff;
   background: #111318;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
@@ -3363,6 +3363,171 @@ details p {
     linear-gradient(145deg, rgba(22, 25, 31, 0.96), rgba(12, 14, 18, 0.98));
 }
 
+.account-section--premium {
+  background:
+    linear-gradient(115deg, rgba(255, 188, 73, 0.1), transparent 46%),
+    linear-gradient(145deg, rgba(22, 25, 31, 0.96), rgba(12, 14, 18, 0.98));
+}
+
+.premium-grid {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.7fr) minmax(320px, 1.3fr);
+  gap: 1rem;
+}
+
+.premium-status-card,
+.premium-purchase-card {
+  padding: 1.35rem;
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.9rem;
+}
+
+.premium-status-card small,
+.premium-purchase-card label > span {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #8a949f;
+  font-size: 0.72rem;
+}
+
+.premium-status-card strong {
+  color: #ffd17a;
+  font-size: 1.15rem;
+}
+
+.premium-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.binding-code {
+  display: block;
+  margin-top: 1rem;
+  padding: 0.85rem 1rem;
+  color: #76e9f6;
+  background: #090b0e;
+  border: 1px dashed rgba(118, 233, 246, 0.45);
+  border-radius: 0.65rem;
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 1rem;
+  letter-spacing: 0.08em;
+  user-select: all;
+}
+
+.admin-main {
+  display: grid;
+  gap: 1rem;
+}
+
+.admin-hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+.admin-hero h1 {
+  margin: 0.3rem 0 0.6rem;
+  color: #f1f4f6;
+}
+
+.admin-form--grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.admin-form label > span,
+.provider-card label > span {
+  display: block;
+  margin-bottom: 0.45rem;
+  color: #aab2bb;
+  font-size: 0.76rem;
+}
+
+.admin-form .form-actions {
+  grid-column: 1 / -1;
+}
+
+.admin-search {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.admin-table-wrap {
+  overflow-x: auto;
+  margin-top: 1rem;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.76rem;
+}
+
+.admin-table th,
+.admin-table td {
+  padding: 0.8rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  text-align: left;
+  white-space: pre-line;
+}
+
+.admin-table th {
+  color: #89939e;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+}
+
+.provider-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.provider-card {
+  display: grid;
+  gap: 0.9rem;
+  padding: 1.35rem;
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.9rem;
+}
+
+.provider-card__heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.provider-card__heading h3,
+.provider-card__heading p {
+  margin: 0;
+}
+
+.provider-card__heading p {
+  margin-top: 0.35rem;
+  font-size: 0.72rem;
+}
+
+.provider-card__heading > span {
+  color: #ffb96a;
+  font-size: 0.7rem;
+  white-space: nowrap;
+}
+
+.provider-card__heading > span[data-ready="true"] {
+  color: #76e9f6;
+}
+
+.provider-toggle {
+  color: #dce1e5;
+}
+
 .account-section--desktop > p {
   max-width: 760px;
 }
@@ -3404,7 +3569,8 @@ details p {
   }
 
   .account-overview,
-  .billing-grid {
+  .billing-grid,
+  .premium-grid {
     grid-template-columns: 1fr;
   }
 }
@@ -3439,6 +3605,15 @@ details p {
 
   .profile-fields {
     grid-template-columns: 1fr;
+  }
+
+  .provider-grid,
+  .admin-form--grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-form .form-actions {
+    grid-column: auto;
   }
 
   .profile-fields label:last-child {
