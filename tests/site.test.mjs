@@ -51,7 +51,7 @@ const requiredProductImages = [
 ];
 const replacementImages = new Map([
   ['assets/images/software-main.webp', { width: '1180', height: '620', bytes: 58_292 }],
-  ['assets/images/software-settings.webp', { width: '1442', height: '852', bytes: 110_614 }],
+  ['assets/images/software-settings.webp', { width: '1442', height: '852', bytes: 106_860 }],
 ]);
 
 function fileUrl(path) {
@@ -762,6 +762,13 @@ test('numbered software screenshots use the approved files and dimensions', () =
       assert.equal(attributeValue(tag, 'height'), expected.height);
     }
   }
+});
+
+test('shop presents the current AutoClipboard interface', () => {
+  const html = read('shop.html');
+  assert.match(html, /AUTOCLIPBOARD_0\.3\.67\.EXE/);
+  assert.match(html, /0\.3\.67 设备仪表盘、Profile、宏按键、IMU 与固件维护/);
+  assert.doesNotMatch(html, /带编号说明的 AutoClipboard/);
 });
 
 test('all page images are local, accessible, dimensioned, and present', () => {
