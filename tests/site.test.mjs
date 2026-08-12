@@ -800,11 +800,12 @@ test('pages do not copy DJI-hosted media or brand assets', () => {
   }
 });
 
-test('homepage hero removes third-party marks and states the accessory boundary', () => {
+test('homepage hero replaces third-party marks with a disclosed ZKO visual composite', () => {
   const html = stripHtmlComments(read('index.html'));
-  assert.match(html, /pixel-hero\.webp\?v=20260812-third-party-mark-removed/);
+  assert.match(html, /pixel-hero\.webp\?v=20260812-white-zko-mic-mark/);
   assert.match(html, /麦克风仅作搭配示意，不随产品销售/);
-  assert.match(html, /不存在合作、授权或代言关系/);
+  assert.match(html, /白色 ZKO 标志为视觉合成/);
+  assert.match(html, /不代表该麦克风由 ZKO 生产/);
   assert.doesNotMatch(html, />\s*(?:DJI|大疆)\s*</i);
 });
 
