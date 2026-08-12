@@ -18,6 +18,7 @@
 - `assets/vendor/`：固定版本、自托管的 CloudBase Web SDK 及许可证
 - `docs/account-desktop-auth-contract.md`：网页、CloudBase 后端与桌面端的接口契约
 - `tests/site.test.mjs`：自动化站点检查
+- `assets/themes/`：与 AutoClipboard 对齐的 17 套像素背景；网页通过独立主题面板切换并保存在浏览器本地，不会修改桌面软件设置
 
 ## 本地预览
 

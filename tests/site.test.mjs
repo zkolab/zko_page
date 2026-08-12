@@ -396,8 +396,8 @@ test('account, guide, and AI configuration routes use the shared pixel theme', (
   for (const [page, currentLabel] of themedPages) {
     const html = stripHtmlComments(read(page));
     assert.match(html, /<body\b[^>]*class="[^"]*pixel-site[^"]*pixel-subpage[^"]*"/i);
-    assert.match(html, /<link\b[^>]*href="pixel-preview\.css\?v=20260812-hero-scroll-v1"[^>]*>/i);
-    assert.match(html, /<script\b[^>]*src="pixel-preview\.js\?v=20260812-hero-scroll-v1"[^>]*>/i);
+    assert.match(html, /<link\b[^>]*href="pixel-preview\.css\?v=20260812-theme-deck-v1"[^>]*>/i);
+    assert.match(html, /<script\b[^>]*src="pixel-preview\.js\?v=20260812-theme-deck-v1"[^>]*>/i);
     assert.match(html, /<header\b[^>]*class="pixel-header"/i);
     assert.match(html, /<footer\b[^>]*class="pixel-footer"/i);
     assert.match(html, new RegExp(`<a\\b[^>]*aria-current="page"[^>]*>${escapeRegExp(currentLabel)}<\\/a>|<a\\b[^>]*aria-current="page"[^>]*data-header-account`, 'i'));
@@ -595,7 +595,7 @@ test('shop presents preorder colors and reviewed microphone compatibility', () =
   const html = stripHtmlComments(read('shop.html'));
   assert.match(html, /class=["'][^"']*pixel-site[^"']*pixel-shop/);
   assert.match(html, /shop-pixel\.css\?v=20260812-shop-pixel-v1/);
-  assert.match(html, /pixel-preview\.js\?v=20260812-hero-scroll-v1/);
+  assert.match(html, /pixel-preview\.js\?v=20260812-theme-deck-v1/);
   assert.match(html, /装备你的/);
   assert.match(html, /玩家配色/);
   assert.match(html, /STORE SYSTEM ONLINE/);
