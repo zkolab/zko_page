@@ -142,6 +142,28 @@ test('all pages expose the shared ZKO favicon', () => {
   for (const color of ['#292756', '#fff8e8', '#ed7a3a', '#73cfc0']) assert.match(favicon, new RegExp(color, 'i'));
 });
 
+test('all public pages credit ZKO Lab and reserve site rights', () => {
+  for (const page of allPublicPageFiles) {
+    const html = read(page);
+    assert.match(html, /Made by ZKO Lab/i, `${page} should credit ZKO Lab`);
+    assert.match(html, /All Rights Reserved/i, `${page} should reserve site rights`);
+  }
+});
+
+test('pixel homepage keeps a substantial hero crop and reveals more product on scroll', () => {
+  const css = read('pixel-preview.css');
+  const script = read('pixel-preview.js');
+  assert.match(css, /min-height:\s*clamp\(760px,\s*74vw,\s*980px\)/);
+  assert.match(css, /@media \(min-width:\s*1600px\)/);
+  assert.match(css, /--hero-art-scale/);
+  assert.match(css, /object-fit:\s*contain/);
+  assert.match(css, /object-position:\s*right top/);
+  assert.match(script, /const isWideHero = \(\) => window\.innerWidth >= 1600/);
+  assert.match(script, /const progress = Math\.min\(1, Math\.max\(0, -rect\.top/);
+  assert.match(script, /requestAnimationFrame\(updateHeroArt\)/);
+  assert.match(script, /1\.12 - progress \* 0\.1/);
+});
+
 test('home download station shows the current AutoClipboard app icon', () => {
   const html = read('index.html');
   assert.match(html, /<img[^>]+class="pixel-download__app-icon"[^>]+src="assets\/autoclipboard-icon\.png\?v=20260812-rgb8"/i);
@@ -374,8 +396,8 @@ test('account, guide, and AI configuration routes use the shared pixel theme', (
   for (const [page, currentLabel] of themedPages) {
     const html = stripHtmlComments(read(page));
     assert.match(html, /<body\b[^>]*class="[^"]*pixel-site[^"]*pixel-subpage[^"]*"/i);
-    assert.match(html, /<link\b[^>]*href="pixel-preview\.css\?v=20260812-subpages-v2"[^>]*>/i);
-    assert.match(html, /<script\b[^>]*src="pixel-preview\.js\?v=20260812-subpages"[^>]*>/i);
+    assert.match(html, /<link\b[^>]*href="pixel-preview\.css\?v=20260812-hero-scroll-v1"[^>]*>/i);
+    assert.match(html, /<script\b[^>]*src="pixel-preview\.js\?v=20260812-hero-scroll-v1"[^>]*>/i);
     assert.match(html, /<header\b[^>]*class="pixel-header"/i);
     assert.match(html, /<footer\b[^>]*class="pixel-footer"/i);
     assert.match(html, new RegExp(`<a\\b[^>]*aria-current="page"[^>]*>${escapeRegExp(currentLabel)}<\\/a>|<a\\b[^>]*aria-current="page"[^>]*data-header-account`, 'i'));
@@ -846,12 +868,19 @@ test('script defines reviewed URLs and applies the purchase destination', () => 
 test('homepage links the prominent Agent install flow and Skill page keeps it copyable', async () => {
   const home = stripHtmlComments(read('index.html'));
   const skill = stripHtmlComments(read('skill.html'));
-  assert.match(home, /下载、API、Skills/);
-  assert.match(home, /下载控制软件/);
+  const skillPromptIndex = home.indexOf('data-copy-install="agent-prompt"');
+  const manualDownloadIndex = home.indexOf('data-platform-recommendation-primary');
+  const apiPromptIndex = home.indexOf('data-copy-install="api-prompt"');
+  assert.match(home, /复制一句话/);
+  assert.match(home, /有 Agent/);
+  assert.match(home, /通常不需要你先手动下载安装包/);
+  assert.match(home, /没有 Agent？手动下载/);
   assert.match(home, /data-platform-recommendation-primary/);
   assert.match(home, /data-copy-install=["']api-prompt["']/);
   assert.match(home, /data-copy-install=["']agent-prompt["']/);
-  assert.match(home, /复制 Skills 提示词/);
+  assert.ok(skillPromptIndex >= 0 && skillPromptIndex < manualDownloadIndex, 'Agent prompt should appear before manual download');
+  assert.ok(manualDownloadIndex < apiPromptIndex, 'manual download should appear before optional API setup');
+  assert.match(home, /复制给我的 Agent/);
   assert.match(home, /data-copy-status/);
   assert.match(home, /href=["']skill\.html["']/);
   assert.match(read('script.js'), /'api-prompt'/);

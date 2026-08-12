@@ -70,4 +70,36 @@ if ('IntersectionObserver' in window) {
 } else {
   revealTargets.forEach((target) => target.classList.add('is-visible'));
 }
+
+const pixelHero = document.querySelector('.pixel-hero');
+const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+if (pixelHero) {
+  let heroFrame = 0;
+
+  const isWideHero = () => window.innerWidth >= 1600;
+
+  const updateHeroArt = () => {
+    heroFrame = 0;
+    if (!isWideHero() || reducedMotion.matches) {
+      pixelHero.style.removeProperty('--hero-art-scale');
+      pixelHero.style.removeProperty('--hero-art-shift');
+      return;
+    }
+
+    const rect = pixelHero.getBoundingClientRect();
+    const progress = Math.min(1, Math.max(0, -rect.top / Math.max(1, rect.height * 0.72)));
+    pixelHero.style.setProperty('--hero-art-scale', (1.12 - progress * 0.1).toFixed(4));
+    pixelHero.style.setProperty('--hero-art-shift', '0px');
+  };
+
+  const queueHeroArtUpdate = () => {
+    if (heroFrame) return;
+    heroFrame = window.requestAnimationFrame(updateHeroArt);
+  };
+
+  updateHeroArt();
+  window.addEventListener('scroll', queueHeroArtUpdate, { passive: true });
+  window.addEventListener('resize', queueHeroArtUpdate);
+  reducedMotion.addEventListener?.('change', queueHeroArtUpdate);
+}
 })();

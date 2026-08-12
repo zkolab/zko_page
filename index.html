@@ -13,10 +13,10 @@
   <link rel="icon" href="assets/favicon.ico?v=20260811-pixel">
   <link rel="icon" href="assets/favicon.svg?v=20260812-ziku" type="image/svg+xml">
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=20260811-pixel">
-  <link rel="stylesheet" href="pixel-preview.css?v=20260812-autoclipboard-icon">
+  <link rel="stylesheet" href="pixel-preview.css?v=20260812-hero-scroll-v1">
   <script src="account-config.js" defer></script>
   <script src="script.js?v=20260812-autoclipboard-0367" defer></script>
-  <script src="pixel-preview.js?v=20260811-quickstart" defer></script>
+  <script src="pixel-preview.js?v=20260812-hero-scroll-v1" defer></script>
 </head>
 <body class="pixel-site">
   <a class="skip-link" href="#main-content">跳到主要内容</a>
@@ -54,39 +54,39 @@
   <main id="main-content">
     <section class="pixel-quickstart" id="quick-start" aria-labelledby="quick-start-title" data-platform-recommendation>
       <header class="pixel-quickstart__header">
-        <p class="pixel-kicker"><span>QUICK START</span> 打开页面，先把工具装好</p>
-        <h2 id="quick-start-title">下载、API、Skills，<br>全部放在最前面。</h2>
-        <p>优先完成最常用的操作，再继续了解字库。下载按钮会自动识别当前系统，国内网络默认使用 Gitee。</p>
+        <p class="pixel-kicker"><span>QUICK START</span> 有 Agent，先让 Agent 替你完成</p>
+        <h2 id="quick-start-title">复制一句话，<br>让 Agent 全部配好。</h2>
+        <p>如果你正在使用 Codex、Claude Code、Gemini CLI 或其他 Agent，请优先复制第一张卡片的提示词。Agent 会安装 ZKO Skill，并继续检查 AutoClipboard、Hook、手柄型号和按键配置；通常不需要你先手动下载安装包。</p>
       </header>
 
       <div class="pixel-quickstart__grid">
-        <article class="pixel-quick-card pixel-quick-card--download">
-          <span class="pixel-quick-card__number">01 / DOWNLOAD</span>
+        <article class="pixel-quick-card pixel-quick-card--skill pixel-quick-card--primary">
+          <span class="pixel-quick-card__number">01 / AGENT FIRST</span>
+          <small>ZKO-AI-CODING-HANDLE</small>
+          <h3>复制一句话配置提示词</h3>
+          <p>推荐给已有大模型 Agent 的用户：粘贴一次，让 Agent 自动安装 Skill，并完成软件、Hook、设备和按键检查。</p>
+          <button class="pixel-button pixel-button--primary" type="button" data-copy-install="agent-prompt" data-copy-success="一句话配置提示词已复制。打开 Codex、Claude Code 或其他 Agent 后直接粘贴即可。">复制给我的 Agent</button>
+          <a class="pixel-quick-card__link" href="skill.html">查看支持的 Agent 与完整安装方式 →</a>
+        </article>
+
+        <article class="pixel-quick-card pixel-quick-card--download pixel-quick-card--secondary">
+          <span class="pixel-quick-card__number">02 / MANUAL DOWNLOAD</span>
           <small data-platform-recommendation-eyebrow>正在识别当前系统</small>
-          <h3>下载控制软件</h3>
-          <p data-platform-recommendation-detail>AutoClipboard · 自动推荐 Windows、macOS 或 Linux</p>
-          <a class="pixel-button pixel-button--primary" data-platform-recommendation-primary href="https://gitee.com/shan-yujun/Communist-Manifesto-Releases/releases/download/v0.3.67/AutoClipboardSetup-0.3.67.exe" download="AutoClipboardSetup-0.3.67.exe" rel="noopener noreferrer">Windows 推荐下载（Gitee）</a>
+          <h3>没有 Agent？手动下载</h3>
+          <p data-platform-recommendation-detail>备用方式：AutoClipboard · 自动推荐 Windows、macOS 或 Linux</p>
+          <a class="pixel-button" data-platform-recommendation-primary href="https://gitee.com/shan-yujun/Communist-Manifesto-Releases/releases/download/v0.3.67/AutoClipboardSetup-0.3.67.exe" download="AutoClipboardSetup-0.3.67.exe" rel="noopener noreferrer">Windows 推荐下载（Gitee）</a>
           <a class="pixel-quick-card__link" href="#release-downloads">其他系统、备用源与历史版本 →</a>
         </article>
 
         <article class="pixel-quick-card pixel-quick-card--api">
-          <span class="pixel-quick-card__number">02 / API SETUP</span>
+          <span class="pixel-quick-card__number">03 / API SETUP</span>
           <small>SAFE CONFIG PROMPT</small>
-          <h3>复制 API 配置提示词</h3>
+          <h3>需要时再配置 API</h3>
           <p>让 Codex 帮你检查 CC-Switch、模型供应商和连接状态；真实 API Key 始终由你在本机填写。</p>
           <button class="pixel-button" type="button" data-copy-install="api-prompt" data-copy-success="API 配置提示词已复制。打开 Codex 或其他 Agent 后直接粘贴即可。">复制 API 提示词</button>
         </article>
-
-        <article class="pixel-quick-card pixel-quick-card--skill">
-          <span class="pixel-quick-card__number">03 / AGENT SKILL</span>
-          <small>ZKO-AI-CODING-HANDLE</small>
-          <h3>复制 Skills 安装提示词</h3>
-          <p>一句话让 Codex 安装 ZKO Skill，再检查 AutoClipboard、Hook、手柄型号和按键配置。</p>
-          <button class="pixel-button" type="button" data-copy-install="agent-prompt" data-copy-success="Skills 安装提示词已复制。打开 Codex 或其他 Agent 后直接粘贴即可。">复制 Skills 提示词</button>
-          <a class="pixel-quick-card__link" href="skill.html">查看完整安装方式 →</a>
-        </article>
       </div>
-      <p class="pixel-quickstart__status" role="status" aria-live="polite" data-copy-status>提示词只会写入你的剪贴板，不会读取或上传任何 API Key。</p>
+      <p class="pixel-quickstart__status" role="status" aria-live="polite" data-copy-status>推荐顺序：有 Agent → 复制第一条提示词；没有 Agent → 再手动下载。提示词只会写入剪贴板，不会读取或上传 API Key。</p>
     </section>
 
     <section class="pixel-hero" id="overview" aria-labelledby="pixel-title">
@@ -231,7 +231,7 @@
     <div class="pixel-footer__brand"><span>ZKO</span><strong>字库 AI 编程手柄</strong><p>为语音编程、Vibe Coding 和 Agent 工作流打造的实体控制器。</p></div>
     <nav aria-label="页脚导航"><a href="shop.html">商城</a><a data-purchase-link href="https://www.goofish.com/item?spm=a21ybx.personal.feeds.2.5a4e6ac2FqZlZf&amp;id=1065574393669&amp;categoryId=50023914" target="_blank" rel="noopener noreferrer">前往闲鱼购买</a><a href="guide.html">使用说明</a><a href="skill.html">AI 一键配置</a><a href="old-page.html">查看经典版首页</a></nav>
     <div class="pixel-footer__status"><span><i></i> SYSTEM ONLINE</span><small>像素控制台现已成为 ZKO 正式主页。</small></div>
-    <p class="pixel-footer__bottom">© 2026 ZKO 字库 // MADE FOR BUILDERS</p>
+    <p class="pixel-footer__bottom">MADE BY ZKO LAB // © 2026 ZKO 字库 // ALL RIGHTS RESERVED</p>
   </footer>
 </body>
 </html>
