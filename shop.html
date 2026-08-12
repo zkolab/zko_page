@@ -3,134 +3,213 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="字库 AI 编程手柄商城：查看产品、预订颜色、麦克风适配与包装内容。">
-  <meta name="theme-color" content="#0a0b0d">
-  <title>字库商城 · ZKO AI 编程手柄</title>
+  <meta name="description" content="字库 AI 编程手柄像素商城：查看产品、预订颜色、麦克风适配与包装内容。">
+  <meta name="theme-color" content="#292756">
+  <title>字库装备商店 · ZKO AI 编程手柄</title>
   <link rel="icon" href="assets/favicon.ico?v=20260811-pixel">
   <link rel="icon" href="assets/favicon.svg?v=20260812-ziku" type="image/svg+xml">
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=20260811-pixel">
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="pixel-preview.css?v=20260812-hero-scroll-v1">
+  <link rel="stylesheet" href="shop-pixel.css?v=20260812-shop-pixel-v1">
   <script src="account-config.js" defer></script>
   <script src="script.js?v=20260812-autoclipboard-0367" defer></script>
+  <script src="pixel-preview.js?v=20260812-hero-scroll-v1" defer></script>
 </head>
-<body class="page page--shop">
+<body class="pixel-site pixel-shop page page--shop">
   <a class="skip-link" href="#main-content">跳到主要内容</a>
 
-  <header class="global-header" data-header>
-    <div class="global-header__inner">
-      <a class="brand" href="index.html" aria-label="字库首页"><span class="brand__mark">ZKO</span><small>字库 · AI 编程手柄</small></a>
-      <button class="menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-controls="global-nav">菜单</button>
-      <nav class="global-nav" id="global-nav" data-global-nav aria-label="主要导航">
-        <a href="index.html">产品</a>
-        <a href="shop.html" aria-current="page">商城</a>
-        <a href="guide.html">使用说明</a>
-        <a href="skill.html">AI 一键配置</a>
-        <a href="index.html#release-downloads">软件下载</a>
-        <a href="account.html">账户</a>
-      </nav>
-      <div class="global-header__actions">
-        <a class="button button--header" data-purchase-link href="https://www.goofish.com/item?spm=a21ybx.personal.feeds.2.5a4e6ac2FqZlZf&amp;id=1065574393669&amp;categoryId=50023914" target="_blank" rel="noopener noreferrer">立即购买</a>
-        <div class="header-account" data-header-account><a class="header-account__trigger" href="account.html" aria-label="打开账户中心" data-header-account-trigger><span class="header-account__avatar" aria-hidden="true"><img src="assets/favicon-pixel.png?v=20260811-pixel" width="36" height="36" alt="账户头像" hidden data-header-account-image><span data-header-account-initial>Z</span></span><span class="header-account__copy"><small data-header-account-eyebrow>ZKO ACCOUNT</small><strong data-header-account-name>登录 / 注册</strong></span></a></div>
-      </div>
-    </div>
-  </header>
-
-  <div class="product-subnav" data-product-subnav>
-    <div><strong>字库 AI 编程手柄</strong><nav aria-label="商城页面导航"><a href="#gallery">产品图</a><a href="#colors">颜色</a><a href="#feedback">搭配建议</a><a href="#microphones">麦克风适配</a><a href="#package">包装内容</a></nav><a class="button button--small" data-purchase-link href="https://www.goofish.com/item?spm=a21ybx.personal.feeds.2.5a4e6ac2FqZlZf&amp;id=1065574393669&amp;categoryId=50023914" target="_blank" rel="noopener noreferrer">闲鱼购买</a></div>
+  <div class="pixel-ticker" aria-hidden="true">
+    <div>ZKO LOADOUT STORE // BUILD YOUR AI CONTROL DECK // SMALL BATCH · PLAYER READY // ZKO LOADOUT STORE //</div>
   </div>
 
+  <header class="pixel-header" data-header>
+    <a class="pixel-brand" href="index.html" aria-label="ZKO 字库首页">
+      <span class="pixel-brand__mark">ZKO</span>
+      <span><strong>字库控制台</strong><small>CONTROL DECK / 2026</small></span>
+    </a>
+    <button class="pixel-menu" type="button" data-pixel-menu aria-expanded="false" aria-controls="pixel-nav">MENU</button>
+    <nav class="pixel-nav" id="pixel-nav" data-pixel-nav aria-label="主要导航">
+      <a href="index.html">首页</a>
+      <a href="index.html#quick-start">立即使用</a>
+      <a href="skill.html">AI 一键配置</a>
+      <a href="guide.html">使用说明</a>
+      <a href="shop.html" aria-current="page">商城</a>
+    </nav>
+    <a class="pixel-account" href="account.html" data-header-account>
+      <span class="pixel-account__avatar"><img src="assets/favicon-pixel.png?v=20260811-pixel" width="32" height="32" alt="账户头像" hidden data-header-account-image><span data-header-account-initial>Z</span></span>
+      <span><small data-header-account-eyebrow>PLAYER</small><strong data-header-account-name>登录 / 注册</strong></span>
+    </a>
+  </header>
+
+  <nav class="shop-command-bar" aria-label="商城页面导航">
+    <span><i></i> STORE ONLINE</span>
+    <a href="#gallery">产品图鉴</a>
+    <a href="#colors">预订颜色</a>
+    <a href="#microphones">麦克风适配</a>
+    <a href="#package">交付内容</a>
+    <a class="shop-command-bar__buy" data-purchase-link href="https://www.goofish.com/item?spm=a21ybx.personal.feeds.2.5a4e6ac2FqZlZf&amp;id=1065574393669&amp;categoryId=50023914" target="_blank" rel="noopener noreferrer">闲鱼购买</a>
+  </nav>
+
   <main id="main-content">
-    <section class="shop-hero" aria-labelledby="shop-title">
-      <div class="shop-hero__copy" data-reveal>
-        <p class="kicker">ZKO FLAGSHIP PRODUCT</p>
-        <h1 id="shop-title">字库<br>AI 编程手柄</h1>
-        <p>实体宏键、Agent 状态灯、彩色小屏、三主机蓝牙与 AutoClipboard 软件协同，一套交付。</p>
-        <div class="shop-hero__meta"><span>灰色默认交付</span><span>其他颜色仅预订</span><span>小批量持续迭代</span></div>
-        <a class="button" data-purchase-link href="https://www.goofish.com/item?spm=a21ybx.personal.feeds.2.5a4e6ac2FqZlZf&amp;id=1065574393669&amp;categoryId=50023914" target="_blank" rel="noopener noreferrer">前往闲鱼购买</a>
-        <p class="commerce-note">价格与库存以闲鱼商品页为准。</p>
+    <section class="shop-pixel-hero" aria-labelledby="shop-title">
+      <div class="shop-pixel-hero__copy" data-pixel-reveal>
+        <p class="shop-pixel-label"><span>PLAYER LOADOUT</span> ZKO AI CODING HANDLE</p>
+        <h1 id="shop-title">装备你的<br><em>AI 工作流</em></h1>
+        <p class="shop-pixel-hero__lead">实体宏键、Agent 状态灯、彩色小屏、三主机蓝牙与 AutoClipboard 软件协同，一套交付。它不是桌面摆件，而是给大模型工作流准备的实体控制台。</p>
+        <div class="shop-pixel-hero__actions">
+          <a class="shop-pixel-button shop-pixel-button--primary" data-purchase-link href="https://www.goofish.com/item?spm=a21ybx.personal.feeds.2.5a4e6ac2FqZlZf&amp;id=1065574393669&amp;categoryId=50023914" target="_blank" rel="noopener noreferrer">前往闲鱼购买</a>
+          <a class="shop-pixel-button" href="skill.html">先让 Agent 配置</a>
+        </div>
+        <div class="shop-stock-console" aria-label="商品状态">
+          <div><span>STATUS</span><strong>SMALL BATCH</strong></div>
+          <div><span>DEFAULT</span><strong>灰色交付</strong></div>
+          <div><span>CUSTOM</span><strong>其他颜色预订</strong></div>
+        </div>
+        <p class="shop-commerce-note">价格与库存以闲鱼商品页为准；产品处于小批量持续迭代阶段。</p>
       </div>
-      <figure class="shop-hero__media" data-reveal>
+
+      <figure class="shop-product-window" data-pixel-reveal>
+        <div class="shop-window-bar"><span>LOADOUT_PREVIEW.PIX</span><i></i><i></i><i></i></div>
         <img src="assets/images/product-hero.webp" alt="灰色字库 AI 编程手柄商品展示" width="1122" height="1402" loading="eager" fetchpriority="high">
+        <figcaption><span>ITEM_001</span> 字库 AI 编程手柄 // 灰色默认版本</figcaption>
       </figure>
     </section>
 
-    <section class="shop-section" id="gallery" aria-labelledby="gallery-title">
-      <div class="section-heading section-heading--center" data-reveal><p class="kicker">PRODUCT DETAILS</p><h2 id="gallery-title">为 AI 工作流而生的实体界面</h2><p>从侧面宏键、正面状态区到 Type-C 接口，每一个动作都有明确落点。</p></div>
-      <div class="product-gallery">
-        <figure class="product-gallery__wide" data-reveal><img src="assets/images/product-ports.webp" alt="字库手柄 Type-C 接口、开关、波轮和中键说明" width="1672" height="941" loading="lazy"><figcaption>Type-C 用于充电、串口诊断与固件更新；波轮和中键用于 Profile 与菜单操作。</figcaption></figure>
-        <figure data-reveal><img src="assets/images/product-macros.webp" alt="字库手柄四枚实体宏键商品说明" width="1122" height="1402" loading="lazy"><figcaption>4 枚实体宏键，默认可用，也能自定义。</figcaption></figure>
-        <figure data-reveal><img src="assets/images/product-status.webp" alt="字库手柄小屏和 Agent 状态灯商品说明" width="1122" height="1402" loading="lazy"><figcaption>小屏与灯环同步呈现工作状态。</figcaption></figure>
-        <figure data-reveal><img src="assets/images/product-workflow.webp" alt="字库手柄支持功能、附赠资料和路线图" width="1122" height="1402" loading="lazy"><figcaption>软件配置、AI 使用资料和持续更新共同交付。</figcaption></figure>
+    <section class="shop-signal-strip" aria-label="产品能力概览">
+      <article><span>04</span><div><strong>实体宏键</strong><small>确认 / 取消 / 发送 / 自定义</small></div></article>
+      <article><span>AI</span><div><strong>Agent 状态</strong><small>灯环 + 彩色小屏</small></div></article>
+      <article><span>03</span><div><strong>三主机蓝牙</strong><small>快速切换工作设备</small></div></article>
+      <article><span>SK</span><div><strong>Agent Skill</strong><small>一句话安装与配置</small></div></article>
+    </section>
+
+    <section class="shop-gallery-section" id="gallery" aria-labelledby="gallery-title">
+      <header class="shop-section-heading" data-pixel-reveal>
+        <div><p class="shop-pixel-label"><span>ITEM CODEX</span> PRODUCT GALLERY</p><h2 id="gallery-title">每一个动作，<br>都有明确落点。</h2></div>
+        <p>从 Type-C 接口、侧面宏键到正面状态区，产品图鉴保留真实结构和现有功能说明，不用概念图掩盖实际交付。</p>
+      </header>
+
+      <div class="shop-gallery-grid">
+        <figure class="shop-gallery-card shop-gallery-card--wide" data-pixel-reveal>
+          <div class="shop-window-bar"><span>PORTS_AND_CONTROLS.JPG</span><i></i><i></i><i></i></div>
+          <img src="assets/images/product-ports.webp" alt="字库手柄 Type-C 接口、开关、波轮和中键说明" width="1672" height="941" loading="lazy">
+          <figcaption><span>ITEM 01</span><strong>连接与系统控制区</strong><small>Type-C / 电源开关 / 波轮 / 中键</small></figcaption>
+        </figure>
+        <figure class="shop-gallery-card" data-pixel-reveal>
+          <div class="shop-window-bar"><span>MACRO_KEYS.JPG</span><i></i><i></i><i></i></div>
+          <img src="assets/images/product-macros.webp" alt="字库手柄四枚实体宏键商品说明" width="1122" height="1402" loading="lazy">
+          <figcaption><span>ITEM 02</span><strong>四枚实体宏键</strong><small>默认可用，也能自定义</small></figcaption>
+        </figure>
+        <figure class="shop-gallery-card" data-pixel-reveal>
+          <div class="shop-window-bar"><span>AGENT_STATUS.JPG</span><i></i><i></i><i></i></div>
+          <img src="assets/images/product-status.webp" alt="字库手柄小屏和 Agent 状态灯商品说明" width="1122" height="1402" loading="lazy">
+          <figcaption><span>ITEM 03</span><strong>小屏与状态灯环</strong><small>让 Agent 的下一步一眼可见</small></figcaption>
+        </figure>
+        <figure class="shop-gallery-card shop-gallery-card--accent" data-pixel-reveal>
+          <div class="shop-window-bar"><span>WORKFLOW_PACK.JPG</span><i></i><i></i><i></i></div>
+          <img src="assets/images/product-workflow.webp" alt="字库手柄支持功能、附赠资料和路线图" width="1122" height="1402" loading="lazy">
+          <figcaption><span>ITEM 04</span><strong>完整 AI 工作流</strong><small>软件、文档、Skill 与更新入口</small></figcaption>
+        </figure>
       </div>
     </section>
 
-    <section class="configuration-section" id="colors" aria-labelledby="colors-title">
-      <div class="configuration-section__intro" data-reveal>
-        <p class="kicker">PREORDER COLORS</p>
-        <h2 id="colors-title">提前预订，选择你的颜色</h2>
+    <section class="shop-color-section" id="colors" aria-labelledby="colors-title">
+      <div class="shop-color-section__copy" data-pixel-reveal>
+        <p class="shop-pixel-label"><span>COLOR SELECT</span> PREORDER LOADOUT</p>
+        <h2 id="colors-title">选择你的<br>玩家配色。</h2>
         <p>灰色为默认交付颜色。红色、白色、黑色、紫色以及其他自选颜色均仅支持提前预订；任何非灰色方案都需在闲鱼沟通并确认生产可行性。</p>
+        <dl class="shop-color-rules">
+          <div><dt>默认版本</dt><dd>灰色</dd></div>
+          <div><dt>定制方式</dt><dd>购买前沟通</dd></div>
+          <div><dt>交付时间</dt><dd>按方案确认</dd></div>
+        </dl>
       </div>
-      <div class="color-configurator" data-reveal>
-        <p>当前选择：<strong data-selected-color>灰色</strong></p>
-        <div class="color-options" role="group" aria-label="预订颜色">
-          <button class="color-swatch is-selected" type="button" data-color-option="灰色" aria-pressed="true"><span class="swatch swatch--gray" aria-hidden="true"></span>灰色<small>默认</small></button>
-          <button class="color-swatch" type="button" data-color-option="红色" aria-pressed="false"><span class="swatch swatch--red" aria-hidden="true"></span>红色<small>仅预订</small></button>
-          <button class="color-swatch" type="button" data-color-option="白色" aria-pressed="false"><span class="swatch swatch--white" aria-hidden="true"></span>白色<small>仅预订</small></button>
-          <button class="color-swatch" type="button" data-color-option="黑色" aria-pressed="false"><span class="swatch swatch--black" aria-hidden="true"></span>黑色<small>仅预订</small></button>
-          <button class="color-swatch" type="button" data-color-option="紫色" aria-pressed="false"><span class="swatch swatch--purple" aria-hidden="true"></span>紫色<small>仅预订</small></button>
-          <button class="color-swatch color-swatch--custom" type="button" data-color-option="其他自选颜色" aria-pressed="false"><span class="swatch swatch--custom" aria-hidden="true"></span>其他自选颜色<small>仅预订</small></button>
+
+      <div class="shop-color-console" data-pixel-reveal>
+        <div class="shop-window-bar"><span>COLOR_CONFIG.EXE</span><i></i><i></i><i></i></div>
+        <div class="shop-color-console__status"><span>当前选择</span><strong data-selected-color>灰色</strong></div>
+        <div class="shop-color-options" role="group" aria-label="预订颜色">
+          <button class="shop-color-option is-selected" type="button" data-color-option="灰色" aria-pressed="true"><span class="shop-swatch shop-swatch--gray" aria-hidden="true"></span><strong>灰色</strong><small>DEFAULT</small></button>
+          <button class="shop-color-option" type="button" data-color-option="红色" aria-pressed="false"><span class="shop-swatch shop-swatch--red" aria-hidden="true"></span><strong>红色</strong><small>PREORDER</small></button>
+          <button class="shop-color-option" type="button" data-color-option="白色" aria-pressed="false"><span class="shop-swatch shop-swatch--white" aria-hidden="true"></span><strong>白色</strong><small>PREORDER</small></button>
+          <button class="shop-color-option" type="button" data-color-option="黑色" aria-pressed="false"><span class="shop-swatch shop-swatch--black" aria-hidden="true"></span><strong>黑色</strong><small>PREORDER</small></button>
+          <button class="shop-color-option" type="button" data-color-option="紫色" aria-pressed="false"><span class="shop-swatch shop-swatch--purple" aria-hidden="true"></span><strong>紫色</strong><small>PREORDER</small></button>
+          <button class="shop-color-option shop-color-option--custom" type="button" data-color-option="其他自选颜色" aria-pressed="false"><span class="shop-swatch shop-swatch--custom" aria-hidden="true"></span><strong>其他自选颜色</strong><small>ASK FIRST</small></button>
         </div>
-        <p class="configuration-hint">未特别说明时按默认灰色准备。所有非灰色方案均不承诺现货或固定交付时间，请先在闲鱼确认。</p>
-        <a class="button" data-purchase-link href="https://www.goofish.com/item?spm=a21ybx.personal.feeds.2.5a4e6ac2FqZlZf&amp;id=1065574393669&amp;categoryId=50023914" target="_blank" rel="noopener noreferrer">带着颜色意向去购买</a>
+        <p>未特别说明时按默认灰色准备。所有非灰色方案均不承诺现货或固定交付时间，请先在闲鱼确认。</p>
+        <a class="shop-pixel-button shop-pixel-button--cyan" data-purchase-link href="https://www.goofish.com/item?spm=a21ybx.personal.feeds.2.5a4e6ac2FqZlZf&amp;id=1065574393669&amp;categoryId=50023914" target="_blank" rel="noopener noreferrer">带着颜色意向去购买</a>
       </div>
     </section>
 
-    <section class="feedback-section" id="feedback" aria-labelledby="feedback-title">
-      <div class="feedback-section__intro" data-reveal>
-        <p class="kicker">COMMUNITY IDEAS</p>
+    <section class="shop-feedback-section" id="feedback" aria-labelledby="feedback-title">
+      <div class="shop-feedback-signal" aria-hidden="true" data-pixel-reveal><span>?</span><i></i><i></i><i></i><strong>PLAYER<br>REQUEST</strong></div>
+      <div class="shop-feedback-copy" data-pixel-reveal>
+        <p class="shop-pixel-label"><span>COMMUNITY MOD</span> TELL US YOUR BUILD</p>
         <h2 id="feedback-title">告诉我们你想要的搭配</h2>
         <p>欢迎提出手柄颜色、麦克风型号、固定方式、使用场景或其他组合建议。设计成熟、反馈良好的搭配，后续可能作为正式版本上线。</p>
-      </div>
-      <div class="feedback-section__card" data-reveal>
-        <div class="feedback-prompt-grid" aria-label="搭配建议示例">
+        <div class="shop-feedback-grid" aria-label="搭配建议示例">
           <div><span>颜色组合</span><strong>紫色手柄 + 白色麦克风</strong></div>
           <div><span>设备型号</span><strong>DJI Mic / DJI Mic 2 / 其他型号</strong></div>
           <div><span>使用场景</span><strong>语音编程、演讲、录课或移动创作</strong></div>
           <div><span>结构建议</span><strong>支架方向、固定位置与握持方式</strong></div>
         </div>
-        <a class="button button--dark" href="https://docs.qq.com/sheet/DQUFjTktqTmF0d1FG?tab=BB08J2" target="_blank" rel="noopener noreferrer">前往腾讯文档提交搭配建议</a>
-        <p class="feedback-section__notice">建议将在腾讯文档中查看；实际编辑与保存能力由腾讯文档权限控制。</p>
+        <a class="shop-pixel-button shop-pixel-button--primary" href="https://docs.qq.com/sheet/DQUFjTktqTmF0d1FG?tab=BB08J2" target="_blank" rel="noopener noreferrer">前往腾讯文档提交建议</a>
+        <p class="shop-feedback-notice">建议将在腾讯文档中查看；实际编辑与保存能力由腾讯文档权限控制。</p>
       </div>
     </section>
 
-    <section class="mic-section" id="microphones" aria-labelledby="mic-title">
-      <div class="section-heading" data-reveal><p class="kicker">MICROPHONE COMPATIBILITY</p><h2 id="mic-title">为常用无线麦克风保留位置</h2><p>重点适配大疆一代与二代麦克风。麦克风属于使用场景配件，需单独购买。</p></div>
-      <div class="mic-grid">
-        <article data-reveal><span class="compatibility-tag">重点适配</span><h3>DJI Mic 一代</h3><p>可作为语音输入和移动收音设备，与手柄组合使用。实际固定方式请在购买前确认。</p><a class="text-link" href="https://www.dji.com/cn/mic" target="_blank" rel="noopener noreferrer">查看 DJI Mic 官方商品页</a></article>
-        <article data-reveal><span class="compatibility-tag">重点适配</span><h3>DJI Mic 2 二代</h3><p>支持按外形和使用方式确认适配，适合语音编程、录课和演示场景。</p><a class="text-link" href="https://www.dji.com/cn/mic-2" target="_blank" rel="noopener noreferrer">查看 DJI Mic 2 官方商品页</a></article>
-        <article data-reveal><span class="compatibility-tag compatibility-tag--neutral">按型号确认</span><h3>其他麦克风系列</h3><p>其他型号可按型号确认或定制适配件。购买前请提供品牌、型号与外形照片。</p><a class="text-link" data-purchase-link href="https://www.goofish.com/item?spm=a21ybx.personal.feeds.2.5a4e6ac2FqZlZf&amp;id=1065574393669&amp;categoryId=50023914" target="_blank" rel="noopener noreferrer">在闲鱼咨询适配</a></article>
+    <section class="shop-mic-section" id="microphones" aria-labelledby="mic-title">
+      <header class="shop-section-heading shop-section-heading--light" data-pixel-reveal>
+        <div><p class="shop-pixel-label"><span>ACCESSORY SLOT</span> MICROPHONE COMPATIBILITY</p><h2 id="mic-title">为常用无线麦克风<br>保留装备位。</h2></div>
+        <p>重点适配大疆一代与二代麦克风。麦克风属于使用场景配件，需单独购买；其他型号购买前请提供品牌、型号与外形照片。</p>
+      </header>
+      <div class="shop-mic-grid">
+        <article data-pixel-reveal><span>MIC_01</span><h3>DJI Mic 一代</h3><p>可作为语音输入和移动收音设备，与手柄组合使用。实际固定方式请在购买前确认。</p><a href="https://www.dji.com/cn/mic" target="_blank" rel="noopener noreferrer">查看官方商品页 →</a></article>
+        <article data-pixel-reveal><span>MIC_02</span><h3>DJI Mic 2 二代</h3><p>支持按外形和使用方式确认适配，适合语音编程、录课和演示场景。</p><a href="https://www.dji.com/cn/mic-2" target="_blank" rel="noopener noreferrer">查看官方商品页 →</a></article>
+        <article data-pixel-reveal><span>MIC_CUSTOM</span><h3>其他麦克风系列</h3><p>其他型号可按型号确认或定制适配件。购买前请提供品牌、型号与外形照片。</p><a data-purchase-link href="https://www.goofish.com/item?spm=a21ybx.personal.feeds.2.5a4e6ac2FqZlZf&amp;id=1065574393669&amp;categoryId=50023914" target="_blank" rel="noopener noreferrer">在闲鱼咨询适配 →</a></article>
       </div>
-      <p class="notice notice--center">麦克风不包含在包装内；页面中的 DJI 麦克风图片仅用于说明适配与使用场景。</p>
+      <p class="shop-mic-notice">麦克风不包含在包装内；页面中的 DJI 麦克风图片仅用于说明适配与使用场景。</p>
     </section>
 
-    <section class="package-section" id="package" aria-labelledby="package-title">
-      <div class="package-section__media" data-reveal><img src="assets/images/software-settings.webp" alt="带编号说明的 AutoClipboard 设备设置和个性化配置界面" width="1442" height="852" loading="lazy"></div>
-      <div class="package-section__copy" data-reveal>
-        <p class="kicker">WHAT YOU GET</p>
-        <h2 id="package-title">不止是手柄，<br>也是一套 AI 工作流</h2>
-        <ul class="check-list"><li>字库 AI 编程手柄 × 1</li><li>AutoClipboard 配套软件</li><li>固件、驱动与公开使用文档</li><li>AI 编程工作流与 Skill 资料</li><li>持续的软件和固件更新入口</li></ul>
+    <section class="shop-package-section" id="package" aria-labelledby="package-title">
+      <figure class="shop-software-window" data-pixel-reveal>
+        <div class="shop-window-bar"><span>AUTOCLIPBOARD_SETTINGS.EXE</span><i></i><i></i><i></i></div>
+        <img src="assets/images/software-settings.webp" alt="带编号说明的 AutoClipboard 设备设置和个性化配置界面" width="1442" height="852" loading="lazy">
+        <figcaption>SOFTWARE INCLUDED // 设备、按键、语音与 Agent Hook 配置</figcaption>
+      </figure>
+      <div class="shop-package-copy" data-pixel-reveal>
+        <p class="shop-pixel-label"><span>FULL LOADOUT</span> WHAT YOU GET</p>
+        <h2 id="package-title">不止是手柄，<br>也是一套 AI 工作流。</h2>
+        <ul>
+          <li><span>01</span>字库 AI 编程手柄 × 1</li>
+          <li><span>02</span>AutoClipboard 配套软件</li>
+          <li><span>03</span>固件、驱动与公开使用文档</li>
+          <li><span>04</span>AI 编程工作流与 Skill 资料</li>
+          <li><span>05</span>持续的软件和固件更新入口</li>
+        </ul>
         <p>产品处于小批量持续迭代阶段，外观细节、功能和交付内容以购买前沟通及实际版本为准。</p>
-        <div class="inline-actions"><a class="button button--dark" data-purchase-link href="https://www.goofish.com/item?spm=a21ybx.personal.feeds.2.5a4e6ac2FqZlZf&amp;id=1065574393669&amp;categoryId=50023914" target="_blank" rel="noopener noreferrer">前往闲鱼购买</a><a class="text-link" href="skill.html">让 Codex 一键配置</a><a class="text-link" data-windows-download-link href="https://gitee.com/shan-yujun/Communist-Manifesto-Releases/releases/download/v0.3.67/AutoClipboardSetup-0.3.67.exe" download="AutoClipboardSetup-0.3.67.exe" rel="noopener noreferrer">下载 AutoClipboard</a><a class="text-link" href="guide.html">先看使用说明</a></div>
+        <div class="shop-package-actions">
+          <a class="shop-pixel-button shop-pixel-button--primary" data-purchase-link href="https://www.goofish.com/item?spm=a21ybx.personal.feeds.2.5a4e6ac2FqZlZf&amp;id=1065574393669&amp;categoryId=50023914" target="_blank" rel="noopener noreferrer">前往闲鱼购买</a>
+          <a href="skill.html">让 Codex 一键配置 →</a>
+          <a data-windows-download-link href="https://gitee.com/shan-yujun/Communist-Manifesto-Releases/releases/download/v0.3.67/AutoClipboardSetup-0.3.67.exe" download="AutoClipboardSetup-0.3.67.exe" rel="noopener noreferrer">下载 AutoClipboard →</a>
+          <a data-windows-download-fallback href="https://github.com/Lijinzh/Communist-Manifesto-Releases/releases/download/v0.3.67/AutoClipboardSetup-0.3.67.exe" download="AutoClipboardSetup-0.3.67.exe" rel="noopener noreferrer">GitHub 备用下载 →</a>
+          <a href="guide.html">先看使用说明 →</a>
+        </div>
       </div>
+    </section>
+
+    <section class="shop-final-cta" aria-labelledby="final-shop-title">
+      <p>PLAYER 01 // LOADOUT READY</p>
+      <h2 id="final-shop-title">把 AI 工作流，真正握在手里。</h2>
+      <div><a class="shop-pixel-button shop-pixel-button--primary" data-purchase-link href="https://www.goofish.com/item?spm=a21ybx.personal.feeds.2.5a4e6ac2FqZlZf&amp;id=1065574393669&amp;categoryId=50023914" target="_blank" rel="noopener noreferrer">前往闲鱼购买</a><a class="shop-pixel-button" href="index.html#quick-start">先从 Agent 配置开始</a></div>
     </section>
   </main>
 
-  <footer class="site-footer">
-    <div class="site-footer__lead"><strong>ZKO 字库</strong><p>实体输入、状态反馈和软件配置，一起交付。</p></div>
-    <div><h2>产品</h2><a href="index.html">产品首页</a><a href="shop.html#gallery">商品图</a><a href="shop.html#colors">预订颜色</a></div>
-    <div><h2>购买与下载</h2><a href="skill.html">AI 一键配置</a><a data-purchase-link href="https://www.goofish.com/item?spm=a21ybx.personal.feeds.2.5a4e6ac2FqZlZf&amp;id=1065574393669&amp;categoryId=50023914" target="_blank" rel="noopener noreferrer">闲鱼商品页</a><a data-windows-download-link href="https://gitee.com/shan-yujun/Communist-Manifesto-Releases/releases/download/v0.3.67/AutoClipboardSetup-0.3.67.exe" download="AutoClipboardSetup-0.3.67.exe" rel="noopener noreferrer">Windows 直接下载</a><a data-gitee-release-link href="https://gitee.com/shan-yujun/Communist-Manifesto-Releases" target="_blank" rel="noopener noreferrer">Gitee 全部版本</a><a data-download-link href="https://github.com/Lijinzh/Communist-Manifesto-Releases" target="_blank" rel="noopener noreferrer">GitHub 发布仓库</a></div>
-    <div><h2>使用支持</h2><a href="account.html">账户中心</a><a href="guide.html#quick-start">首次使用</a><a href="guide.html#bluetooth">蓝牙连接</a><a href="guide.html#troubleshooting">常见问题</a></div>
-    <div class="site-footer__bottom"><span>Made by ZKO Lab · © 2026 ZKO 字库 · All Rights Reserved</span><span>价格、库存和交付版本以闲鱼沟通为准。</span></div>
+  <footer class="pixel-footer">
+    <div class="pixel-footer__brand"><span>ZKO</span><strong>字库装备商店</strong><p>实体输入、状态反馈和软件配置，一起交付。</p></div>
+    <nav aria-label="页脚导航"><a href="index.html">像素主页</a><a href="skill.html">AI 一键配置</a><a href="guide.html">使用说明</a><a href="#gallery">商品图鉴</a><a href="#colors">预订颜色</a></nav>
+    <div class="pixel-footer__status"><span><i></i> STORE SYSTEM ONLINE</span><small>价格、库存、颜色和交付版本以闲鱼沟通为准。</small></div>
+    <p class="pixel-footer__bottom">MADE BY ZKO LAB // © 2026 ZKO 字库 // ALL RIGHTS RESERVED</p>
   </footer>
 </body>
 </html>

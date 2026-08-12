@@ -593,6 +593,12 @@ test('classic homepage remains available as a separate archived page', () => {
 
 test('shop presents preorder colors and reviewed microphone compatibility', () => {
   const html = stripHtmlComments(read('shop.html'));
+  assert.match(html, /class=["'][^"']*pixel-site[^"']*pixel-shop/);
+  assert.match(html, /shop-pixel\.css\?v=20260812-shop-pixel-v1/);
+  assert.match(html, /pixel-preview\.js\?v=20260812-hero-scroll-v1/);
+  assert.match(html, /装备你的/);
+  assert.match(html, /玩家配色/);
+  assert.match(html, /STORE SYSTEM ONLINE/);
   for (const color of ['灰色', '红色', '白色', '黑色', '紫色', '其他自选颜色']) {
     assert.match(html, new RegExp(color), `shop should mention ${color}`);
   }
@@ -617,6 +623,21 @@ test('shop presents preorder colors and reviewed microphone compatibility', () =
         && attributeValue(tag, 'aria-pressed') === 'true'),
     'gray should be the default color',
   );
+});
+
+test('pixel shop stylesheet defines responsive player-store layouts', () => {
+  const css = read('shop-pixel.css');
+  for (const selector of [
+    '.shop-pixel-hero',
+    '.shop-signal-strip',
+    '.shop-gallery-grid',
+    '.shop-color-console',
+    '.shop-feedback-section',
+    '.shop-mic-grid',
+    '.shop-package-section',
+  ]) assert.match(css, new RegExp(escapeRegExp(selector)));
+  assert.match(css, /@media \(max-width:\s*1080px\)/);
+  assert.match(css, /@media \(max-width:\s*700px\)/);
 });
 
 test('shop links the Tencent Docs feedback area without claiming direct submission', () => {
