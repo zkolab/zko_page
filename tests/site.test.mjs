@@ -426,11 +426,14 @@ test('admin page manages manual orders, entitlements, and write-only provider se
   for (const phrase of ['闲鱼订单人工发放', '客户与权益', '腾讯云实时语音识别', 'DeepSeek 文本润色', '页面永不回显']) {
     assert.match(html, new RegExp(escapeRegExp(phrase)));
   }
-  for (const action of ['adminOverview', 'adminGrantManualOrder', 'adminAdjustEntitlement', 'adminSetProviderConfig']) {
+  for (const action of ['adminOverview', 'adminGrantManualOrder', 'adminAdjustEntitlement', 'adminListProviderModels', 'adminSetProviderConfig']) {
     assert.match(script, new RegExp(`action:\\s*['"]${action}['"]`));
   }
   assert.ok((html.match(/type="password"/g) || []).length >= 3);
   assert.match(script, /input\[type="password"\]/);
+  assert.match(html, /使用已保存密钥拉取模型/);
+  assert.match(html, /刷新可用识别引擎/);
+  assert.match(script, /replaceModelOptions/);
   assert.doesNotMatch(script, /console\.(?:log|debug).*secret/i);
   assert.doesNotMatch(html, /value="(?:sk-|AKID)[^"]+"/i);
 });

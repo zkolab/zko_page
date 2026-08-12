@@ -37,6 +37,24 @@
     return cell;
   }
 
+  function replaceModelOptions(selectElement, models, selectedValue = '') {
+    const normalized = Array.isArray(models) ? models.filter((model) => model?.id) : [];
+    selectElement.replaceChildren();
+    for (const model of normalized) {
+      const option = document.createElement('option');
+      option.value = model.id;
+      option.textContent = model.label || model.id;
+      selectElement.append(option);
+    }
+    if (selectedValue && !normalized.some((model) => model.id === selectedValue)) {
+      const option = document.createElement('option');
+      option.value = selectedValue;
+      option.textContent = `${selectedValue}（当前保存）`;
+      selectElement.prepend(option);
+    }
+    if (selectedValue) selectElement.value = selectedValue;
+  }
+
   function render() {
     const products = overview.products || [];
     const productSelect = select('[data-admin-products]');
@@ -85,12 +103,49 @@
       const form = select(`[data-provider-form="${provider.providerCode}"]`);
       if (!form) continue;
       form.elements.enabled.checked = provider.enabled;
-      if (provider.providerCode === 'tencent_asr') form.elements.engineModelType.value = provider.configuration.engineModelType || '16k_zh';
-      if (provider.providerCode === 'deepseek') form.elements.model.value = provider.configuration.model || 'deepseek-chat';
+      if (provider.providerCode === 'tencent_asr') {
+        replaceModelOptions(form.elements.engineModelType, [
+          { id: '16k_zh', label: '16k 中文普通话' },
+          { id: '16k_en', label: '16k 英语' },
+        ], provider.configuration.engineModelType || '16k_zh');
+      }
+      if (provider.providerCode === 'deepseek') {
+        replaceModelOptions(form.elements.model, [], provider.configuration.model || 'deepseek-chat');
+      }
       const status = select(`[data-provider-status="${provider.providerCode}"]`);
-      status.textContent = provider.configured ? (provider.enabled ? '已配置并启用' : '已配置，当前停用') : '未配置';
+      const selectedModel = provider.providerCode === 'tencent_asr'
+        ? provider.configuration.engineModelType : provider.configuration.model;
+      status.textContent = provider.configured
+        ? `${provider.enabled ? '已启用' : '已配置，当前停用'}${selectedModel ? ` · ${selectedModel}` : ''}`
+        : '未配置';
       status.dataset.ready = String(provider.configured && provider.enabled);
     }
+  }
+
+  for (const button of selectAll('[data-provider-models]')) {
+    button.addEventListener('click', async () => {
+      const providerCode = button.dataset.providerModels;
+      const form = select(`[data-provider-form="${providerCode}"]`);
+      const message = select(`[data-provider-message="${providerCode}"]`);
+      const modelSelect = providerCode === 'tencent_asr'
+        ? form.elements.engineModelType : form.elements.model;
+      const selectedValue = modelSelect.value;
+      button.disabled = true;
+      setMessage(message, providerCode === 'deepseek'
+        ? '正在使用云端已保存的密钥拉取可用模型……'
+        : '正在刷新腾讯云可用识别引擎……');
+      try {
+        const response = await callAccountApi({ action: 'adminListProviderModels', providerCode });
+        if (!response.ok) throw new Error(response.message || response.code || 'provider_models_failed');
+        replaceModelOptions(modelSelect, response.models, selectedValue);
+        modelSelect.dataset.modelsLoaded = 'true';
+        setMessage(message, `已获取 ${response.models.length} 个可用选项，请选择后保存并启用。`, 'success');
+      } catch (error) {
+        setMessage(message, `拉取失败：${error.message}`, 'error');
+      } finally {
+        button.disabled = false;
+      }
+    });
   }
 
   async function load(query = '') {
@@ -169,7 +224,9 @@
         secret = { appId: values.get('appId'), secretId: values.get('secretId'), secretKey: values.get('secretKey') };
       }
       if (providerCode === 'deepseek' && values.get('apiKey')) secret = { apiKey: values.get('apiKey') };
-      setMessage(message, '正在加密并保存云端配置……');
+      setMessage(message, values.get('enabled') === 'on'
+        ? '正在验证所选模型并启用……'
+        : '正在加密并保存云端配置……');
       try {
         const response = await callAccountApi({
           action: 'adminSetProviderConfig', providerCode,
@@ -179,7 +236,9 @@
         for (const input of form.querySelectorAll('input[type="password"], input[name="appId"]')) input.value = '';
         overview.providers = response.providers;
         render();
-        setMessage(message, '配置已保存；密钥原文已从页面清空。', 'success');
+        setMessage(message, values.get('enabled') === 'on'
+          ? '所选模型已验证并启用；密钥原文已从页面清空。'
+          : '配置已保存但尚未启用；请拉取并选择模型后启用。', 'success');
       } catch (error) {
         setMessage(message, `保存失败：${error.message}`, 'error');
       } finally {

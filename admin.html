@@ -66,15 +66,17 @@
             <label><span>Secret ID</span><input class="account-input" name="secretId" type="password" autocomplete="new-password"></label>
             <label><span>Secret Key</span><input class="account-input" name="secretKey" type="password" autocomplete="new-password"></label>
             <label><span>识别模型</span><select class="account-input" name="engineModelType"><option value="16k_zh">16k 中文普通话</option><option value="16k_en">16k 英语</option></select></label>
+            <button class="button button--light" type="button" data-provider-models="tencent_asr">刷新可用识别引擎</button>
             <label class="provider-toggle"><input type="checkbox" name="enabled"> 启用</label>
-            <button class="button" type="submit">保存 / 替换腾讯云配置</button><p class="form-status" data-provider-message="tencent_asr"></p>
+            <button class="button" type="submit">保存腾讯云配置与启用状态</button><p class="form-status" data-provider-message="tencent_asr">先保存密钥、选择识别引擎，再启用。</p>
           </form>
           <form class="provider-card" data-provider-form="deepseek" autocomplete="off">
             <div class="provider-card__heading"><div><h3>DeepSeek 文本润色</h3><p>ZKO 只转发文本且不记录正文；失败时客户端使用原始转写。</p></div><span data-provider-status="deepseek">未配置</span></div>
             <label><span>API Key</span><input class="account-input" name="apiKey" type="password" autocomplete="new-password"></label>
             <label><span>模型</span><select class="account-input" name="model"><option value="deepseek-chat">deepseek-chat</option><option value="deepseek-reasoner">deepseek-reasoner</option></select></label>
+            <button class="button button--light" type="button" data-provider-models="deepseek">使用已保存密钥拉取模型</button>
             <label class="provider-toggle"><input type="checkbox" name="enabled"> 启用</label>
-            <button class="button" type="submit">保存 / 替换 DeepSeek 配置</button><p class="form-status" data-provider-message="deepseek"></p>
+            <button class="button" type="submit">保存 DeepSeek 配置与启用状态</button><p class="form-status" data-provider-message="deepseek">先保存 API Key，再拉取并选择模型，最后启用。</p>
           </form>
         </div>
       </section>
