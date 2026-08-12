@@ -2092,6 +2092,12 @@ details p {
   cursor: not-allowed;
 }
 
+.account-input option,
+.account-input optgroup {
+  color: #111827;
+  background: #fff;
+}
+
 .field-help,
 .auth-privacy,
 .form-status {
@@ -3522,6 +3528,17 @@ details p {
 
 .provider-card__heading > span[data-ready="true"] {
   color: #76e9f6;
+}
+
+.provider-console-link {
+  margin: 0;
+  font-size: 0.76rem;
+}
+
+.provider-console-link a {
+  color: #76e9f6;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
 }
 
 .provider-toggle {

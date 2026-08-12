@@ -433,7 +433,10 @@ test('admin page manages manual orders, entitlements, and write-only provider se
   assert.match(script, /input\[type="password"\]/);
   assert.match(html, /使用已保存密钥拉取模型/);
   assert.match(html, /刷新可用识别引擎/);
+  assert.match(html, /https:\/\/console\.cloud\.tencent\.com\/asr/);
   assert.match(script, /replaceModelOptions/);
+  const css = read('styles.css');
+  assert.match(css, /\.account-input option[\s\S]*color:\s*#111827[\s\S]*background:\s*#fff/);
   assert.doesNotMatch(script, /console\.(?:log|debug).*secret/i);
   assert.doesNotMatch(html, /value="(?:sk-|AKID)[^"]+"/i);
 });
