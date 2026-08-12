@@ -800,6 +800,14 @@ test('pages do not copy DJI-hosted media or brand assets', () => {
   }
 });
 
+test('homepage hero removes third-party marks and states the accessory boundary', () => {
+  const html = stripHtmlComments(read('index.html'));
+  assert.match(html, /pixel-hero\.webp\?v=20260812-third-party-mark-removed/);
+  assert.match(html, /麦克风仅作搭配示意，不随产品销售/);
+  assert.match(html, /不存在合作、授权或代言关系/);
+  assert.doesNotMatch(html, />\s*(?:DJI|大疆)\s*</i);
+});
+
 test('styles define flagship layouts, responsive behavior, focus, and reduced motion', () => {
   const css = read('styles.css').replace(/\/\*[^]*?\*\//g, '');
   const pixelCss = read('pixel-preview.css').replace(/\/\*[^]*?\*\//g, '');

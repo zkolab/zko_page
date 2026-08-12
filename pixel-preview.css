@@ -175,6 +175,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .pixel-hero h1 { max-width: 680px; margin: 0; font-family: var(--display-serif); font-size: clamp(58px, 7.6vw, 110px); font-weight: 700; line-height: .91; letter-spacing: -.075em; text-shadow: 3px 3px 0 rgba(115, 207, 192, .58); }
 .pixel-hero h1 em { color: var(--orange); font-style: normal; text-shadow: 3px 3px 0 var(--ink); }
 .pixel-hero__lead { max-width: 570px; margin: 32px 0 0; font-size: clamp(16px, 1.45vw, 20px); font-weight: 500; line-height: 1.85; }
+.pixel-hero__disclaimer { max-width: 570px; margin: 14px 0 0; padding-left: 12px; color: var(--muted); border-left: 3px solid var(--orange); font: 700 11px/1.65 "Courier New", monospace; letter-spacing: .02em; }
 
 .pixel-actions { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 30px; }
 .pixel-button {
@@ -386,6 +387,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
   .pixel-hero__copy { width: auto; margin: 0; padding: 60px 20px 20px; }
   .pixel-hero h1 { font-size: clamp(48px, 15vw, 72px); }
   .pixel-hero__lead { font-size: 15px; }
+  .pixel-hero__disclaimer { font-size: 10px; }
   .pixel-actions { display: grid; }
   .pixel-terminal { margin-top: 30px; }
   .pixel-stats { grid-template-columns: 1fr 1fr; }
