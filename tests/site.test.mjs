@@ -434,6 +434,8 @@ test('admin page manages manual orders, entitlements, and write-only provider se
   assert.match(html, /使用已保存密钥拉取模型/);
   assert.match(html, /刷新可用识别引擎/);
   assert.match(html, /https:\/\/console\.cloud\.tencent\.com\/asr/);
+  assert.match(html, /16k_zh_en_2\.0/);
+  assert.match(script, /16k_zh_en_2\.0/);
   assert.match(script, /replaceModelOptions/);
   const css = read('styles.css');
   assert.match(css, /\.account-input option[\s\S]*color:\s*#111827[\s\S]*background:\s*#fff/);

@@ -105,9 +105,11 @@
       form.elements.enabled.checked = provider.enabled;
       if (provider.providerCode === 'tencent_asr') {
         replaceModelOptions(form.elements.engineModelType, [
-          { id: '16k_zh', label: '16k 中文普通话' },
-          { id: '16k_en', label: '16k 英语' },
-        ], provider.configuration.engineModelType || '16k_zh');
+          { id: '16k_zh_en_2.0', label: '大模型 2.0：中英粤及 30 种方言（推荐）' },
+          { id: '16k_zh_en_speaker_2.0', label: '大模型 2.0：中英粤及 30 种方言 + 说话人分离' },
+          { id: '16k_zh', label: '通用引擎：16k 中文普通话' },
+          { id: '16k_en', label: '通用引擎：16k 英语' },
+        ], provider.configuration.engineModelType || '16k_zh_en_2.0');
       }
       if (provider.providerCode === 'deepseek') {
         replaceModelOptions(form.elements.model, [], provider.configuration.model || 'deepseek-chat');
