@@ -238,6 +238,16 @@ test('pixel pages keep one immutable top navigation and only change the current-
   }
 });
 
+test('pixel pages load the versioned account routing config', () => {
+  for (const page of pixelPageFiles) {
+    assert.match(
+      read(page),
+      /<script\b[^>]*src="account-config\.js\?v=20260813-nav-consistency-v1"[^>]*>/i,
+      `${page} should bypass stale account routing config`,
+    );
+  }
+});
+
 test('all pages expose a Gitee-first direct Windows download with GitHub backup', () => {
   for (const page of pageFiles) {
     const html = stripHtmlComments(read(page));
@@ -544,7 +554,7 @@ test('account configuration is public-only and pins the CloudBase integration co
   assert.match(config, /accountApi:\s*['"]zko-account-api['"]/);
   assert.match(config, /desktopAuthUrl:\s*['"]https:\/\/zkolab-dev-[^'"]+\/desktop-auth['"]/);
   assert.match(config, /hostedAccountUrl:\s*['"]https:\/\/zkolab-dev-[^'"]+\.tcloudbaseapp\.com\/account\.html['"]/);
-  assert.match(config, /hostedAccountVersion:\s*['"]20260813-account-plans-v2['"]/);
+  assert.match(config, /hostedAccountVersion:\s*['"]20260813-nav-consistency-v1['"]/);
   assert.match(config, /hostedBridgeUrl:\s*['"]https:\/\/zkolab-dev-[^'"]+\.tcloudbaseapp\.com\/account-bridge\.html['"]/);
   assert.match(config, /websiteUrl:\s*['"]https:\/\/zkolab\.com\/['"]/);
   assert.match(config, /protocol:\s*['"]autoclipboard:['"]/);
