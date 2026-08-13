@@ -5,6 +5,7 @@
 ## 文件结构
 
 - `index.html`：正式像素风主页、产品叙事与多平台下载入口
+- `docs.html`：六大板块文档中心，连接官网短路径与发布仓库双语权威文档
 - `old-page.html`：改版前的普通风格主页存档
 - `pixel-preview.html`：旧像素预览网址兼容跳转，自动转到正式主页
 - `skill.html`：Codex 插件与通用 Agent Skill 的一键安装入口
