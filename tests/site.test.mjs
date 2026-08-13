@@ -27,6 +27,18 @@ const djiMic2Url = 'https://www.dji.com/cn/mic-2';
 const officialDriverUrl = 'https://www.wch.cn/downloads/CH343SER_EXE.html';
 const pageFiles = ['index.html', 'shop.html', 'guide.html', 'skill.html'];
 const allPublicPageFiles = [...pageFiles, 'docs.html', 'account.html', 'old-page.html'];
+const pixelPageFiles = ['index.html', 'skill.html', 'guide.html', 'docs.html', 'shop.html', 'account.html'];
+const sharedPixelNavigation = [
+  ['首页', 'index.html'],
+  ['立即使用', 'index.html#quick-start'],
+  ['AI 一键配置', 'skill.html'],
+  ['下载', 'index.html#release-downloads'],
+  ['能力', 'index.html#quests'],
+  ['图鉴', 'index.html#gallery'],
+  ['使用说明', 'guide.html'],
+  ['文档', 'docs.html'],
+  ['商城', 'shop.html'],
+];
 const buyerKitDir = 'buyer-kit-7q4m9x2k6p8n3r5v';
 const buyerPageFiles = [
   `${buyerKitDir}/index.html`,
@@ -92,6 +104,16 @@ function stripHtmlComments(html) {
 
 function openingTags(html, tagName) {
   return html.match(new RegExp(`<${tagName}\\b[^>]*>`, 'gi')) ?? [];
+}
+
+function pixelNavigation(html) {
+  const nav = html.match(/<nav\b[^>]*class="[^"]*pixel-nav[^"]*"[^>]*>([^]*?)<\/nav>/i)?.[1];
+  assert.ok(nav, 'page should expose the shared pixel navigation');
+  return [...nav.matchAll(/<a\b([^>]*)>([^<]+)<\/a>/gi)].map((match) => ({
+    text: match[2].trim(),
+    href: attributeValue(`<a ${match[1]}>`, 'href'),
+    current: attributeValue(`<a ${match[1]}>`, 'aria-current'),
+  }));
 }
 
 test('required public files exist', () => {
@@ -189,6 +211,30 @@ test('all pages expose the shared navigation destinations', () => {
     for (const anchor of purchaseAnchors) {
       assert.equal(attributeValue(anchor, 'href'), purchaseUrl);
     }
+  }
+});
+
+test('pixel pages keep one immutable top navigation and only change the current-page marker', () => {
+  const expected = sharedPixelNavigation.map(([text, href]) => ({ text, href }));
+  const expectedCurrent = new Map([
+    ['index.html', '首页'],
+    ['skill.html', 'AI 一键配置'],
+    ['guide.html', '使用说明'],
+    ['docs.html', '文档'],
+    ['shop.html', '商城'],
+  ]);
+
+  for (const page of pixelPageFiles) {
+    const navigation = pixelNavigation(stripHtmlComments(read(page)));
+    assert.deepEqual(
+      navigation.map(({ text, href }) => ({ text, href })),
+      expected,
+      `${page} should keep the same navigation text, order, and destinations`,
+    );
+
+    const currentItems = navigation.filter(({ current }) => current === 'page').map(({ text }) => text);
+    const currentLabel = expectedCurrent.get(page);
+    assert.deepEqual(currentItems, currentLabel ? [currentLabel] : [], `${page} should only mark its current destination`);
   }
 });
 
@@ -405,7 +451,7 @@ test('account, guide, docs, and AI configuration routes use the shared pixel the
   }
 
   const home = stripHtmlComments(read('index.html'));
-  assert.match(home, /href="guide\.html"[^>]*>说明<\/a>/i);
+  assert.match(home, /href="guide\.html"[^>]*>使用说明<\/a>/i);
   assert.match(home, /href="docs\.html"[^>]*>文档<\/a>/i);
   assert.match(home, /href="skill\.html"/i);
   assert.match(home, /href="account\.html"/i);
