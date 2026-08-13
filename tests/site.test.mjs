@@ -396,7 +396,7 @@ test('account, guide, and AI configuration routes use the shared pixel theme', (
   for (const [page, currentLabel] of themedPages) {
     const html = stripHtmlComments(read(page));
     assert.match(html, /<body\b[^>]*class="[^"]*pixel-site[^"]*pixel-subpage[^"]*"/i);
-    assert.match(html, /<link\b[^>]*href="pixel-preview\.css\?v=20260812-theme-deck-v1"[^>]*>/i);
+    assert.match(html, /<link\b[^>]*href="pixel-preview\.css\?v=20260813-(?:account-contrast|account-plans(?:-v2)?)"[^>]*>/i);
     assert.match(html, /<script\b[^>]*src="pixel-preview\.js\?v=20260812-theme-deck-v1"[^>]*>/i);
     assert.match(html, /<header\b[^>]*class="pixel-header"/i);
     assert.match(html, /<footer\b[^>]*class="pixel-footer"/i);
@@ -433,7 +433,7 @@ test('account page exposes complete registration, email and username login, prof
     '当前没有桌面端登录请求',
     '允许并返回 AutoClipboard',
     '一次性授权码',
-    '高级版权益',
+    '高级版',
     '生成购买绑定码',
     '前往闲鱼购买',
   ]) {
@@ -471,6 +471,7 @@ test('account configuration is public-only and pins the CloudBase integration co
   assert.match(config, /accountApi:\s*['"]zko-account-api['"]/);
   assert.match(config, /desktopAuthUrl:\s*['"]https:\/\/zkolab-dev-[^'"]+\/desktop-auth['"]/);
   assert.match(config, /hostedAccountUrl:\s*['"]https:\/\/zkolab-dev-[^'"]+\.tcloudbaseapp\.com\/account\.html['"]/);
+  assert.match(config, /hostedAccountVersion:\s*['"]20260813-account-plans-v2['"]/);
   assert.match(config, /hostedBridgeUrl:\s*['"]https:\/\/zkolab-dev-[^'"]+\.tcloudbaseapp\.com\/account-bridge\.html['"]/);
   assert.match(config, /websiteUrl:\s*['"]https:\/\/zkolab\.com\/['"]/);
   assert.match(config, /protocol:\s*['"]autoclipboard:['"]/);
@@ -512,6 +513,44 @@ test('account page explains verification resend delay and validity', () => {
   assert.ok((html.match(/等待 60 秒/g) || []).length >= 2);
   assert.match(html, /data-email-code-timer/);
   assert.match(html, /data-register-code-timer/);
+});
+
+test('account avatar picker exposes a resizable crop frame and independent instant save', () => {
+  const html = stripHtmlComments(read('account.html'));
+  const script = read('account.js');
+  const styles = `${read('styles.css')}\n${read('pixel-preview.css')}`;
+  for (const marker of [
+    'data-avatar-cropper',
+    'data-avatar-crop-canvas',
+    'data-avatar-crop-frame',
+    'data-avatar-crop-handle',
+    'data-avatar-crop-reset',
+    'data-avatar-crop-apply',
+    '调整头像范围',
+    '拖动裁剪框选择头像区域',
+  ]) assert.match(html, new RegExp(escapeRegExp(marker)));
+  assert.match(script, /avatarCropFrame\.addEventListener\(['"]pointerdown['"]/);
+  assert.match(script, /avatarCropFrame\.addEventListener\(['"]pointermove['"]/);
+  assert.match(script, /avatarCropFrame\.setPointerCapture/);
+  assert.match(script, /function croppedAvatarCanvas/);
+  assert.match(script, /showModal[\s\S]*requestAnimationFrame\(\(\) => \{\s*resetAvatarCrop\(\)/);
+  assert.match(script, /action:\s*['"]updateAvatar['"]/);
+  assert.match(script, /renderProfile\(currentProfile\)/);
+  assert.doesNotMatch(script, /pendingAvatarDataUrl/);
+  assert.match(styles, /\.avatar-cropper__frame/);
+  assert.match(styles, /touch-action:\s*none/);
+  assert.match(styles, /\.pixel-subpage \.avatar-cropper/);
+});
+
+test('account exposes professional user-plan comparison and persistent login explanation', () => {
+  const html = stripHtmlComments(read('account.html'));
+  const script = read('account.js');
+  for (const phrase of ['用户计划', '基础版', '高级版', '功能', '高级语音控制', '保持登录']) {
+    assert.match(html, new RegExp(escapeRegExp(phrase)));
+  }
+  assert.match(html, /class="plan-comparison"/);
+  assert.match(html, /class="plan-feature-table"/);
+  assert.match(script, /app\.auth\(\{ persistence: ['"]local['"] \}\)/);
 });
 
 test('every public page exposes the upper-right account avatar area', () => {
@@ -623,6 +662,21 @@ test('shop presents preorder colors and reviewed microphone compatibility', () =
         && attributeValue(tag, 'aria-pressed') === 'true'),
     'gray should be the default color',
   );
+});
+
+test('account workspace keeps helper text readable on dark pixel panels', () => {
+  const pixelCss = read('pixel-preview.css');
+  const accountHtml = read('account.html');
+  assert.doesNotMatch(
+    pixelCss,
+    /\.pixel-subpage\.page--account\s*,\s*\.pixel-subpage\.page--account p\s*\{\s*color:\s*var\(--ink\)/,
+    'account paragraphs must not be forced to the dark ink color',
+  );
+  assert.ok(
+    pixelCss.includes('.pixel-subpage .account-section p:not(.account-label),\n.pixel-subpage .account-section small { color: var(--mint-light); }'),
+    'dark account panels should use the light helper-text color',
+  );
+  assert.match(accountHtml, /pixel-preview\.css\?v=20260813-account-plans-v2/);
 });
 
 test('pixel shop stylesheet defines responsive player-store layouts', () => {

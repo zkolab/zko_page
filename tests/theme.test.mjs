@@ -19,10 +19,10 @@ test('shared pixel theme picker exposes all backgrounds and persistence', () => 
   assert.match(css, /--theme-scene/);
 });
 
-test('public pixel pages use the theme-deck cache version', () => {
+test('public pixel pages use the current shared style and theme-deck script versions', () => {
   for (const page of ['index.html', 'account.html', 'guide.html', 'skill.html', 'shop.html']) {
     const html = read(page);
-    assert.match(html, /pixel-preview\.css\?v=20260812-theme-deck-v1/);
+    assert.match(html, /pixel-preview\.css\?v=20260813-(?:account-contrast|account-plans(?:-v2)?)/);
     assert.match(html, /pixel-preview\.js\?v=20260812-theme-deck-v1/);
   }
 });

@@ -37,6 +37,14 @@
   const workspace = select('[data-account-workspace]');
   const profileForm = select('[data-profile-form]');
   const avatarInput = select('[data-avatar-input]');
+  const avatarCropper = select('[data-avatar-cropper]');
+  const avatarCropStage = select('[data-avatar-crop-stage]');
+  const avatarCropCanvas = select('[data-avatar-crop-canvas]');
+  const avatarCropFrame = select('[data-avatar-crop-frame]');
+  const avatarCropHandle = select('[data-avatar-crop-handle]');
+  const avatarCropApply = select('[data-avatar-crop-apply]');
+  const avatarCropReset = select('[data-avatar-crop-reset]');
+  const avatarCropCancel = select('[data-avatar-crop-cancel]');
   const authorizeButton = select('[data-authorize-desktop]');
   const openDesktopLink = select('[data-open-desktop]');
   const startDesktopLink = select('[data-start-desktop]');
@@ -55,7 +63,13 @@
   let pendingRegistration = null;
   let currentUser = null;
   let currentProfile = null;
-  let pendingAvatarDataUrl = '';
+  const avatarCropState = {
+    bitmap: null,
+    frameX: 64,
+    frameY: 64,
+    frameSize: 384,
+    drag: null,
+  };
   const verificationTimers = new Map();
   let authorizing = false;
 
@@ -109,6 +123,8 @@
     if (/username.*exist|username.*registered|username_taken|23505/i.test(code)) return '这个用户名已被使用。';
     if (/username/i.test(code)) return '用户名格式不正确，或该用户名暂不可用。';
     if (/email/i.test(code)) return '请输入有效的邮箱地址。';
+    if (/avatar_invalid/i.test(code)) return '请选择不超过 5 MiB 的 JPG、PNG 或 WebP 图片。';
+    if (/avatar_too_large/i.test(code)) return '裁剪后的头像仍然过大，请换一张图片。';
     return `${fallback}${reference}`;
   }
 
@@ -262,6 +278,7 @@
     select('[data-premium-summary]').textContent = active ? '有效' : '未开通';
     select('[data-premium-status]').textContent = active ? `有效至 ${expiry}` : '当前没有有效权益';
     select('[data-premium-state]').textContent = active ? '高级版可用' : '未开通';
+    select('[data-basic-plan-state]').textContent = active ? '基础权益可用' : '当前计划';
     select('[data-premium-expiry]').textContent = active
       ? `到期时间：${expiry}。续费会从当前到期时间继续顺延。`
       : '购买后由管理员人工发放；未来自动支付也会进入同一权益流水。';
@@ -535,18 +552,13 @@
     verificationTimers.set(resendTarget, setInterval(renderCountdown, 1000));
   }
 
-  async function compressAvatar(file) {
-    if (!/^image\/(jpeg|png|webp)$/.test(file.type) || file.size > 5 * 1024 * 1024) throw new Error('avatar_invalid');
-    const bitmap = await createImageBitmap(file);
-    const scale = Math.min(1, 512 / Math.max(bitmap.width, bitmap.height));
-    const canvas = document.createElement('canvas');
-    canvas.width = Math.max(1, Math.round(bitmap.width * scale));
-    canvas.height = Math.max(1, Math.round(bitmap.height * scale));
-    const context = canvas.getContext('2d', { alpha: false });
-    context.fillStyle = '#101318';
-    context.fillRect(0, 0, canvas.width, canvas.height);
-    context.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
-    bitmap.close?.();
+  function validateAvatarFile(file) {
+    if (!/^image\/(jpeg|png|webp)$/.test(file.type) || file.size > 5 * 1024 * 1024) {
+      throw new Error('avatar_invalid');
+    }
+  }
+
+  function compressAvatarCanvas(canvas) {
     let quality = 0.88;
     let value = canvas.toDataURL('image/jpeg', quality);
     while (value.length > 690000 && quality > 0.5) {
@@ -555,6 +567,121 @@
     }
     if (value.length > 690000) throw new Error('avatar_too_large');
     return value;
+  }
+
+  function renderAvatarCrop() {
+    if (!avatarCropState.bitmap) return;
+    const context = avatarCropCanvas.getContext('2d', { alpha: false });
+    const scale = Math.min(
+      avatarCropCanvas.width / avatarCropState.bitmap.width,
+      avatarCropCanvas.height / avatarCropState.bitmap.height,
+    );
+    const width = avatarCropState.bitmap.width * scale;
+    const height = avatarCropState.bitmap.height * scale;
+    const x = (avatarCropCanvas.width - width) / 2;
+    const y = (avatarCropCanvas.height - height) / 2;
+    avatarCropState.imageBounds = { x, y, width, height };
+    context.fillStyle = '#101318';
+    context.fillRect(0, 0, avatarCropCanvas.width, avatarCropCanvas.height);
+    context.imageSmoothingEnabled = true;
+    context.imageSmoothingQuality = 'high';
+    context.drawImage(avatarCropState.bitmap, x, y, width, height);
+    const displayScale = avatarCropStage.clientWidth / avatarCropCanvas.width;
+    avatarCropFrame.style.left = `${avatarCropState.frameX * displayScale}px`;
+    avatarCropFrame.style.top = `${avatarCropState.frameY * displayScale}px`;
+    avatarCropFrame.style.width = `${avatarCropState.frameSize * displayScale}px`;
+    avatarCropFrame.style.height = `${avatarCropState.frameSize * displayScale}px`;
+  }
+
+  function clampAvatarCropFrame() {
+    const minimumSize = 128;
+    const bounds = avatarCropState.imageBounds || { x: 0, y: 0, width: avatarCropCanvas.width, height: avatarCropCanvas.height };
+    const maximumSize = Math.min(bounds.width, bounds.height);
+    avatarCropState.frameSize = Math.max(Math.min(minimumSize, maximumSize), Math.min(maximumSize, avatarCropState.frameSize));
+    avatarCropState.frameX = Math.max(bounds.x, Math.min(bounds.x + bounds.width - avatarCropState.frameSize, avatarCropState.frameX));
+    avatarCropState.frameY = Math.max(bounds.y, Math.min(bounds.y + bounds.height - avatarCropState.frameSize, avatarCropState.frameY));
+  }
+
+  function resetAvatarCrop() {
+    renderAvatarCrop();
+    const bounds = avatarCropState.imageBounds;
+    avatarCropState.frameSize = Math.min(bounds.width, bounds.height) * 0.78;
+    avatarCropState.frameX = bounds.x + (bounds.width - avatarCropState.frameSize) / 2;
+    avatarCropState.frameY = bounds.y + (bounds.height - avatarCropState.frameSize) / 2;
+    clampAvatarCropFrame();
+    renderAvatarCrop();
+  }
+
+  function croppedAvatarCanvas() {
+    const canvas = document.createElement('canvas');
+    canvas.width = 512;
+    canvas.height = 512;
+    const context = canvas.getContext('2d', { alpha: false });
+    context.fillStyle = '#101318';
+    context.fillRect(0, 0, canvas.width, canvas.height);
+    context.imageSmoothingEnabled = true;
+    context.imageSmoothingQuality = 'high';
+    context.drawImage(
+      avatarCropCanvas,
+      avatarCropState.frameX,
+      avatarCropState.frameY,
+      avatarCropState.frameSize,
+      avatarCropState.frameSize,
+      0,
+      0,
+      canvas.width,
+      canvas.height,
+    );
+    return canvas;
+  }
+
+  function disposeAvatarCrop() {
+    avatarCropState.bitmap?.close?.();
+    avatarCropState.bitmap = null;
+    avatarCropState.drag = null;
+  }
+
+  function closeAvatarCrop({ cancelled = false } = {}) {
+    disposeAvatarCrop();
+    avatarInput.value = '';
+    if (avatarCropper.open) {
+      if (typeof avatarCropper.close === 'function') avatarCropper.close();
+      else avatarCropper.removeAttribute('open');
+    }
+    if (cancelled) {
+      setMessage(select('[data-avatar-message]'), '已取消头像裁剪。');
+    }
+  }
+
+  async function openAvatarCrop(file) {
+    validateAvatarFile(file);
+    disposeAvatarCrop();
+    avatarCropState.bitmap = await createImageBitmap(file);
+    if (typeof avatarCropper.showModal === 'function') avatarCropper.showModal();
+    else avatarCropper.setAttribute('open', '');
+    requestAnimationFrame(() => {
+      resetAvatarCrop();
+      avatarCropCanvas.focus();
+    });
+  }
+
+  async function saveAvatar() {
+    const avatarMessage = select('[data-avatar-message]');
+    avatarCropApply.disabled = true;
+    setMessage(avatarMessage, '正在保存头像……');
+    try {
+      const avatarDataUrl = compressAvatarCanvas(croppedAvatarCanvas());
+      const response = await callAccountApi({ action: 'updateAvatar', avatarDataUrl });
+      if (!response.ok) throw new Error(response.code || 'avatar_upload_failed');
+      currentProfile = { ...currentProfile, ...response.account, email: currentUser?.email || '' };
+      renderProfile(currentProfile);
+      closeAvatarCrop();
+      setMessage(avatarMessage, '头像已保存，并已更新页面右上角头像。', 'success');
+    } catch (error) {
+      setMessage(avatarMessage, friendlyError(error, '头像保存失败，请稍后重试。'), 'error');
+    } finally {
+      avatarCropApply.disabled = false;
+    }
   }
 
   async function saveProfile() {
@@ -582,12 +709,10 @@
         displayName,
         fullName,
         username,
-        avatarDataUrl: pendingAvatarDataUrl || undefined,
       });
       if (!response.ok) throw new Error(response.code || 'profile_update_failed');
       currentUser = await auth.getCurrentUser();
       currentProfile = { ...response.account, email: currentUser?.email || '' };
-      pendingAvatarDataUrl = '';
       renderProfile(currentProfile);
       setMessage(select('[data-profile-message]'), '个人资料已保存。', 'success');
     } catch (error) {
@@ -652,20 +777,76 @@
     resetOtp();
     await refreshUi();
   });
+  avatarCropReset.addEventListener('click', resetAvatarCrop);
+  avatarCropCancel.addEventListener('click', () => closeAvatarCrop({ cancelled: true }));
+  avatarCropper.addEventListener('cancel', (event) => {
+    event.preventDefault();
+    closeAvatarCrop({ cancelled: true });
+  });
+  avatarCropFrame.addEventListener('pointerdown', (event) => {
+    if (!avatarCropState.bitmap) return;
+    const resizing = event.target === avatarCropHandle;
+    avatarCropState.drag = {
+      pointerId: event.pointerId,
+      clientX: event.clientX,
+      clientY: event.clientY,
+      frameX: avatarCropState.frameX,
+      frameY: avatarCropState.frameY,
+      frameSize: avatarCropState.frameSize,
+      resizing,
+    };
+    avatarCropFrame.setPointerCapture(event.pointerId);
+    avatarCropFrame.dataset.dragging = 'true';
+    event.preventDefault();
+  });
+  avatarCropFrame.addEventListener('pointermove', (event) => {
+    const drag = avatarCropState.drag;
+    if (!drag || drag.pointerId !== event.pointerId) return;
+    const bounds = avatarCropStage.getBoundingClientRect();
+    const scale = avatarCropCanvas.width / bounds.width;
+    const deltaX = (event.clientX - drag.clientX) * scale;
+    const deltaY = (event.clientY - drag.clientY) * scale;
+    if (drag.resizing) {
+      avatarCropState.frameSize = drag.frameSize + Math.max(deltaX, deltaY);
+    } else {
+      avatarCropState.frameX = drag.frameX + deltaX;
+      avatarCropState.frameY = drag.frameY + deltaY;
+    }
+    clampAvatarCropFrame();
+    renderAvatarCrop();
+  });
+  const endAvatarCropDrag = (event) => {
+    if (avatarCropState.drag?.pointerId !== event.pointerId) return;
+    avatarCropState.drag = null;
+    delete avatarCropFrame.dataset.dragging;
+  };
+  avatarCropFrame.addEventListener('pointerup', endAvatarCropDrag);
+  avatarCropFrame.addEventListener('pointercancel', endAvatarCropDrag);
+  avatarCropCanvas.addEventListener('keydown', (event) => {
+    const movement = event.shiftKey ? 24 : 8;
+    if (event.key === 'ArrowLeft') avatarCropState.frameX -= movement;
+    else if (event.key === 'ArrowRight') avatarCropState.frameX += movement;
+    else if (event.key === 'ArrowUp') avatarCropState.frameY -= movement;
+    else if (event.key === 'ArrowDown') avatarCropState.frameY += movement;
+    else if (event.key === '+' || event.key === '=') avatarCropState.frameSize += movement;
+    else if (event.key === '-' || event.key === '_') avatarCropState.frameSize -= movement;
+    else return;
+    event.preventDefault();
+    clampAvatarCropFrame();
+    renderAvatarCrop();
+  });
+  avatarCropApply.addEventListener('click', () => { if (avatarCropState.bitmap) void saveAvatar(); });
   avatarInput.addEventListener('change', async () => {
     const file = avatarInput.files?.[0];
     if (!file) return;
-    setMessage(select('[data-profile-message]'), '正在处理头像……');
+    setMessage(select('[data-avatar-message]'), '正在打开头像裁剪……');
     try {
-      pendingAvatarDataUrl = await compressAvatar(file);
-      const preview = select('[data-avatar-preview]');
-      preview.src = pendingAvatarDataUrl;
-      preview.hidden = false;
-      select('[data-avatar-preview-initial]').hidden = true;
-      setMessage(select('[data-profile-message]'), '头像已准备好，点击“保存个人资料”完成上传。', 'success');
+      await openAvatarCrop(file);
+      setMessage(select('[data-avatar-message]'), '拖动或缩放裁剪框，确认后头像会直接保存。');
     } catch (error) {
-      pendingAvatarDataUrl = '';
-      setMessage(select('[data-profile-message]'), friendlyError(error, '头像处理失败，请换一张图片。'), 'error');
+      disposeAvatarCrop();
+      avatarInput.value = '';
+      setMessage(select('[data-avatar-message]'), friendlyError(error, '头像处理失败，请换一张图片。'), 'error');
     }
   });
   profileForm.addEventListener('submit', (event) => { event.preventDefault(); void saveProfile(); });
