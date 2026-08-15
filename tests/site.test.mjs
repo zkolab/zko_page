@@ -6,8 +6,8 @@ import { runInNewContext } from 'node:vm';
 const purchaseUrl = 'https://www.goofish.com/item?spm=a21ybx.personal.feeds.2.5a4e6ac2FqZlZf&id=1065574393669&categoryId=50023914';
 const downloadUrl = 'https://github.com/Lijinzh/Communist-Manifesto-Releases';
 const giteeReleaseUrl = 'https://gitee.com/shan-yujun/Communist-Manifesto-Releases';
-const autoClipboardWindowsVersion = '0.3.65';
-const autoClipboardWindowsReleaseTag = 'v0.3.65';
+const autoClipboardWindowsVersion = '0.3.67';
+const autoClipboardWindowsReleaseTag = 'v0.3.67';
 const windowsFilename = `AutoClipboardSetup-${autoClipboardWindowsVersion}.exe`;
 const giteeWindowsDownloadUrl = `https://gitee.com/shan-yujun/Communist-Manifesto-Releases/releases/download/${autoClipboardWindowsReleaseTag}/AutoClipboardSetup-${autoClipboardWindowsVersion}.exe`;
 const githubWindowsDownloadUrl = `https://github.com/Lijinzh/Communist-Manifesto-Releases/releases/download/${autoClipboardWindowsReleaseTag}/AutoClipboardSetup-${autoClipboardWindowsVersion}.exe`;
@@ -26,7 +26,19 @@ const djiMicUrl = 'https://www.dji.com/cn/mic';
 const djiMic2Url = 'https://www.dji.com/cn/mic-2';
 const officialDriverUrl = 'https://www.wch.cn/downloads/CH343SER_EXE.html';
 const pageFiles = ['index.html', 'shop.html', 'guide.html', 'skill.html'];
-const allPublicPageFiles = [...pageFiles, 'account.html', 'old-page.html'];
+const allPublicPageFiles = [...pageFiles, 'docs.html', 'account.html', 'old-page.html'];
+const pixelPageFiles = ['index.html', 'skill.html', 'guide.html', 'docs.html', 'shop.html', 'account.html'];
+const sharedPixelNavigation = [
+  ['首页', 'index.html'],
+  ['立即使用', 'index.html#quick-start'],
+  ['AI 一键配置', 'skill.html'],
+  ['下载', 'index.html#release-downloads'],
+  ['能力', 'index.html#quests'],
+  ['图鉴', 'index.html#gallery'],
+  ['使用说明', 'guide.html'],
+  ['文档', 'docs.html'],
+  ['商城', 'shop.html'],
+];
 const buyerKitDir = 'buyer-kit-7q4m9x2k6p8n3r5v';
 const buyerPageFiles = [
   `${buyerKitDir}/index.html`,
@@ -51,7 +63,7 @@ const requiredProductImages = [
 ];
 const replacementImages = new Map([
   ['assets/images/software-main.webp', { width: '1180', height: '620', bytes: 58_292 }],
-  ['assets/images/software-settings.webp', { width: '1442', height: '852', bytes: 110_614 }],
+  ['assets/images/software-settings.webp', { width: '1442', height: '852', bytes: 106_860 }],
 ]);
 
 function fileUrl(path) {
@@ -94,6 +106,16 @@ function openingTags(html, tagName) {
   return html.match(new RegExp(`<${tagName}\\b[^>]*>`, 'gi')) ?? [];
 }
 
+function pixelNavigation(html) {
+  const nav = html.match(/<nav\b[^>]*class="[^"]*pixel-nav[^"]*"[^>]*>([^]*?)<\/nav>/i)?.[1];
+  assert.ok(nav, 'page should expose the shared pixel navigation');
+  return [...nav.matchAll(/<a\b([^>]*)>([^<]+)<\/a>/gi)].map((match) => ({
+    text: match[2].trim(),
+    href: attributeValue(`<a ${match[1]}>`, 'href'),
+    current: attributeValue(`<a ${match[1]}>`, 'aria-current'),
+  }));
+}
+
 test('required public files exist', () => {
   for (const path of [
     ...allPublicPageFiles,
@@ -113,6 +135,7 @@ test('required public files exist', () => {
     'assets/favicon.svg',
     'assets/favicon-pixel.png',
     'assets/apple-touch-icon.png',
+    'assets/autoclipboard-icon.png',
     'assets/images/pixel-hero.webp',
     'assets/vendor/cloudbase-3.7.1.min.js',
     'assets/vendor/cloudbase-3.7.1.min.js.LEGAL.txt',
@@ -141,8 +164,36 @@ test('all pages expose the shared ZKO favicon', () => {
   for (const color of ['#292756', '#fff8e8', '#ed7a3a', '#73cfc0']) assert.match(favicon, new RegExp(color, 'i'));
 });
 
+test('all public pages credit ZKO Lab and reserve site rights', () => {
+  for (const page of allPublicPageFiles) {
+    const html = read(page);
+    assert.match(html, /Made by ZKO Lab/i, `${page} should credit ZKO Lab`);
+    assert.match(html, /All Rights Reserved/i, `${page} should reserve site rights`);
+  }
+});
+
+test('pixel homepage keeps a substantial hero crop and reveals more product on scroll', () => {
+  const css = read('pixel-preview.css');
+  const script = read('pixel-preview.js');
+  assert.match(css, /min-height:\s*clamp\(760px,\s*74vw,\s*980px\)/);
+  assert.match(css, /@media \(min-width:\s*1600px\)/);
+  assert.match(css, /--hero-art-scale/);
+  assert.match(css, /object-fit:\s*contain/);
+  assert.match(css, /object-position:\s*right top/);
+  assert.match(script, /const isWideHero = \(\) => window\.innerWidth >= 1600/);
+  assert.match(script, /const progress = Math\.min\(1, Math\.max\(0, -rect\.top/);
+  assert.match(script, /requestAnimationFrame\(updateHeroArt\)/);
+  assert.match(script, /1\.12 - progress \* 0\.1/);
+});
+
+test('home download station shows the current AutoClipboard app icon', () => {
+  const html = read('index.html');
+  assert.match(html, /<img[^>]+class="pixel-download__app-icon"[^>]+src="assets\/autoclipboard-icon\.png\?v=20260812-rgb8"/i);
+  assert.ok(statSync(fileUrl('assets/autoclipboard-icon.png')).size > 5_000);
+});
+
 test('all pages expose the shared navigation destinations', () => {
-  const sharedHrefs = ['index.html', 'shop.html', 'guide.html', 'skill.html', 'account.html'];
+  const sharedHrefs = ['index.html', 'shop.html', 'guide.html', 'docs.html', 'skill.html', 'account.html'];
 
   for (const page of allPublicPageFiles) {
     const html = stripHtmlComments(read(page));
@@ -160,6 +211,40 @@ test('all pages expose the shared navigation destinations', () => {
     for (const anchor of purchaseAnchors) {
       assert.equal(attributeValue(anchor, 'href'), purchaseUrl);
     }
+  }
+});
+
+test('pixel pages keep one immutable top navigation and only change the current-page marker', () => {
+  const expected = sharedPixelNavigation.map(([text, href]) => ({ text, href }));
+  const expectedCurrent = new Map([
+    ['index.html', '首页'],
+    ['skill.html', 'AI 一键配置'],
+    ['guide.html', '使用说明'],
+    ['docs.html', '文档'],
+    ['shop.html', '商城'],
+  ]);
+
+  for (const page of pixelPageFiles) {
+    const navigation = pixelNavigation(stripHtmlComments(read(page)));
+    assert.deepEqual(
+      navigation.map(({ text, href }) => ({ text, href })),
+      expected,
+      `${page} should keep the same navigation text, order, and destinations`,
+    );
+
+    const currentItems = navigation.filter(({ current }) => current === 'page').map(({ text }) => text);
+    const currentLabel = expectedCurrent.get(page);
+    assert.deepEqual(currentItems, currentLabel ? [currentLabel] : [], `${page} should only mark its current destination`);
+  }
+});
+
+test('pixel pages load the versioned account routing config', () => {
+  for (const page of pixelPageFiles) {
+    assert.match(
+      read(page),
+      /<script\b[^>]*src="account-config\.js\?v=20260813-nav-consistency-v1"[^>]*>/i,
+      `${page} should bypass stale account routing config`,
+    );
   }
 });
 
@@ -357,27 +442,54 @@ test('pages have unique titles, main landmarks, and skip links', () => {
   assert.equal(new Set(titles).size, allPublicPageFiles.length, 'page titles should be unique');
 });
 
-test('account, guide, and AI configuration routes use the shared pixel theme', () => {
+test('account, guide, docs, and AI configuration routes use the shared pixel theme', () => {
   const themedPages = [
     ['account.html', '账户'],
     ['guide.html', '使用说明'],
+    ['docs.html', '文档'],
     ['skill.html', 'AI 一键配置'],
   ];
 
   for (const [page, currentLabel] of themedPages) {
     const html = stripHtmlComments(read(page));
     assert.match(html, /<body\b[^>]*class="[^"]*pixel-site[^"]*pixel-subpage[^"]*"/i);
-    assert.match(html, /<link\b[^>]*href="pixel-preview\.css\?v=20260812-subpages-v2"[^>]*>/i);
-    assert.match(html, /<script\b[^>]*src="pixel-preview\.js\?v=20260812-subpages"[^>]*>/i);
+    assert.match(html, /<link\b[^>]*href="pixel-preview\.css\?v=20260813-docs-center-v1"[^>]*>/i);
+    assert.match(html, /<script\b[^>]*src="pixel-preview\.js\?v=20260812-theme-deck-v1"[^>]*>/i);
     assert.match(html, /<header\b[^>]*class="pixel-header"/i);
     assert.match(html, /<footer\b[^>]*class="pixel-footer"/i);
     assert.match(html, new RegExp(`<a\\b[^>]*aria-current="page"[^>]*>${escapeRegExp(currentLabel)}<\\/a>|<a\\b[^>]*aria-current="page"[^>]*data-header-account`, 'i'));
   }
 
   const home = stripHtmlComments(read('index.html'));
-  assert.match(home, /href="guide\.html"[^>]*>说明<\/a>/i);
+  assert.match(home, /href="guide\.html"[^>]*>使用说明<\/a>/i);
+  assert.match(home, /href="docs\.html"[^>]*>文档<\/a>/i);
   assert.match(home, /href="skill\.html"/i);
   assert.match(home, /href="account\.html"/i);
+});
+
+test('documentation center exposes six complete areas and mirrored canonical sources', () => {
+  const html = stripHtmlComments(read('docs.html'));
+  for (const phrase of [
+    'Getting Started',
+    'Using',
+    'Features',
+    'Guides and Tutorials',
+    'Developer Guide',
+    'Reference',
+    '5 分钟完成首次连接',
+    'ZH-CN ↔ EN',
+    '短路径在官网，完整正文在发布仓库',
+  ]) assert.match(html, new RegExp(escapeRegExp(phrase)));
+
+  const cards = [...html.matchAll(/<article class="docs-card"[^>]*>([^]*?)<\/article>/gi)];
+  assert.equal(cards.length, 6);
+  for (const [, card] of cards) {
+    assert.match(card, /<h3>/);
+    assert.match(card, /<ul>/);
+    assert.match(card, /href="https:\/\/(?:gitee\.com|github\.com)\//);
+  }
+  assert.match(html, /docs\/zh-CN\/index\.md/);
+  assert.match(html, /docs\/en\/index\.md/);
 });
 
 test('account page exposes complete registration, email and username login, profile settings, billing, and desktop authorization', () => {
@@ -404,7 +516,7 @@ test('account page exposes complete registration, email and username login, prof
     '当前没有桌面端登录请求',
     '允许并返回 AutoClipboard',
     '一次性授权码',
-    '高级版权益',
+    '高级版',
     '生成购买绑定码',
     '前往闲鱼购买',
   ]) {
@@ -453,6 +565,7 @@ test('account configuration is public-only and pins the CloudBase integration co
   assert.match(config, /accountApi:\s*['"]zko-account-api['"]/);
   assert.match(config, /desktopAuthUrl:\s*['"]https:\/\/zkolab-dev-[^'"]+\/desktop-auth['"]/);
   assert.match(config, /hostedAccountUrl:\s*['"]https:\/\/zkolab-dev-[^'"]+\.tcloudbaseapp\.com\/account\.html['"]/);
+  assert.match(config, /hostedAccountVersion:\s*['"]20260813-nav-consistency-v1['"]/);
   assert.match(config, /hostedBridgeUrl:\s*['"]https:\/\/zkolab-dev-[^'"]+\.tcloudbaseapp\.com\/account-bridge\.html['"]/);
   assert.match(config, /websiteUrl:\s*['"]https:\/\/zkolab\.com\/['"]/);
   assert.match(config, /protocol:\s*['"]autoclipboard:['"]/);
@@ -496,6 +609,44 @@ test('account page explains verification resend delay and validity', () => {
   assert.ok((html.match(/等待 60 秒/g) || []).length >= 2);
   assert.match(html, /data-email-code-timer/);
   assert.match(html, /data-register-code-timer/);
+});
+
+test('account avatar picker exposes a resizable crop frame and independent instant save', () => {
+  const html = stripHtmlComments(read('account.html'));
+  const script = read('account.js');
+  const styles = `${read('styles.css')}\n${read('pixel-preview.css')}`;
+  for (const marker of [
+    'data-avatar-cropper',
+    'data-avatar-crop-canvas',
+    'data-avatar-crop-frame',
+    'data-avatar-crop-handle',
+    'data-avatar-crop-reset',
+    'data-avatar-crop-apply',
+    '调整头像范围',
+    '拖动裁剪框选择头像区域',
+  ]) assert.match(html, new RegExp(escapeRegExp(marker)));
+  assert.match(script, /avatarCropFrame\.addEventListener\(['"]pointerdown['"]/);
+  assert.match(script, /avatarCropFrame\.addEventListener\(['"]pointermove['"]/);
+  assert.match(script, /avatarCropFrame\.setPointerCapture/);
+  assert.match(script, /function croppedAvatarCanvas/);
+  assert.match(script, /showModal[\s\S]*requestAnimationFrame\(\(\) => \{\s*resetAvatarCrop\(\)/);
+  assert.match(script, /action:\s*['"]updateAvatar['"]/);
+  assert.match(script, /renderProfile\(currentProfile\)/);
+  assert.doesNotMatch(script, /pendingAvatarDataUrl/);
+  assert.match(styles, /\.avatar-cropper__frame/);
+  assert.match(styles, /touch-action:\s*none/);
+  assert.match(styles, /\.pixel-subpage \.avatar-cropper/);
+});
+
+test('account exposes professional user-plan comparison and persistent login explanation', () => {
+  const html = stripHtmlComments(read('account.html'));
+  const script = read('account.js');
+  for (const phrase of ['用户计划', '基础版', '高级版', '功能', '高级语音控制', '保持登录']) {
+    assert.match(html, new RegExp(escapeRegExp(phrase)));
+  }
+  assert.match(html, /class="plan-comparison"/);
+  assert.match(html, /class="plan-feature-table"/);
+  assert.match(script, /app\.auth\(\{ persistence: ['"]local['"] \}\)/);
 });
 
 test('every public page exposes the upper-right account avatar area', () => {
@@ -577,6 +728,12 @@ test('classic homepage remains available as a separate archived page', () => {
 
 test('shop presents preorder colors and reviewed microphone compatibility', () => {
   const html = stripHtmlComments(read('shop.html'));
+  assert.match(html, /class=["'][^"']*pixel-site[^"']*pixel-shop/);
+  assert.match(html, /shop-pixel\.css\?v=20260812-shop-pixel-v1/);
+  assert.match(html, /pixel-preview\.js\?v=20260812-theme-deck-v1/);
+  assert.match(html, /装备你的/);
+  assert.match(html, /玩家配色/);
+  assert.match(html, /STORE SYSTEM ONLINE/);
   for (const color of ['灰色', '红色', '白色', '黑色', '紫色', '其他自选颜色']) {
     assert.match(html, new RegExp(color), `shop should mention ${color}`);
   }
@@ -601,6 +758,37 @@ test('shop presents preorder colors and reviewed microphone compatibility', () =
         && attributeValue(tag, 'aria-pressed') === 'true'),
     'gray should be the default color',
   );
+});
+
+test('account workspace keeps helper text readable on dark pixel panels', () => {
+  const pixelCss = read('pixel-preview.css');
+  const accountHtml = read('account.html');
+  assert.doesNotMatch(
+    pixelCss,
+    /\.pixel-subpage\.page--account\s*,\s*\.pixel-subpage\.page--account p\s*\{\s*color:\s*var\(--ink\)/,
+    'account paragraphs must not be forced to the dark ink color',
+  );
+  assert.match(
+    pixelCss,
+    /\.pixel-subpage \.account-section p:not\(\.account-label\),\s*\.pixel-subpage \.account-section small\s*\{\s*color:\s*var\(--mint-light\);\s*\}/,
+    'dark account panels should use the light helper-text color',
+  );
+  assert.match(accountHtml, /pixel-preview\.css\?v=20260813-docs-center-v1/);
+});
+
+test('pixel shop stylesheet defines responsive player-store layouts', () => {
+  const css = read('shop-pixel.css');
+  for (const selector of [
+    '.shop-pixel-hero',
+    '.shop-signal-strip',
+    '.shop-gallery-grid',
+    '.shop-color-console',
+    '.shop-feedback-section',
+    '.shop-mic-grid',
+    '.shop-package-section',
+  ]) assert.match(css, new RegExp(escapeRegExp(selector)));
+  assert.match(css, /@media \(max-width:\s*1080px\)/);
+  assert.match(css, /@media \(max-width:\s*700px\)/);
 });
 
 test('shop links the Tencent Docs feedback area without claiming direct submission', () => {
@@ -727,6 +915,13 @@ test('numbered software screenshots use the approved files and dimensions', () =
   }
 });
 
+test('shop presents the current AutoClipboard interface', () => {
+  const html = read('shop.html');
+  assert.match(html, /AUTOCLIPBOARD_0\.3\.67\.EXE/);
+  assert.match(html, /0\.3\.67 设备仪表盘、Profile、宏按键、IMU 与固件维护/);
+  assert.doesNotMatch(html, /带编号说明的 AutoClipboard/);
+});
+
 test('all page images are local, accessible, dimensioned, and present', () => {
   for (const page of pageFiles) {
     const html = stripHtmlComments(read(page));
@@ -754,6 +949,15 @@ test('pages do not copy DJI-hosted media or brand assets', () => {
       assert.doesNotMatch(attributeValue(image, 'src') ?? '', /dji\.com|djicdn\.com|dji-logo/i);
     }
   }
+});
+
+test('homepage hero replaces third-party marks with a disclosed ZKO visual composite', () => {
+  const html = stripHtmlComments(read('index.html'));
+  assert.match(html, /pixel-hero\.webp\?v=20260812-white-zko-mic-mark/);
+  assert.match(html, /麦克风仅作搭配示意，不随产品销售/);
+  assert.match(html, /白色 ZKO 标志为视觉合成/);
+  assert.match(html, /不代表该麦克风由 ZKO 生产/);
+  assert.doesNotMatch(html, />\s*(?:DJI|大疆)\s*</i);
 });
 
 test('styles define flagship layouts, responsive behavior, focus, and reduced motion', () => {
@@ -852,12 +1056,19 @@ test('script defines reviewed URLs and applies the purchase destination', () => 
 test('homepage links the prominent Agent install flow and Skill page keeps it copyable', async () => {
   const home = stripHtmlComments(read('index.html'));
   const skill = stripHtmlComments(read('skill.html'));
-  assert.match(home, /下载、API、Skills/);
-  assert.match(home, /下载控制软件/);
+  const skillPromptIndex = home.indexOf('data-copy-install="agent-prompt"');
+  const manualDownloadIndex = home.indexOf('data-platform-recommendation-primary');
+  const apiPromptIndex = home.indexOf('data-copy-install="api-prompt"');
+  assert.match(home, /复制一句话/);
+  assert.match(home, /有 Agent/);
+  assert.match(home, /通常不需要你先手动下载安装包/);
+  assert.match(home, /没有 Agent？手动下载/);
   assert.match(home, /data-platform-recommendation-primary/);
   assert.match(home, /data-copy-install=["']api-prompt["']/);
   assert.match(home, /data-copy-install=["']agent-prompt["']/);
-  assert.match(home, /复制 Skills 提示词/);
+  assert.ok(skillPromptIndex >= 0 && skillPromptIndex < manualDownloadIndex, 'Agent prompt should appear before manual download');
+  assert.ok(manualDownloadIndex < apiPromptIndex, 'manual download should appear before optional API setup');
+  assert.match(home, /复制给我的 Agent/);
   assert.match(home, /data-copy-status/);
   assert.match(home, /href=["']skill\.html["']/);
   assert.match(read('script.js'), /'api-prompt'/);
@@ -1129,51 +1340,4 @@ test('buyer guide assets provide responsive focus-safe progressive enhancement',
   assert.match(script, /data-copy-button/);
   assert.match(script, /navigator\.clipboard/);
   assert.match(script, /复制成功/);
-});
-
-test('Tennis Video Helper page puts the fixed Windows installer in the first viewport', () => {
-  const html = stripHtmlComments(read('tennis-video-helper.html'));
-  const installerUrl = 'https://github.com/Lijinzh/TennisVideoHelper/releases/download/v0.1.0/TennisVideoHelper-Setup-0.1.0.exe';
-  const heroEnd = html.indexOf('</section>');
-  assert.ok(heroEnd > 0);
-  assert.match(html.slice(0, heroEnd), /data-tv-download/);
-  assert.match(html.slice(0, heroEnd), new RegExp(escapeRegExp(installerUrl)));
-  assert.match(html, /当前安装包位于私有 GitHub Release/);
-  assert.match(html, /156\.2 MiB/);
-  assert.match(html, /1D5101A6F1341D1AF6BAEC17A15FBBB68A94895EB0E1F2ABEF40FAD85D255B37/);
-  assert.match(html, /当前安装包没有数字签名/);
-});
-
-test('Tennis Video Helper page covers features, settings, progress, installation, and local UI assets', () => {
-  const html = stripHtmlComments(read('tennis-video-helper.html'));
-  for (const id of ['overview', 'features', 'settings', 'progress', 'install']) {
-    assert.match(html, new RegExp(`id=["']${id}["']`));
-  }
-  for (const phrase of ['声音', '人体骨架', '球拍检测', '击球时间线', '覆盖同名旧结果', '研发进度', 'SmartScreen']) {
-    assert.match(html, new RegExp(escapeRegExp(phrase)));
-  }
-  for (const asset of [
-    'assets/images/tennis-video-helper/app-icon.png',
-    'assets/images/tennis-video-helper/app-review.webp',
-    'assets/images/tennis-video-helper/app-settings.webp',
-    'tennis-video-helper.css',
-    'tennis-video-helper.js',
-  ]) requireFile(asset);
-  assert.ok(statSync(fileUrl('assets/images/tennis-video-helper/app-review.webp')).size > 50_000);
-  assert.ok(statSync(fileUrl('assets/images/tennis-video-helper/app-settings.webp')).size > 50_000);
-  assert.doesNotMatch(html, /C:\\Users\\admin/i);
-  assert.match(read('index.html'), /href="tennis-video-helper\.html"/);
-});
-
-test('Tennis Video Helper pixel theme is responsive and its release metadata is centralized', () => {
-  const css = read('tennis-video-helper.css').replace(/\/\*[^]*?\*\//g, '');
-  for (const selector of ['.tennis-hero', '.tennis-signal-strip', '.tennis-feature-row', '.tennis-settings-section', '.tennis-timeline', '.tennis-install-section']) {
-    assert.match(css, new RegExp(escapeRegExp(selector)));
-  }
-  assert.match(css, /@media\b[^{}]*\(\s*max-width\s*:/i);
-  assert.match(css, /@media\b[^{}]*\(\s*prefers-reduced-motion\s*:\s*reduce\s*\)/i);
-  const script = read('tennis-video-helper.js');
-  assert.match(script, /TennisVideoHelper-Setup-0\.1\.0\.exe/);
-  assert.match(script, /navigator\.clipboard\.writeText/);
-  assert.match(script, /data-tv-download/);
 });

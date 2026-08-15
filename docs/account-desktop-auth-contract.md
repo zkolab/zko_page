@@ -33,7 +33,8 @@
 
 - `action=overview`：幂等创建业务账户与钱包并返回余额、产品、`voice.premium` 和购买绑定状态。
 - `action=checkUsername`：在保存前检查业务用户名是否可用。
-- `action=updateProfile`：更新显示名称、姓名、用户名和经过大小与格式校验的头像。
+- `action=updateProfile`：只更新显示名称、姓名和用户名；再次打开账户中心时从业务数据库回填这些资料。
+- `action=updateAvatar`：独立上传经过浏览器裁剪、压缩和格式校验的头像，只更新 `avatar_file_id`，不要求重复提交其他个人资料。
 - `action=authorizeDesktop`：将当前 CloudBase 用户绑定到一次性桌面登录票据。
 - `action=createRecharge`：只在支付宝或微信商户 API 真正配置后创建订单；当前 fail closed，不使用普通收款码伪造自动到账。
 - `action=createPurchaseBinding`：生成 7 天有效的一次性闲鱼购买绑定码，数据库只保存 SHA-256。

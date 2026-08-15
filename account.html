@@ -9,13 +9,13 @@
   <link rel="icon" href="assets/favicon.ico?v=20260811-pixel">
   <link rel="icon" href="assets/favicon.svg?v=20260812-ziku" type="image/svg+xml">
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=20260811-pixel">
-  <link rel="stylesheet" href="styles.css?v=20260816-account-username">
-  <link rel="stylesheet" href="pixel-preview.css?v=20260812-subpages-v2">
+  <link rel="stylesheet" href="styles.css?v=20260816-account-username-v2">
+  <link rel="stylesheet" href="pixel-preview.css?v=20260813-docs-center-v1">
   <script src="assets/vendor/cloudbase-3.7.1.min.js" defer></script>
-  <script src="account-config.js?v=20260812-account-pixel" defer></script>
-  <script src="script.js?v=20260816-account-username" defer></script>
-  <script src="pixel-preview.js?v=20260812-subpages" defer></script>
-  <script src="account.js?v=20260816-account-username" defer></script>
+  <script src="account-config.js?v=20260813-nav-consistency-v1" defer></script>
+  <script src="script.js?v=20260816-account-username-v2" defer></script>
+  <script src="pixel-preview.js?v=20260812-theme-deck-v1" defer></script>
+  <script src="account.js?v=20260816-account-username-v2" defer></script>
 </head>
 <body class="pixel-site pixel-subpage page page--account">
   <a class="skip-link" href="#main-content">跳到主要内容</a>
@@ -32,9 +32,13 @@
     <button class="pixel-menu" type="button" data-pixel-menu aria-expanded="false" aria-controls="pixel-nav">MENU</button>
     <nav class="pixel-nav" id="pixel-nav" data-pixel-nav aria-label="主要导航">
       <a href="index.html" data-public-site-link="index.html">首页</a>
-      <a href="guide.html" data-public-site-link="guide.html">使用说明</a>
+      <a href="index.html#quick-start" data-public-site-link="index.html#quick-start">立即使用</a>
       <a href="skill.html" data-public-site-link="skill.html">AI 一键配置</a>
       <a href="index.html#release-downloads" data-public-site-link="index.html#release-downloads">下载</a>
+      <a href="index.html#quests" data-public-site-link="index.html#quests">能力</a>
+      <a href="index.html#gallery" data-public-site-link="index.html#gallery">图鉴</a>
+      <a href="guide.html" data-public-site-link="guide.html">使用说明</a>
+      <a href="docs.html" data-public-site-link="docs.html">文档</a>
       <a href="shop.html" data-public-site-link="shop.html">商城</a>
     </nav>
     <a class="pixel-account" href="account.html" aria-current="page" data-header-account>
@@ -136,7 +140,7 @@
           <a href="#overview">账户总览</a>
           <a href="#profile">个人资料</a>
           <a href="#security">安全与登录</a>
-          <a href="#premium">高级版权益</a>
+          <a href="#plans">用户计划</a>
           <a href="#desktop">AutoClipboard</a>
           <a href="#billing">充值与账单</a>
           <a href="admin.html" hidden data-admin-link>管理后台</a>
@@ -155,13 +159,24 @@
           <form class="profile-form" data-profile-form novalidate>
             <div class="avatar-editor">
               <span class="profile-avatar profile-avatar--editor"><img src="assets/favicon-pixel.png?v=20260811-pixel" width="90" height="90" alt="头像预览" hidden data-avatar-preview><span data-avatar-preview-initial>Z</span></span>
-              <div><label class="button button--small button--light" for="profile-avatar">选择头像</label><input id="profile-avatar" type="file" accept="image/png,image/jpeg,image/webp" hidden data-avatar-input><p>支持 JPG、PNG、WebP；上传前会在浏览器压缩，最大 512 KiB。</p></div>
+              <div class="avatar-editor__controls"><label class="button button--small button--light" for="profile-avatar">选择并裁剪头像</label><input id="profile-avatar" type="file" accept="image/png,image/jpeg,image/webp" hidden data-avatar-input><p>支持 JPG、PNG、WebP；拖动裁剪框调整范围，确认后会立即保存并替换右上角头像。</p><p class="form-status" role="status" aria-live="polite" data-avatar-message></p></div>
             </div>
             <div class="profile-fields">
               <label><span>用户名</span><div class="input-prefix"><span>@</span><input class="account-input" type="text" minlength="3" maxlength="32" pattern="(?=.*[a-z])[a-z0-9](?:[a-z0-9_-]{1,30}[a-z0-9])" autocomplete="username" required data-profile-username-input></div><small>须包含字母；可使用小写字母、数字、短横线和下划线。保存后用于登录，并显示在网页和 AutoClipboard 中。</small></label>
             </div>
             <div class="form-actions"><button class="button" type="submit" data-save-profile>保存个人资料</button><p class="form-status" role="status" aria-live="polite" data-profile-message></p></div>
           </form>
+          <dialog class="avatar-cropper" aria-labelledby="avatar-cropper-title" data-avatar-cropper>
+            <div class="avatar-cropper__shell">
+              <header><div><p class="account-label">AVATAR CROP</p><h3 id="avatar-cropper-title">调整头像范围</h3></div><button class="text-button" type="button" aria-label="关闭头像裁剪" data-avatar-crop-cancel>关闭</button></header>
+              <div class="avatar-cropper__stage" data-avatar-crop-stage>
+                <canvas width="512" height="512" tabindex="0" aria-label="头像裁剪区域，可拖动图片或使用方向键调整位置" data-avatar-crop-canvas></canvas>
+                <div class="avatar-cropper__frame" aria-label="可拖动和缩放的裁剪框" data-avatar-crop-frame><span data-avatar-crop-handle aria-hidden="true"></span></div>
+              </div>
+              <p class="avatar-cropper__help">拖动裁剪框选择头像区域；拖动右下角把手调整裁剪框大小，方向键可微调位置。</p>
+              <div class="avatar-cropper__actions"><button class="button button--small button--light" type="button" data-avatar-crop-reset>复位</button><button class="button button--small" type="button" data-avatar-crop-apply>使用此区域</button></div>
+            </div>
+          </dialog>
         </section>
 
         <section class="account-section" id="security">
@@ -169,23 +184,40 @@
           <div class="settings-list">
             <article><div><strong>绑定邮箱</strong><p data-security-email>正在读取……</p></div><span class="settings-state">已验证</span></article>
             <article><div><strong>用户名登录</strong><p data-security-username>保存用户名后即可配置密码。</p></div><span class="settings-state" data-username-state>未配置</span></article>
+            <article><div><strong>保持登录</strong><p>此设备已启用 CloudBase 安全持久会话，关闭浏览器后仍会记住登录；显式退出或会话到期后清除。</p></div><span class="settings-state">已启用</span></article>
             <article><div><strong>账户密码</strong><p>通过绑定邮箱收到安全链接来设置或修改密码，网站不接触密码明文。</p></div><button class="button button--small button--light" type="button" data-reset-password>发送设置密码邮件</button></article>
           </div>
           <p class="form-status" role="status" aria-live="polite" data-security-message></p>
         </section>
 
-        <section class="account-section account-section--premium" id="premium">
-          <div class="account-section__heading"><div><p class="account-label">PREMIUM</p><h2>AutoClipboard 高级版权益</h2></div><span data-premium-status>正在读取权益……</span></div>
-          <div class="premium-grid">
-            <article class="premium-status-card">
-              <small>当前状态</small><strong data-premium-state>未开通</strong><p data-premium-expiry>购买后由管理员人工发放，后续自动支付也会进入同一权益流水。</p>
+        <section class="account-section account-section--premium" id="plans">
+          <div class="account-section__heading"><div><p class="account-label">USER PLANS</p><h2>选择适合你的用户计划</h2></div><span data-premium-status>正在读取当前计划……</span></div>
+          <div class="plan-comparison" aria-label="用户计划权益对比">
+            <article class="plan-card">
+              <div class="plan-card__heading"><span>FREE</span><h3>基础版</h3><p>适合先体验手柄和本地工作流。</p></div>
+              <strong class="plan-card__price">¥0<small>/ 长期</small></strong>
+              <ul><li>本地手柄配置</li><li>基础快捷操作</li><li>公开教程与 Skill</li><li class="is-muted">不含高级语音权益</li></ul>
+              <span class="button button--small button--light plan-card__current" data-basic-plan-state>当前计划</span>
             </article>
-            <form class="premium-purchase-card" data-premium-purchase-form>
-              <label><span>选择套餐</span><select class="account-input" data-premium-product></select></label>
-              <div class="premium-actions"><button class="button" type="button" data-create-binding>生成购买绑定码</button><a class="button button--light" href="https://www.goofish.com/item?id=1065574393669" target="_blank" rel="noopener noreferrer" data-goofish-purchase>前往闲鱼购买</a></div>
-              <output class="binding-code" hidden data-binding-code></output>
-              <p class="form-status" role="status" aria-live="polite" data-binding-message>购买后把绑定码发给卖家；管理员核对闲鱼订单后发放权益。</p>
-            </form>
+            <article class="plan-card plan-card--featured">
+              <div class="plan-card__heading"><span>PREMIUM</span><h3>高级版</h3><p>适合持续使用 AI 编程与高级语音能力。</p></div>
+              <div class="plan-card__status"><small>当前权益</small><strong data-premium-state>未开通</strong><p data-premium-expiry>购买后由管理员核对订单并发放权益。</p></div>
+              <ul><li>包含基础版全部能力</li><li>高级语音控制权益</li><li>云端账户权益同步</li><li>有效期可连续顺延</li></ul>
+              <form class="plan-purchase" data-premium-purchase-form>
+                <label><span>选择高级版周期</span><select class="account-input" data-premium-product></select></label>
+                <div class="plan-purchase__steps"><span>1 生成专属绑定码</span><span>2 前往官方闲鱼订单</span><span>3 核对后到账</span></div>
+                <div class="premium-actions"><button class="button" type="button" data-create-binding>生成购买绑定码</button><a class="button button--light" href="https://www.goofish.com/item?id=1065574393669" target="_blank" rel="noopener noreferrer" data-goofish-purchase>前往闲鱼购买</a></div>
+                <output class="binding-code" hidden data-binding-code></output>
+                <p class="form-status" role="status" aria-live="polite" data-binding-message>购买时提交绑定码，订单核对完成后权益会显示在此页面和 AutoClipboard。</p>
+              </form>
+            </article>
+          </div>
+          <div class="plan-feature-table" role="table" aria-label="计划功能对比">
+            <div role="row"><strong role="columnheader">功能</strong><strong role="columnheader">基础版</strong><strong role="columnheader">高级版</strong></div>
+            <div role="row"><span role="rowheader">手柄本地配置</span><span>支持</span><span>支持</span></div>
+            <div role="row"><span role="rowheader">AI Agent 安装指南</span><span>支持</span><span>支持</span></div>
+            <div role="row"><span role="rowheader">高级语音控制</span><span>—</span><span>支持</span></div>
+            <div role="row"><span role="rowheader">账户权益同步</span><span>基础资料</span><span>资料与高级权益</span></div>
           </div>
         </section>
 
@@ -222,9 +254,9 @@
 
   <footer class="pixel-footer">
     <div class="pixel-footer__brand"><span>ZKO</span><strong>字库 AI 编程手柄</strong><p>一个像素账户，连接网页资料、余额和 AutoClipboard。</p></div>
-    <nav aria-label="页脚导航"><a href="index.html" data-public-site-link="index.html">像素主页</a><a href="guide.html" data-public-site-link="guide.html">使用说明</a><a href="skill.html" data-public-site-link="skill.html">AI 一键配置</a><a href="shop.html" data-public-site-link="shop.html">商城</a><a data-purchase-link href="https://www.goofish.com/item?spm=a21ybx.personal.feeds.2.5a4e6ac2FqZlZf&amp;id=1065574393669&amp;categoryId=50023914" target="_blank" rel="noopener noreferrer">前往闲鱼购买</a></nav>
+    <nav aria-label="页脚导航"><a href="index.html" data-public-site-link="index.html">像素主页</a><a href="docs.html" data-public-site-link="docs.html">文档中心</a><a href="guide.html" data-public-site-link="guide.html">使用说明</a><a href="skill.html" data-public-site-link="skill.html">AI 一键配置</a><a href="shop.html" data-public-site-link="shop.html">商城</a><a data-purchase-link href="https://www.goofish.com/item?spm=a21ybx.personal.feeds.2.5a4e6ac2FqZlZf&amp;id=1065574393669&amp;categoryId=50023914" target="_blank" rel="noopener noreferrer">前往闲鱼购买</a></nav>
     <div class="pixel-footer__status"><span><i></i> ACCOUNT SYSTEM</span><small>公开内容无需登录；账户功能以 CloudBase 后端实际状态为准。</small></div>
-    <p class="pixel-footer__bottom">© 2026 ZKO 字库 // PLAYER DATA SECURED</p>
+    <p class="pixel-footer__bottom">MADE BY ZKO LAB // © 2026 ZKO 字库 // ALL RIGHTS RESERVED</p>
   </footer>
 </body>
 </html>

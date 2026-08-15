@@ -13,10 +13,10 @@
   <link rel="icon" href="assets/favicon.svg?v=20260812-ziku" type="image/svg+xml">
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=20260811-pixel">
   <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="pixel-preview.css?v=20260812-subpages-v2">
-  <script src="account-config.js" defer></script>
-  <script src="script.js?v=20260816-account-username" defer></script>
-  <script src="pixel-preview.js?v=20260812-subpages" defer></script>
+  <link rel="stylesheet" href="pixel-preview.css?v=20260813-docs-center-v1">
+  <script src="account-config.js?v=20260813-nav-consistency-v1" defer></script>
+  <script src="script.js?v=20260816-account-username-v2" defer></script>
+  <script src="pixel-preview.js?v=20260812-theme-deck-v1" defer></script>
 </head>
 <body class="pixel-site pixel-subpage page page--skill">
   <a class="skip-link" href="#main-content">跳到主要内容</a>
@@ -32,11 +32,15 @@
     </a>
     <button class="pixel-menu" type="button" data-pixel-menu aria-expanded="false" aria-controls="pixel-nav">MENU</button>
     <nav class="pixel-nav" id="pixel-nav" data-pixel-nav aria-label="主要导航">
-      <a href="index.html">首页</a>
-      <a href="guide.html">使用说明</a>
-      <a href="skill.html" aria-current="page">AI 一键配置</a>
-      <a href="index.html#release-downloads">下载</a>
-      <a href="shop.html">商城</a>
+      <a href="index.html" data-public-site-link="index.html">首页</a>
+      <a href="index.html#quick-start" data-public-site-link="index.html#quick-start">立即使用</a>
+      <a href="skill.html" aria-current="page" data-public-site-link="skill.html">AI 一键配置</a>
+      <a href="index.html#release-downloads" data-public-site-link="index.html#release-downloads">下载</a>
+      <a href="index.html#quests" data-public-site-link="index.html#quests">能力</a>
+      <a href="index.html#gallery" data-public-site-link="index.html#gallery">图鉴</a>
+      <a href="guide.html" data-public-site-link="guide.html">使用说明</a>
+      <a href="docs.html" data-public-site-link="docs.html">文档</a>
+      <a href="shop.html" data-public-site-link="shop.html">商城</a>
     </nav>
     <a class="pixel-account" href="account.html" data-header-account>
       <span class="pixel-account__avatar"><img src="assets/favicon-pixel.png?v=20260811-pixel" width="32" height="32" alt="账户头像" hidden data-header-account-image><span data-header-account-initial>Z</span></span>
@@ -121,15 +125,15 @@ codex plugin add zko-ai-coding-handle@zko-lab</code></pre>
     </section>
 
     <section class="closing-cta" aria-labelledby="skill-closing-title">
-      <div data-reveal><p class="kicker">START WITH ONE SENTENCE</p><h2 id="skill-closing-title">先让 Agent 配好，<br>再开始创作</h2><div class="inline-actions"><button class="button button--light" type="button" data-copy-install="agent-prompt">复制完整安装请求</button><a class="text-link" data-windows-download-link href="https://gitee.com/shan-yujun/Communist-Manifesto-Releases/releases/download/v0.3.65/AutoClipboardSetup-0.3.65.exe" download="AutoClipboardSetup-0.3.65.exe" rel="noopener noreferrer">不用 Agent，直接下载 Windows 软件</a></div></div>
+      <div data-reveal><p class="kicker">START WITH ONE SENTENCE</p><h2 id="skill-closing-title">先让 Agent 配好，<br>再开始创作</h2><div class="inline-actions"><button class="button button--light" type="button" data-copy-install="agent-prompt">复制完整安装请求</button><a class="text-link" data-windows-download-link href="https://gitee.com/shan-yujun/Communist-Manifesto-Releases/releases/download/v0.3.67/AutoClipboardSetup-0.3.67.exe" download="AutoClipboardSetup-0.3.67.exe" rel="noopener noreferrer">不用 Agent，直接下载 Windows 软件</a></div></div>
     </section>
   </main>
 
   <footer class="pixel-footer">
     <div class="pixel-footer__brand"><span>ZKO</span><strong>AI 一键配置</strong><p>让 Agent 把软件、手柄与按键映射装进同一套像素工作流。</p></div>
-    <nav aria-label="页脚导航"><a href="index.html">像素主页</a><a href="guide.html">使用说明</a><a href="#install">安装方式</a><a href="account.html">账户中心</a><a data-purchase-link href="https://www.goofish.com/item?spm=a21ybx.personal.feeds.2.5a4e6ac2FqZlZf&amp;id=1065574393669&amp;categoryId=50023914" target="_blank" rel="noopener noreferrer">前往闲鱼购买</a></nav>
+    <nav aria-label="页脚导航"><a href="index.html">像素主页</a><a href="docs.html">文档中心</a><a href="guide.html">使用说明</a><a href="#install">安装方式</a><a href="account.html">账户中心</a><a data-purchase-link href="https://www.goofish.com/item?spm=a21ybx.personal.feeds.2.5a4e6ac2FqZlZf&amp;id=1065574393669&amp;categoryId=50023914" target="_blank" rel="noopener noreferrer">前往闲鱼购买</a></nav>
     <div class="pixel-footer__status"><span><i></i> AGENT LOADOUT READY</span><small>插件与 Skill 使用 MIT License；系统修改和固件写入仍需明确确认。</small></div>
-    <p class="pixel-footer__bottom">© 2026 ZKO 字库 // AI LOADOUT</p>
+    <p class="pixel-footer__bottom">MADE BY ZKO LAB // © 2026 ZKO 字库 // ALL RIGHTS RESERVED</p>
   </footer>
 </body>
 </html>
