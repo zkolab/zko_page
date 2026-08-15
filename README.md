@@ -106,7 +106,7 @@ git push
 - Codex 安装入口使用发布仓库中的 `zko-ai-coding-handle` Marketplace 插件；其他 Agent 使用同源 `ai-coding-handle` Skill。修改安装命令时必须同步检查首页、`skill.html`、复制交互和发布仓库 README。
 - 正式主页文案在 `index.html` 中维护，像素样式在 `pixel-preview.css` 中维护；经典版保存在 `old-page.html`，仍使用 `styles.css`。图片统一放在 `assets/images/`。
 - 账户页公开配置只允许包含环境 ID、区域、函数名和回调协议。CloudBase 管理凭据、支付商户私钥、APIv3 key、平台证书和桌面 refresh token 禁止进入本仓库。
-- 全站右上角账户区展示头像、显示名称和用户名；账户中心把“注册账号”和“登录已有账号”明确分开。注册时一次填写邮箱、用户名和密码，邮箱验证码通过后由 CloudBase Auth 创建账户；已有用户可使用用户名密码或邮箱验证码登录。姓名与头像仍在个人资料中单独设置，业务数据库不保存密码。
+- 全站右上角账户区展示头像和用户名；用户名同时用于登录、网页展示和 AutoClipboard 账户显示。账户中心把“注册账号”和“登录已有账号”明确分开，注册时一次填写邮箱、用户名和密码，邮箱验证码通过后由 CloudBase Auth 创建账户；已有用户可使用用户名密码或邮箱验证码登录。头像仍可在个人资料中单独设置，业务数据库不保存密码。
 - `account-bridge.html` 只向 `zkolab.com` / `www.zkolab.com` 返回不含邮箱和 Token 的显示资料，用于跨域同步右上角登录状态；账户写操作仍只在 CloudBase 托管账户页执行。
 - 网页账户与授权依赖 `zko-account-api` 云函数；桌面端使用公开的 `zko-desktop-auth` HTTP 函数完成一次性 code + PKCE 换取会话。接口契约见 `docs/account-desktop-auth-contract.md`。
 - 产品展示页明确不展示商品售价；账户页的充值金额不属于商品定价。

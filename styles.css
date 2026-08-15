@@ -3275,12 +3275,8 @@ details p {
 
 .profile-fields {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1fr);
   gap: 1.1rem;
-}
-
-.profile-fields label:last-child {
-  grid-column: 1 / -1;
 }
 
 .profile-fields label > span,
@@ -3633,9 +3629,6 @@ details p {
     grid-column: auto;
   }
 
-  .profile-fields label:last-child {
-    grid-column: auto;
-  }
 }
 
 @media (max-width: 580px) {

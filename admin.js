@@ -82,7 +82,7 @@
     userRows.replaceChildren();
     for (const user of overview.users || []) {
       const row = document.createElement('tr');
-      textCell(row, `${user.displayName || user.username || user.email || '未命名'}\n${user.email || user.id}`);
+      textCell(row, `${user.username || user.email || '未设置用户名'}\n${user.email || user.id}`);
       textCell(row, user.status);
       textCell(row, user.subscription?.active ? new Date(user.subscription.validUntil).toLocaleString('zh-CN') : '未开通 / 已失效');
       const actionCell = document.createElement('td');
@@ -92,7 +92,7 @@
       button.textContent = '选择';
       button.addEventListener('click', () => {
         select('[data-entitlement-form] [name="targetUserId"]').value = user.id;
-        setMessage(select('[data-entitlement-message]'), `已选择 ${user.displayName || user.email || user.id}`);
+        setMessage(select('[data-entitlement-message]'), `已选择 ${user.username || user.email || '未设置用户名'}`);
       });
       actionCell.append(button);
       row.append(actionCell);

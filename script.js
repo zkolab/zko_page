@@ -122,7 +122,6 @@ function safeAccountProfile(value) {
   const avatarUrl = String(value.avatarUrl || '');
   return {
     signedIn: value.signedIn !== false,
-    displayName: String(value.displayName || '').slice(0, 40),
     username: String(value.username || '').slice(0, 32),
     avatarUrl: /^https:\/\//.test(avatarUrl) ? avatarUrl : '',
     updatedAt,
@@ -152,9 +151,9 @@ function persistAccountProfile(profile) {
 }
 
 function renderHeaderAccount(value = {}) {
-  const signedIn = value.signedIn === true || Boolean(value.displayName || value.username || value.avatarUrl);
-  const name = signedIn ? (value.displayName || (value.username ? `@${value.username}` : 'ZKO 用户')) : '登录 / 注册';
-  const initial = String(value.displayName || value.username || 'Z').trim().slice(0, 1).toUpperCase() || 'Z';
+  const signedIn = value.signedIn === true || Boolean(value.username || value.avatarUrl);
+  const name = signedIn ? (value.username ? `@${value.username}` : '请设置用户名') : '登录 / 注册';
+  const initial = String(value.username || 'Z').trim().slice(0, 1).toUpperCase() || 'Z';
   for (const account of queryAll('[data-header-account]')) {
     account.toggleAttribute?.('data-signed-in', signedIn);
     const nameElement = account.querySelector?.('[data-header-account-name]');

@@ -413,6 +413,9 @@ test('account page exposes complete registration, email and username login, prof
   assert.match(html, /data-auth-form/);
   assert.match(html, /data-profile-form/);
   assert.match(html, /data-avatar-input/);
+  assert.match(html, /用户名用于登录，也会显示在网页和 AutoClipboard 中/);
+  assert.doesNotMatch(html, /data-profile-display-name|data-profile-full-name|data-register-display-name/);
+  assert.doesNotMatch(html, />显示名称（选填）<|>姓名</);
   assert.match(html, /data-recharge-form/);
   assert.match(html, /data-authorize-desktop/);
   assert.match(html, /data-create-binding/);
@@ -474,6 +477,8 @@ test('account script keeps tokens out of desktop callbacks and fails closed arou
   assert.match(script, /resetPasswordForEmail/);
   assert.match(script, /updateUsername|auth\.updateUser/);
   assert.match(script, /action:\s*['"]updateProfile['"]/);
+  assert.doesNotMatch(script, /data-profile-display-name|data-profile-full-name|data-register-display-name/);
+  assert.match(script, /name:\s*registered\.username/);
   assert.match(script, /verifyOtp/);
   assert.match(script, /config\.functions\.accountApi/);
   assert.match(script, /action:\s*['"]authorizeDesktop['"]/);

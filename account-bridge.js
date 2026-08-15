@@ -38,13 +38,12 @@
         type: 'zko:account-profile',
         signedIn: true,
         profile: {
-          displayName: response.account?.displayName || '',
           username: response.account?.username || user.username || '',
           avatarUrl: response.account?.avatarUrl || '',
         },
       }, parentOrigin);
     } catch {
-      parent.postMessage({ type: 'zko:account-profile', signedIn: true, profile: { displayName: '', username: user.username || '', avatarUrl: '' } }, parentOrigin);
+      parent.postMessage({ type: 'zko:account-profile', signedIn: true, profile: { username: user.username || '', avatarUrl: '' } }, parentOrigin);
     }
   }
 

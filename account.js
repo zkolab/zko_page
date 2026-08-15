@@ -129,7 +129,7 @@
   }
 
   function initialFor(profile) {
-    return String(profile?.displayName || profile?.username || currentUser?.email || 'Z').trim().slice(0, 1).toUpperCase() || 'Z';
+    return String(profile?.username || currentUser?.email || 'Z').trim().slice(0, 1).toUpperCase() || 'Z';
   }
 
   function setAvatar(image, initial, profile) {
@@ -143,12 +143,10 @@
   }
 
   function renderProfile(profile) {
-    const identity = profile.displayName || profile.username || currentUser?.email || 'ZKO 用户';
+    const identity = profile.username || currentUser?.email || '请设置用户名';
     select('[data-profile-heading]').textContent = identity;
     select('[data-overview-name]').textContent = identity;
     select('[data-profile-username]').textContent = profile.username ? `@${profile.username}` : '尚未设置用户名';
-    select('[data-profile-display-name]').value = profile.displayName || '';
-    select('[data-profile-full-name]').value = profile.fullName || '';
     select('[data-profile-username-input]').value = profile.username || '';
     select('[data-security-email]').textContent = currentUser?.email || profile.email || '未读取到邮箱';
     select('[data-security-username]').textContent = profile.username ? `@${profile.username} 可用于密码登录` : '保存用户名后即可配置密码。';
@@ -161,7 +159,6 @@
 
   function encodeProfile(profile) {
     const safe = JSON.stringify({
-      displayName: profile.displayName || '',
       username: profile.username || '',
       avatarUrl: profile.avatarUrl || '',
       updatedAt: Date.now(),
@@ -389,7 +386,6 @@
       username: select('[data-register-username]').value.trim().toLowerCase(),
       password: select('[data-register-password]').value,
       passwordConfirm: select('[data-register-password-confirm]').value,
-      displayName: select('[data-register-display-name]').value.trim(),
     };
   }
 
@@ -439,7 +435,7 @@
         email: registered.email,
         username: registered.username,
         password: registered.password,
-        name: registered.displayName || registered.username,
+        name: registered.username,
         verification_code: token,
         verification_token: verified.verification_token,
       });
@@ -450,8 +446,6 @@
       try {
         await callAccountApi({
           action: 'updateProfile',
-          displayName: registered.displayName || registered.username,
-          fullName: '',
           username: registered.username,
         });
       } catch {
@@ -559,8 +553,6 @@
 
   async function saveProfile() {
     if (!profileForm.checkValidity()) return profileForm.reportValidity();
-    const displayName = select('[data-profile-display-name]').value.trim();
-    const fullName = select('[data-profile-full-name]').value.trim();
     const username = select('[data-profile-username-input]').value.trim().toLowerCase();
     const oldUsername = currentProfile?.username || currentUser?.username || '';
     const saveButton = select('[data-save-profile]');
@@ -579,8 +571,6 @@
       }
       const response = await callAccountApi({
         action: 'updateProfile',
-        displayName,
-        fullName,
         username,
         avatarDataUrl: pendingAvatarDataUrl || undefined,
       });
