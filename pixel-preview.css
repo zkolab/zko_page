@@ -119,6 +119,12 @@ button, a { -webkit-tap-highlight-color: transparent; }
   font: 900 21px/1 "Courier New", monospace;
   letter-spacing: -.08em;
 }
+.pixel-brand__logo {
+  display: block;
+  width: 46px;
+  height: auto;
+  filter: brightness(0) invert(1);
+}
 .pixel-brand strong,
 .pixel-brand small { display: block; }
 .pixel-brand strong { font-size: 15px; letter-spacing: .06em; }
@@ -452,6 +458,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
 @media (max-width: 700px) {
   .pixel-header { grid-template-columns: 1fr auto; min-height: 68px; padding: 10px 15px; }
   .pixel-brand__mark { width: 50px; height: 38px; }
+  .pixel-brand__logo { width: 41px; }
   .pixel-brand strong { font-size: 12px; }
   .pixel-account { display: none; }
   .pixel-quickstart { padding: 34px 16px 40px; border-right: 0; border-left: 0; }

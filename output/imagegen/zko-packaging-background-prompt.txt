@@ -1,0 +1,11 @@
+Use case: ads-marketing
+Asset type: decorative background plate for a 75 × 45 mm horizontal packaging sticker
+Primary request: create a restrained premium black and deep-gray technology background for the ZKO AI coding handle packaging label
+Scene/backdrop: smooth matte black-to-charcoal gradient with subtle cyan edge glow and one faint technical circular arc near the lower-right edge
+Style/medium: premium consumer-electronics packaging graphic, clean studio-polished finish
+Composition/framing: exact 5:3 horizontal composition; keep the left 64% calm and readable for a large logo and Chinese copy; keep the right 36% calm for a QR code; avoid a conspicuous empty gutter between the two zones
+Lighting/mood: controlled cyan glow, sophisticated, precise, understated
+Color palette: near-black, graphite gray, restrained cyan accents
+Materials/textures: subtle matte microtexture only; no visible product rendering
+Constraints: no text; no letters; no logo; no QR code; no barcode; no watermark; no mockup box; no device; no people; no extra objects; no pseudo-writing; keep strong contrast behind future white typography
+Avoid: neon overload, cyberpunk clutter, busy circuit boards, lens flare, orange accents, hard center divider

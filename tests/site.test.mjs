@@ -834,6 +834,21 @@ test('vendored CloudBase SDK is local, pinned, and carries license notices', () 
   assert.match(read('assets/vendor/cloudbase-3.7.1.LICENSE.txt'), /Apache License/);
 });
 
+test('all pixel page headers use the supplied vector ZKO logo', () => {
+  for (const file of pixelPageFiles) {
+    const html = read(file);
+    assert.match(html, /class="pixel-brand__logo"/);
+    assert.match(html, /src="ZKO_logo_vector\.svg"/);
+    assert.doesNotMatch(html, /<span class="pixel-brand__mark">ZKO<\/span>/);
+  }
+});
+
+test('header logo is converted to a high-contrast light mark', () => {
+  const css = read('pixel-preview.css');
+  const logoRule = css.match(/\.pixel-brand__logo\s*\{([^}]*)\}/)?.[1] ?? '';
+  assert.match(logoRule, /filter:\s*brightness\(0\)\s+invert\(1\)/);
+});
+
 test('homepage presents flagship product storytelling', () => {
   const html = stripHtmlComments(read('index.html'));
   for (const id of ['overview', 'voice-feature', 'manifesto-title', 'quests', 'gallery', 'release-downloads']) {

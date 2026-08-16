@@ -170,16 +170,17 @@ code {
 
 .brand {
   display: inline-flex;
-  align-items: baseline;
+  align-items: center;
   gap: 0.75rem;
   white-space: nowrap;
 }
 
-.brand__mark {
-  font-size: 1.08rem;
-  font-weight: 900;
-  font-style: italic;
-  letter-spacing: -0.08em;
+.brand__logo {
+  display: block;
+  width: 88px;
+  height: auto;
+  flex: 0 0 auto;
+  filter: brightness(0) invert(1);
 }
 
 .brand small {
@@ -2658,6 +2659,10 @@ details p {
 @media (max-width: 800px) {
   :root {
     --header-height: 4.15rem;
+  }
+
+  .brand__logo {
+    width: 72px;
   }
 
   .global-header__inner {
