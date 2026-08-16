@@ -9,13 +9,13 @@
   <link rel="icon" href="assets/favicon.ico?v=20260811-pixel">
   <link rel="icon" href="assets/favicon.svg?v=20260812-ziku" type="image/svg+xml">
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=20260811-pixel">
-  <link rel="stylesheet" href="styles.css?v=20260816-account-username-v2">
+  <link rel="stylesheet" href="styles.css?v=20260817-password-reset-v1">
   <link rel="stylesheet" href="pixel-preview.css?v=20260813-docs-center-v1">
   <script src="assets/vendor/cloudbase-3.7.1.min.js" defer></script>
   <script src="account-config.js?v=20260813-nav-consistency-v1" defer></script>
   <script src="script.js?v=20260816-account-username-v2" defer></script>
   <script src="pixel-preview.js?v=20260812-theme-deck-v1" defer></script>
-  <script src="account.js?v=20260816-account-username-v4" defer></script>
+  <script src="account.js?v=20260817-password-reset-v1" defer></script>
 </head>
 <body class="pixel-site pixel-subpage page page--account">
   <a class="skip-link" href="#main-content">跳到主要内容</a>
@@ -186,8 +186,22 @@
             <article><div><strong>绑定邮箱</strong><p data-security-email>正在读取……</p></div><span class="settings-state">已验证</span></article>
             <article><div><strong>用户名登录</strong><p data-security-username>保存用户名后即可配置密码。</p></div><span class="settings-state" data-username-state>未配置</span></article>
             <article><div><strong>保持登录</strong><p>此设备已启用 CloudBase 安全持久会话，关闭浏览器后仍会记住登录；显式退出或会话到期后清除。</p></div><span class="settings-state">已启用</span></article>
-            <article><div><strong>账户密码</strong><p>通过绑定邮箱收到安全链接来设置或修改密码，网站不接触密码明文。</p></div><button class="button button--small button--light" type="button" data-reset-password>发送设置密码邮件</button></article>
+            <article><div><strong>账户密码</strong><p>通过绑定邮箱验证码设置或修改密码；验证码和密码只交给 CloudBase Auth，业务系统不保存密码明文。</p></div><button class="button button--small button--light" type="button" data-reset-password>获取改密验证码</button></article>
           </div>
+          <form class="password-reset-panel" hidden novalidate data-password-reset-form>
+            <div class="password-reset-panel__heading"><div><strong>验证邮箱并设置新密码</strong><p data-password-reset-copy>验证码发送后，请在下方完成修改。</p></div><button class="text-button text-button--muted" type="button" data-password-reset-cancel>取消</button></div>
+            <label class="field-label" for="password-reset-code">邮箱验证码</label>
+            <div class="verification-row">
+              <input class="account-input" id="password-reset-code" name="code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="8" placeholder="输入邮件中的验证码" required data-password-reset-code>
+              <button class="text-button" type="button" data-password-reset-resend disabled>重新发送</button>
+            </div>
+            <p class="verification-countdown" role="timer" aria-live="polite" data-password-reset-timer></p>
+            <div class="password-reset-fields">
+              <label><span>新密码</span><input class="account-input" name="new-password" type="password" autocomplete="new-password" minlength="8" maxlength="128" required data-password-reset-new></label>
+              <label><span>确认新密码</span><input class="account-input" name="confirm-password" type="password" autocomplete="new-password" minlength="8" maxlength="128" required data-password-reset-confirm></label>
+            </div>
+            <button class="button button--small" type="submit" data-password-reset-submit>验证并修改密码</button>
+          </form>
           <p class="form-status" role="status" aria-live="polite" data-security-message></p>
         </section>
 

@@ -722,6 +722,9 @@ test('account script keeps tokens out of desktop callbacks and fails closed arou
   assert.match(script, /validitySeconds\s*=\s*600/);
   assert.match(script, /还需要等待 \$\{resendRemaining\} 秒/);
   assert.match(script, /resetPasswordForEmail/);
+  assert.match(script, /response\?\.data\?\.updateUser/);
+  assert.match(script, /passwordRecovery\(\{[\s\S]*nonce:[\s\S]*password:/);
+  assert.doesNotMatch(script, /resetPasswordForEmail\([^\n]*redirectTo/);
   assert.doesNotMatch(script, /updateAuthUsername|auth\.updateUser\(\{ username \}\)|currentUser\?\.updateUsername/);
   assert.match(script, /action:\s*['"]updateProfile['"]/);
   assert.match(script, /auth_username_update_failed/);
@@ -745,6 +748,25 @@ test('account page explains verification resend delay and validity', () => {
   assert.ok((html.match(/等待 60 秒/g) || []).length >= 2);
   assert.match(html, /data-email-code-timer/);
   assert.match(html, /data-register-code-timer/);
+});
+
+test('account password reset completes the CloudBase email-code flow in page', () => {
+  const html = stripHtmlComments(read('account.html'));
+  const script = read('account.js');
+  for (const marker of [
+    'data-password-reset-form',
+    'data-password-reset-code',
+    'data-password-reset-new',
+    'data-password-reset-confirm',
+    'data-password-reset-resend',
+    '验证并修改密码',
+  ]) assert.match(html, new RegExp(escapeRegExp(marker)));
+  assert.match(script, /auth\.resetPasswordForEmail\(email\)/);
+  assert.match(script, /passwordRecovery\s*=\s*response\.data\.updateUser/);
+  assert.match(script, /nonce:\s*passwordResetCode\.value\.trim\(\)/);
+  assert.match(script, /password:\s*passwordResetNew\.value/);
+  assert.match(script, /startVerificationCountdown\(passwordResetResend, passwordResetTimer\)/);
+  assert.doesNotMatch(`${html}\n${script}`, /安全链接|设置密码的邮件已发送/);
 });
 
 test('account avatar picker exposes a resizable crop frame and independent instant save', () => {

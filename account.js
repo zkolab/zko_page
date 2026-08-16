@@ -57,9 +57,20 @@
   const bindingOutput = select('[data-binding-code]');
   const productSelect = select('[data-premium-product]');
   const goofishLink = select('[data-goofish-purchase]');
+  const passwordResetButton = select('[data-reset-password]');
+  const passwordResetForm = select('[data-password-reset-form]');
+  const passwordResetCode = select('[data-password-reset-code]');
+  const passwordResetNew = select('[data-password-reset-new]');
+  const passwordResetConfirm = select('[data-password-reset-confirm]');
+  const passwordResetSubmit = select('[data-password-reset-submit]');
+  const passwordResetResend = select('[data-password-reset-resend]');
+  const passwordResetTimer = select('[data-password-reset-timer]');
+  const passwordResetCopy = select('[data-password-reset-copy]');
+  const securityMessage = select('[data-security-message]');
   const desktopRequest = readDesktopRequest(new URLSearchParams(location.search));
   let otpVerification = null;
   let registrationVerification = null;
+  let passwordRecovery = null;
   let pendingRegistration = null;
   let currentUser = null;
   let currentProfile = null;
@@ -547,6 +558,71 @@
     verificationTimers.set(resendTarget, setInterval(renderCountdown, 1000));
   }
 
+  function resetPasswordPanel({ keepMessage = false } = {}) {
+    clearVerificationCountdown(passwordResetResend, passwordResetTimer);
+    passwordRecovery = null;
+    passwordResetForm.hidden = true;
+    passwordResetForm.reset();
+    passwordResetButton.hidden = false;
+    passwordResetButton.disabled = false;
+    passwordResetResend.disabled = true;
+    passwordResetSubmit.disabled = false;
+    if (!keepMessage) setMessage(securityMessage, '');
+  }
+
+  async function sendPasswordResetCode() {
+    const email = currentUser?.email || currentProfile?.email || '';
+    if (!email) return setMessage(securityMessage, '当前账户没有可用邮箱。', 'error');
+    passwordResetButton.disabled = true;
+    passwordResetResend.disabled = true;
+    setMessage(securityMessage, '正在发送改密验证码……');
+    try {
+      const response = await auth.resetPasswordForEmail(email);
+      if (response?.error) throw response.error;
+      if (typeof response?.data?.updateUser !== 'function') throw new Error('password_recovery_unavailable');
+      passwordRecovery = response.data.updateUser;
+      passwordResetForm.hidden = false;
+      passwordResetButton.hidden = true;
+      passwordResetCopy.textContent = `验证码已发送到 ${email}，请输入验证码和新密码。`;
+      passwordResetCode.value = '';
+      passwordResetCode.focus();
+      startVerificationCountdown(passwordResetResend, passwordResetTimer);
+      setMessage(securityMessage, '验证码已发送，请在上方完成密码修改。', 'success');
+    } catch (error) {
+      passwordRecovery = null;
+      if (passwordResetForm.hidden) {
+        passwordResetButton.disabled = false;
+      } else {
+        passwordResetResend.disabled = false;
+        passwordResetResend.textContent = '重新发送';
+      }
+      setMessage(securityMessage, friendlyError(error, '验证码发送失败，请稍后重试。'), 'error');
+    }
+  }
+
+  async function completePasswordReset() {
+    if (!passwordResetForm.checkValidity()) return passwordResetForm.reportValidity();
+    if (!passwordRecovery) return setMessage(securityMessage, '请先获取新的改密验证码。', 'error');
+    if (passwordResetNew.value !== passwordResetConfirm.value) {
+      return setMessage(securityMessage, '两次输入的新密码不一致。', 'error');
+    }
+    passwordResetSubmit.disabled = true;
+    setMessage(securityMessage, '正在验证并修改密码……');
+    try {
+      const response = await passwordRecovery({
+        nonce: passwordResetCode.value.trim(),
+        password: passwordResetNew.value,
+      });
+      if (response?.error) throw response.error;
+      resetPasswordPanel({ keepMessage: true });
+      setMessage(securityMessage, '密码修改成功，新的用户名密码已经可以登录。', 'success');
+      await refreshUi();
+    } catch (error) {
+      passwordResetSubmit.disabled = false;
+      setMessage(securityMessage, friendlyError(error, '密码修改失败，请检查验证码和新密码。'), 'error');
+    }
+  }
+
   function validateAvatarFile(file) {
     if (!/^image\/(jpeg|png|webp)$/.test(file.type) || file.size > 5 * 1024 * 1024) {
       throw new Error('avatar_invalid');
@@ -755,6 +831,7 @@
   select('[data-sign-out]').addEventListener('click', async () => {
     await auth.signOut();
     resetOtp();
+    resetPasswordPanel();
     await refreshUi();
   });
   avatarCropReset.addEventListener('click', resetAvatarCrop);
@@ -830,18 +907,16 @@
     }
   });
   profileForm.addEventListener('submit', (event) => { event.preventDefault(); void saveProfile(); });
-  select('[data-reset-password]').addEventListener('click', async () => {
-    const email = currentUser?.email || currentProfile?.email || '';
-    if (!email) return setMessage(select('[data-security-message]'), '当前账户没有可用邮箱。', 'error');
-    setMessage(select('[data-security-message]'), '正在发送安全邮件……');
-    try {
-      const response = await auth.resetPasswordForEmail(email, { redirectTo: location.href.split('?')[0] });
-      if (response?.error) throw response.error;
-      setMessage(select('[data-security-message]'), `设置或修改密码的邮件已发送到 ${email}。`, 'success');
-    } catch (error) {
-      setMessage(select('[data-security-message]'), friendlyError(error, '邮件发送失败，请稍后重试。'), 'error');
-    }
+  passwordResetButton.addEventListener('click', () => void sendPasswordResetCode());
+  passwordResetForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+    void completePasswordReset();
   });
+  passwordResetResend.addEventListener('click', () => {
+    passwordRecovery = null;
+    void sendPasswordResetCode();
+  });
+  select('[data-password-reset-cancel]').addEventListener('click', () => resetPasswordPanel());
   authorizeButton.addEventListener('click', () => void authorizeDesktop());
   bindingButton.addEventListener('click', () => void createPurchaseBinding());
   rechargeForm.addEventListener('submit', async (event) => {

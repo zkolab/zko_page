@@ -3469,6 +3469,43 @@ details p {
   font-size: 0.68rem;
 }
 
+.password-reset-panel {
+  margin-top: 1.2rem;
+  padding: 1.25rem;
+  border: 1px solid rgba(119, 238, 251, 0.24);
+  background: rgba(8, 13, 35, 0.42);
+}
+
+.password-reset-panel__heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.password-reset-panel__heading strong {
+  color: #ecf0f3;
+}
+
+.password-reset-panel__heading p {
+  margin: 0.3rem 0 0;
+  font-size: 0.78rem;
+}
+
+.password-reset-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin: 1rem 0;
+}
+
+.password-reset-fields label,
+.password-reset-fields span {
+  display: grid;
+  gap: 0.45rem;
+}
+
 .account-section--desktop {
   background:
     linear-gradient(110deg, rgba(32, 204, 228, 0.08), transparent 45%),
@@ -3892,6 +3929,15 @@ details p {
   .settings-list article,
   .form-actions,
   .avatar-editor {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .password-reset-fields {
+    grid-template-columns: 1fr;
+  }
+
+  .password-reset-panel__heading {
     align-items: flex-start;
     flex-direction: column;
   }
