@@ -26,11 +26,12 @@ const djiMicUrl = 'https://www.dji.com/cn/mic';
 const djiMic2Url = 'https://www.dji.com/cn/mic-2';
 const officialDriverUrl = 'https://www.wch.cn/downloads/CH343SER_EXE.html';
 const pageFiles = ['index.html', 'shop.html', 'guide.html', 'skill.html'];
-const allPublicPageFiles = [...pageFiles, 'docs.html', 'account.html', 'old-page.html'];
-const pixelPageFiles = ['index.html', 'skill.html', 'guide.html', 'docs.html', 'shop.html', 'account.html'];
+const allPublicPageFiles = [...pageFiles, 'voice.html', 'voice-free.html', 'voice-premium.html', 'docs.html', 'account.html', 'old-page.html'];
+const pixelPageFiles = ['index.html', 'voice.html', 'voice-free.html', 'voice-premium.html', 'skill.html', 'guide.html', 'docs.html', 'shop.html', 'account.html'];
 const sharedPixelNavigation = [
   ['首页', 'index.html'],
   ['立即使用', 'index.html#quick-start'],
+  ['语音', 'voice.html'],
   ['AI 一键配置', 'skill.html'],
   ['下载', 'index.html#release-downloads'],
   ['能力', 'index.html#quests'],
@@ -130,6 +131,8 @@ test('required public files exist', () => {
     'pixel-preview.html',
     'pixel-preview.css',
     'pixel-preview.js',
+    'voice.css',
+    'voice.js',
     'README.md',
     'assets/favicon.ico',
     'assets/favicon.svg',
@@ -142,6 +145,133 @@ test('required public files exist', () => {
     'assets/vendor/cloudbase-3.7.1.LICENSE.txt',
     'docs/account-desktop-auth-contract.md',
   ]) requireFile(path);
+});
+
+test('voice home routes free and premium visitors to separate pages and favors premium', () => {
+  const html = stripHtmlComments(read('voice.html'));
+  for (const phrase of [
+    '选择你的',
+    '语音版本',
+    '无需账户 · 简单直接',
+    '实时识别 · 智能成文',
+    '推荐 / BEST EXPERIENCE',
+    '下载后直接使用',
+    '商用级字准率与毫秒级实时识别',
+    '自动剔除口头词、重复与临时改口',
+    '九种写作与翻译模式、个人热词',
+    '搭配字库手柄，最方便',
+    '软件可以单独使用',
+    '原始口述',
+    '高级版整理后',
+  ]) assert.match(html, new RegExp(escapeRegExp(phrase)));
+
+  assert.match(html, /href="voice-free\.html"/);
+  assert.match(html, /href="voice-premium\.html"/);
+  assert.match(html, /href="index\.html#release-downloads"/);
+  assert.match(html, /href="account\.html"/);
+  assert.match(html, /<del>[^<]+<\/del>/);
+  assert.doesNotMatch(html, /腾讯云官方说明/);
+});
+
+test('free voice page stays simple and explains platform boundaries', () => {
+  const html = stripHtmlComments(read('voice-free.html'));
+  for (const phrase of [
+    '免费版，',
+    '打开就能用',
+    '不需要登录 ZKO 账户',
+    '不需要激活码或云端权益',
+    'Windows、macOS 直接使用系统听写',
+    'Microsoft 系统语音输入',
+    'macOS 系统听写',
+    'Ubuntu 暂无 AutoClipboard',
+    '设置一个键',
+    '高级版会省下整理时间',
+    '软件可以单独使用',
+  ]) assert.match(html, new RegExp(escapeRegExp(phrase)));
+
+  assert.match(html, /href="voice\.html"/);
+  assert.match(html, /href="voice-premium\.html"/);
+  assert.match(html, /href="index\.html#release-downloads"/);
+  assert.doesNotMatch(html, /data-voice-mode=/);
+});
+
+test('premium voice page presents recognition, cleanup, modes, and product boundaries', () => {
+  const html = stripHtmlComments(read('voice-premium.html'));
+  for (const phrase of [
+    '你负责表达',
+    '它负责成文',
+    '全局快捷键',
+    '九种完整使用模式',
+    '去掉口头词',
+    '合并重复',
+    '采用改口后的表达',
+    '识别临时改口',
+    '重组松散指令',
+    '实时识别',
+    '快速响应',
+    '高精度整理',
+    '商用级字准率',
+    '毫秒级时延',
+    '边说边出文字',
+    '边说边识别',
+    '识别效果更好',
+    '结果更准确可用',
+    'AI 与编程指令',
+    '技术清洗',
+    '通用整理',
+    '日常聊天',
+    '商务邮件',
+    '文档与笔记',
+    '会议纪要',
+    '翻译为中文',
+    '翻译为英文',
+    'DeepSeek 负责清理口语',
+    '高级语音识别基于腾讯云实时语音识别',
+    'ZKO 不接收录音',
+    '不记录正文',
+    '密钥不下发',
+    '实际可用状态以 AutoClipboard',
+  ]) assert.match(html, new RegExp(escapeRegExp(phrase)));
+
+  assert.match(html, /href="index\.html#release-downloads"/);
+  assert.match(html, /href="account\.html"/);
+  assert.match(html, /href="voice-free\.html"/);
+  assert.match(html, /https:\/\/cloud\.tencent\.com\/product\/asr/);
+  assert.match(html, /data-voice-mode="tech"/);
+  assert.match(html, /data-voice-mode="ai"/);
+  assert.match(html, /data-voice-mode="translateZh"/);
+  assert.match(html, /data-voice-mode="translateEn"/);
+  assert.match(html, /data-voice-preview-title/);
+  assert.match(html, /<del>[^<]+<\/del>/);
+  assert.match(html, /<mark>[^<]+<\/mark>/);
+});
+
+test('voice mode preview exposes all nine modes and updates the output', () => {
+  const modeIds = ['tech', 'standard', 'chat', 'email', 'document', 'ai', 'notes', 'translateZh', 'translateEn'];
+  const listeners = new Map();
+  const buttons = modeIds.map((id) => ({
+    dataset: { voiceMode: id },
+    classList: { toggle() {} },
+    setAttribute() {},
+    addEventListener(type, callback) { listeners.set(`${id}:${type}`, callback); },
+  }));
+  const fields = {
+    '[data-voice-mode-label]': { textContent: 'TECH_CLEAN' },
+    '[data-voice-preview-kicker]': { textContent: '技术清洗' },
+    '[data-voice-preview-title]': { textContent: '' },
+    '[data-voice-preview-body]': { textContent: '' },
+  };
+  const document = {
+    querySelectorAll(selector) { return selector === '[data-voice-mode]' ? buttons : []; },
+    querySelector(selector) { return fields[selector] ?? null; },
+  };
+  runInNewContext(read('voice.js'), { document });
+  listeners.get('translateZh:click')();
+
+  assert.equal(fields['[data-voice-mode-label]'].textContent, 'TRANSLATE_ZH');
+  assert.equal(fields['[data-voice-preview-kicker]'].textContent, '中文译文');
+  assert.match(fields['[data-voice-preview-title]'].textContent, /工作流/);
+  assert.match(fields['[data-voice-preview-body]'].textContent, /AutoClipboard/);
 });
 
 test('all pages expose the shared ZKO favicon', () => {
@@ -218,6 +348,9 @@ test('pixel pages keep one immutable top navigation and only change the current-
   const expected = sharedPixelNavigation.map(([text, href]) => ({ text, href }));
   const expectedCurrent = new Map([
     ['index.html', '首页'],
+    ['voice.html', '语音'],
+    ['voice-free.html', '语音'],
+    ['voice-premium.html', '语音'],
     ['skill.html', 'AI 一键配置'],
     ['guide.html', '使用说明'],
     ['docs.html', '文档'],
@@ -681,7 +814,7 @@ test('vendored CloudBase SDK is local, pinned, and carries license notices', () 
 
 test('homepage presents flagship product storytelling', () => {
   const html = stripHtmlComments(read('index.html'));
-  for (const id of ['overview', 'manifesto-title', 'quests', 'gallery', 'release-downloads']) {
+  for (const id of ['overview', 'voice-feature', 'manifesto-title', 'quests', 'gallery', 'release-downloads']) {
     assert.match(html, new RegExp(`id=["']${id}["']`), `homepage should expose #${id}`);
   }
   assert.match(html, /把 AI 工作流握在手里/);
@@ -689,6 +822,13 @@ test('homepage presents flagship product storytelling', () => {
   assert.match(html, /四枚实体宏键/);
   assert.match(html, /Agent 状态/);
   assert.match(html, /AutoClipboard/);
+  assert.match(html, /说出来，/);
+  assert.match(html, /直接变成好文字/);
+  assert.match(html, /免费版调用系统听写/);
+  assert.match(html, /高级版边说边识别/);
+  assert.match(html, /href="voice\.html"/);
+  assert.match(html, /href="voice-premium\.html"/);
+  assert.match(html, /pixel-voice-feature__demo/);
   assert.match(html, /pixel-hero\.webp/);
   assert.match(html, /product-macros\.webp/);
   assert.match(html, /product-status\.webp/);

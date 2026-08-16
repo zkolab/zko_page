@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="AutoClipboard 高级语音：实时流式识别、快速响应、口语智能整理、九种写作与翻译模式和个人热词。">
+  <meta name="theme-color" content="#292756">
+  <meta property="og:title" content="ZKO Voice 高级版 · 你负责表达，它负责成文">
+  <meta property="og:description" content="边说边识别，自动清理口头词、重复和改口，再把可用文字送入当前应用。">
+  <meta property="og:type" content="website">
+  <link rel="canonical" href="https://zkolab.com/voice-premium.html">
+  <title>ZKO Voice 高级版 · 实时识别与智能成文</title>
+  <link rel="icon" href="assets/favicon.ico?v=20260811-pixel">
+  <link rel="icon" href="assets/favicon.svg?v=20260812-ziku" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=20260811-pixel">
+  <link rel="stylesheet" href="pixel-preview.css?v=20260813-docs-center-v1">
+  <link rel="stylesheet" href="voice.css?v=20260816-voice-split-v1">
+  <script src="account-config.js?v=20260813-nav-consistency-v1" defer></script>
+  <script src="script.js?v=20260816-account-username-v2" defer></script>
+  <script src="pixel-preview.js?v=20260812-theme-deck-v1" defer></script>
+  <script src="voice.js?v=20260816-voice-split-v1" defer></script>
+</head>
+<body class="pixel-site voice-page voice-premium-page">
+  <a class="skip-link" href="#main-content">跳到主要内容</a>
+  <div class="pixel-ticker" aria-hidden="true"><div>ZKO VOICE PREMIUM // SPEAK → RECOGNIZE → REFINE → INSERT // BEST EXPERIENCE //</div></div>
+
+  <header class="pixel-header" data-header>
+    <a class="pixel-brand" href="index.html" aria-label="ZKO 字库首页">
+      <span class="pixel-brand__mark">ZKO</span>
+      <span><strong>字库控制台</strong><small>CONTROL DECK / 2026</small></span>
+    </a>
+    <button class="pixel-menu" type="button" data-pixel-menu aria-expanded="false" aria-controls="pixel-nav">MENU</button>
+    <nav class="pixel-nav" id="pixel-nav" data-pixel-nav aria-label="主要导航">
+      <a href="index.html" data-public-site-link="index.html">首页</a>
+      <a href="index.html#quick-start" data-public-site-link="index.html#quick-start">立即使用</a>
+      <a href="voice.html" aria-current="page" data-public-site-link="voice.html">语音</a>
+      <a href="skill.html" data-public-site-link="skill.html">AI 一键配置</a>
+      <a href="index.html#release-downloads" data-public-site-link="index.html#release-downloads">下载</a>
+      <a href="index.html#quests" data-public-site-link="index.html#quests">能力</a>
+      <a href="index.html#gallery" data-public-site-link="index.html#gallery">图鉴</a>
+      <a href="guide.html" data-public-site-link="guide.html">使用说明</a>
+      <a href="docs.html" data-public-site-link="docs.html">文档</a>
+      <a href="shop.html" data-public-site-link="shop.html">商城</a>
+    </nav>
+    <a class="pixel-account" href="account.html" data-header-account>
+      <span class="pixel-account__avatar"><img src="assets/favicon-pixel.png?v=20260811-pixel" width="32" height="32" alt="账户头像" hidden data-header-account-image><span data-header-account-initial>Z</span></span>
+      <span><small data-header-account-eyebrow>PLAYER</small><strong data-header-account-name>登录 / 注册</strong></span>
+    </a>
+  </header>
+
+  <main id="main-content">
+    <nav class="voice-subnav voice-subnav--premium" aria-label="语音版本导航"><a href="voice.html">← 返回语音首页</a><span>PREMIUM / 高级版</span><a href="voice-free.html">查看免费版 →</a></nav>
+
+    <section class="voice-hero voice-hero--premium" aria-labelledby="voice-title">
+      <div class="voice-hero__copy" data-pixel-reveal>
+        <p class="voice-eyebrow"><span>02 / PREMIUM</span> 实时识别 · 智能成文</p>
+        <h1 id="voice-title">你负责表达，<br><em>它负责成文。</em></h1>
+        <p class="voice-hero__lead">不必先把句子在脑中排好。自然地说、允许停顿和改口，高级版会实时识别并快速整理，把更准确、更可用的文字直接送到当前光标。</p>
+        <div class="voice-actions">
+          <a class="voice-button voice-button--primary" href="account.html">查看高级语音权益</a>
+          <a class="voice-button" href="#how-it-works">看看它怎么工作</a>
+        </div>
+        <ul class="voice-hero__facts" aria-label="高级语音特点"><li><span>01</span> 实时识别</li><li><span>02</span> 快速响应</li><li><span>03</span> 高精度整理</li></ul>
+      </div>
+
+      <div class="voice-stage" data-pixel-reveal aria-label="语音整理演示">
+        <div class="voice-stage__chrome"><span><i></i> VOICE_PIPELINE.EXE</span><span>RIGHT ALT</span></div>
+        <div class="voice-stage__status"><span class="voice-live-dot" aria-hidden="true"></span><strong>正在录音</strong><small>再按一次结束 · Esc 取消</small></div>
+        <div class="voice-wave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="voice-stage__transcript"><span>原始口述</span><p><del>嗯，那个，</del>帮我把这个登录问题<del>修一下，修一下。</del>先看看 <del>token 为什么会过期，哦不对，</del><mark>刷新 token 为什么会提前失效</mark>。然后<del>别改，先别改</del>现有的账户页面，最后跑一下测试，<del>测试。</del></p></div>
+        <div class="voice-stage__result"><div><span>AI 与编程指令</span><strong>已整理</strong></div><p>修复刷新 token 提前失效问题。要求：保留现有账户页面和当前交互；完成后运行相关测试并报告结果。</p><small><kbd>↵</kbd> 已输入到当前光标</small></div>
+        <div class="voice-stage__cleanup" aria-label="本次整理内容"><span><i>×</i> 去掉口头词</span><span><i>↻</i> 合并重复</span><span><i>✓</i> 采用改口后的表达</span></div>
+        <div class="voice-stage__progress" aria-hidden="true"><span></span></div>
+      </div>
+    </section>
+
+    <section class="voice-official-proof" aria-label="高级语音识别能力说明">
+      <article data-pixel-reveal><span>ACCURACY</span><strong>商用级字准率</strong><p>中文普通话、英文、粤语及其他方言引擎的识别字准率，可满足广泛商用场景。</p></article>
+      <article data-pixel-reveal><span>LATENCY</span><strong>毫秒级时延</strong><p>实时语音识别达到毫秒级响应，适合语音输入等实时音频流场景。</p></article>
+      <article data-pixel-reveal><span>STREAMING</span><strong>边说边出文字</strong><p>音频边录边识别；加入产品名、人名和技术术语热词，还能提升专有领域识别准确率。</p></article>
+      <a href="https://cloud.tencent.com/product/asr" target="_blank" rel="noopener noreferrer">识别能力口径来源 →</a>
+      <small>高级语音识别基于腾讯云实时语音识别。服务方未为所有语种、设备和环境公布统一固定百分比；实际精度会随音质、网络、噪声、口音和配置变化。</small>
+    </section>
+
+    <section class="voice-premium-intro" aria-labelledby="premium-title">
+      <div data-pixel-reveal>
+        <p class="voice-eyebrow"><span>MORE THAN TRANSCRIPTION</span> 从语音转文字，升级到语音成文</p>
+        <h2 id="premium-title">更快、更准，<br>也更懂你想写什么。</h2>
+        <p>适合持续用语音写代码、写文档和处理沟通：实时识别负责跟上表达，DeepSeek 负责清理口语并按使用模式整理，最后直接送入当前应用。</p>
+      </div>
+      <ul data-pixel-reveal><li>实时流式语音识别</li><li>九种写作与翻译模式</li><li>重复、改口与口头词清理</li><li>个人热词与技术术语保护</li><li>当前光标直接输入</li><li>失败时自动回退剪贴板</li></ul>
+    </section>
+
+    <section class="voice-cleanup" aria-labelledby="cleanup-title">
+      <header class="voice-section-heading" data-pixel-reveal>
+        <p class="voice-eyebrow"><span>BEFORE / AFTER</span> 不只是逐字转写</p>
+        <h2 id="cleanup-title">说得不够好，<br>不代表写出来也要不好。</h2>
+        <p>口述里常见的“嗯、那个”、重复表达、临时改口和松散指令，会在保留原意的前提下被清理或重组。</p>
+      </header>
+      <div class="voice-cleanup__grid">
+        <article data-pixel-reveal><span class="voice-cleanup__tag">去掉口头词</span><div class="voice-cleanup__before"><small>原始口述</small><p><del>那个，就是，嗯，</del>我们先检查一下日志。</p></div><div class="voice-cleanup__after"><small>整理后</small><p>先检查日志。</p></div></article>
+        <article data-pixel-reveal><span class="voice-cleanup__tag">合并重复</span><div class="voice-cleanup__before"><small>原始口述</small><p>把测试跑一下，<del>跑一下，所有测试都跑一下。</del></p></div><div class="voice-cleanup__after"><small>整理后</small><p>运行全部测试。</p></div></article>
+        <article data-pixel-reveal><span class="voice-cleanup__tag">识别临时改口</span><div class="voice-cleanup__before"><small>原始口述</small><p><del>周四交付，哦不对，</del><mark>改成周五下午交付。</mark></p></div><div class="voice-cleanup__after"><small>整理后</small><p>交付时间调整为周五下午。</p></div></article>
+        <article data-pixel-reveal><span class="voice-cleanup__tag">重组松散指令</span><div class="voice-cleanup__before"><small>原始口述</small><p>先看看接口，页面先别动，弄完以后记得也测一下。</p></div><div class="voice-cleanup__after"><small>整理后</small><p>检查接口问题；保留现有页面；完成后运行测试。</p></div></article>
+      </div>
+    </section>
+
+    <section class="voice-performance" aria-labelledby="performance-title">
+      <header data-pixel-reveal><p class="voice-eyebrow"><span>FAST &amp; ACCURATE</span> 快速，也要准确</p><h2 id="performance-title">说完不用久等，<br>出来就是好用的文字。</h2><p>从录音、识别、整理到当前光标输入，每一步都有即时状态反馈。速度和准确性一起服务于连续表达。</p></header>
+      <div class="voice-performance__grid">
+        <article data-pixel-reveal><span>REALTIME</span><strong>边说边识别</strong><p>音频边录边发送，不必等整段录完才开始处理。</p></article>
+        <article data-pixel-reveal><span>FAST</span><strong>结束后快速响应</strong><p>结束后立即进入识别、整理和输入链路，界面同步反馈当前状态。</p></article>
+        <article data-pixel-reveal><span>ACCURATE</span><strong>识别效果更好</strong><p>支持中文、英文和自动检测；个人热词帮助保留产品名、人名、缩写、路径与技术术语。</p></article>
+        <article data-pixel-reveal><span>REFINED</span><strong>结果更准确可用</strong><p>继续处理口头词、重复、改口、标点和逻辑分段，明显错误不会原样堆进输入框。</p></article>
+      </div>
+      <p class="voice-performance__note">实际响应速度和识别精度会受到麦克风质量、网络、环境噪声、口音和说话清晰度影响。</p>
+    </section>
+
+    <section class="voice-flow" id="how-it-works" aria-labelledby="flow-title">
+      <header class="voice-section-heading" data-pixel-reveal><p class="voice-eyebrow"><span>ONE SHORTCUT</span> 从声音到可用文字</p><h2 id="flow-title">少一步整理，<br>思路就少断一次。</h2><p>不是把录音丢给你，也不只是逐字转写。高级语音会把口语里的重复、改口和松散结构，整理成适合当前任务的文字。</p></header>
+      <ol class="voice-flow__steps">
+        <li data-pixel-reveal><span>01</span><div><small>TRIGGER</small><h3>按键开始</h3><p>使用自定义全局快捷键，也可以把动作映射到字库手柄。</p></div></li>
+        <li data-pixel-reveal><span>02</span><div><small>SPEAK</small><h3>自然说话</h3><p>不必先在脑中排版。允许停顿、重复和临时改口。</p></div></li>
+        <li data-pixel-reveal><span>03</span><div><small>REFINE</small><h3>按场景整理</h3><p>选择技术清洗、邮件、文档、AI 指令、翻译等写作模式。</p></div></li>
+        <li data-pixel-reveal><span>04</span><div><small>INSERT</small><h3>回到光标</h3><p>文字直接进入当前应用；直接输入失败时自动回退到剪贴板。</p></div></li>
+      </ol>
+    </section>
+
+    <section class="voice-modes" aria-labelledby="modes-title">
+      <div class="voice-modes__intro" data-pixel-reveal>
+        <p class="voice-eyebrow"><span>NINE MODES</span> 九种完整使用模式</p>
+        <h2 id="modes-title">你负责表达，<br>它负责成文。</h2>
+        <p>九种模式决定最终文字如何清理、组织和表达，但不会替你虚构事实。</p>
+        <div class="voice-mode-tabs" role="tablist" aria-label="写作模式演示">
+          <button type="button" class="is-active" role="tab" aria-selected="true" data-voice-mode="tech">技术清洗</button>
+          <button type="button" role="tab" aria-selected="false" data-voice-mode="standard">通用整理</button>
+          <button type="button" role="tab" aria-selected="false" data-voice-mode="chat">日常聊天</button>
+          <button type="button" role="tab" aria-selected="false" data-voice-mode="email">商务邮件</button>
+          <button type="button" role="tab" aria-selected="false" data-voice-mode="document">文档与笔记</button>
+          <button type="button" role="tab" aria-selected="false" data-voice-mode="ai">AI 与编程指令</button>
+          <button type="button" role="tab" aria-selected="false" data-voice-mode="notes">会议纪要</button>
+          <button type="button" role="tab" aria-selected="false" data-voice-mode="translateZh">翻译为中文</button>
+          <button type="button" role="tab" aria-selected="false" data-voice-mode="translateEn">翻译为英文</button>
+        </div>
+      </div>
+      <div class="voice-editor" data-pixel-reveal>
+        <div class="voice-editor__top"><span>OUTPUT_PREVIEW.MD</span><span data-voice-mode-label>TECH_CLEAN</span></div>
+        <div class="voice-editor__body"><span class="voice-editor__line">01</span><div><small data-voice-preview-kicker>技术清洗</small><h3 data-voice-preview-title>修复刷新 token 提前失效问题</h3><p data-voice-preview-body>保留现有账户页面和交互；查明刷新 token 提前失效的原因，完成修复后运行相关测试并报告结果。</p></div></div>
+        <div class="voice-editor__footer"><span>✓ 保留技术名词</span><span>✓ 去除重复与口头词</span><span>✓ 自动分段</span></div>
+      </div>
+    </section>
+
+    <section class="voice-bento" aria-label="语音功能亮点">
+      <article class="voice-bento__wide" data-pixel-reveal><div><p class="voice-eyebrow"><span>PERSONAL WORDS</span> 热词与个人词典</p><h2>产品名、路径、缩写，<br>尽量照你的方式写。</h2><p>加入常用人名、产品名和技术术语，帮助识别与整理阶段保留正确拼写。代码、数字、链接和命令也会被重点保护。</p></div><div class="voice-hotwords" aria-label="热词示例"><span>AutoClipboard</span><span>ZKO</span><span>CloudBase</span><span>Right Alt</span><span>README.md</span><span>Claude Code</span></div></article>
+      <article class="voice-bento__card voice-bento__card--dark" data-pixel-reveal><span class="voice-bento__icon">ESC</span><h3>随时取消</h3><p>录错了直接按 Esc，不把未确认内容送进当前应用。</p></article>
+      <article class="voice-bento__card voice-bento__card--mint" data-pixel-reveal><span class="voice-bento__icon">⌘V</span><h3>安全回退</h3><p>无法直接输入时，结果会复制到剪贴板，不让一次口述凭空消失。</p></article>
+    </section>
+
+    <section class="voice-anywhere" aria-labelledby="anywhere-title"><p>在你写字的地方，就能使用</p><h2 id="anywhere-title">不需要切换编辑器。<br>把声音送进正在工作的应用。</h2><div class="voice-apps" aria-label="适用应用示例"><span>Codex</span><span>Claude Code</span><span>Cursor</span><span>VS Code</span><span>终端</span><span>浏览器</span><span>文档</span><span>聊天</span></div></section>
+
+    <section class="voice-privacy" aria-labelledby="privacy-title">
+      <div class="voice-privacy__lead" data-pixel-reveal><p class="voice-eyebrow"><span>PRIVACY BOUNDARY</span> 把边界说清楚</p><h2 id="privacy-title">你的声音，<br>不该成为模糊地带。</h2></div>
+      <div class="voice-privacy__grid">
+        <article data-pixel-reveal><span>01</span><h3>ZKO 不接收录音</h3><p>高级语音录音由客户端直接发送到腾讯云实时语音识别，不经过 ZKO 音频上传接口。</p></article>
+        <article data-pixel-reveal><span>02</span><h3>不记录正文</h3><p>ZKO 的整理代理不记录转写、润色正文或热词内容；整理失败时保留原始转写。</p></article>
+        <article data-pixel-reveal><span>03</span><h3>密钥不下发</h3><p>供应商密钥由管理员在云端配置，客户端不会接收或显示共享密钥。</p></article>
+      </div>
+    </section>
+
+    <section class="voice-platforms" aria-labelledby="platforms-title">
+      <div data-pixel-reveal><p class="voice-eyebrow"><span>MULTI-OS</span> 同一套动作，跨平台继续</p><h2 id="platforms-title">Windows、macOS、Linux。</h2><p>快捷键和权限因系统而异，但核心流程一致：触发、说话、结束、输入。</p></div>
+      <div class="voice-platforms__list" data-pixel-reveal><article><span>WIN</span><div><strong>Windows 10 / 11</strong><small>高级语音 · 全局快捷键</small></div></article><article><span>MAC</span><div><strong>macOS 13+</strong><small>高级语音 · 权限引导</small></div></article><article><span>LNX</span><div><strong>Ubuntu 22.04 / 24.04</strong><small>高级语音 · 自行配置识别服务</small></div></article></div>
+    </section>
+
+    <section class="voice-handle-choice voice-handle-choice--detail" data-pixel-reveal>
+      <article><span>最佳体验</span><h3>搭配字库手柄，最方便</h3><p>实体按键负责开始、结束、确认和发送，不用在说话时来回找键盘；手柄还可以显示 Agent 状态并承载常用宏键。</p></article>
+      <article><span>也支持</span><h3>软件可以单独使用</h3><p>直接使用电脑全局快捷键，同样能完成录音、识别、整理和当前光标输入。</p></article>
+    </section>
+
+    <section class="voice-cta" aria-labelledby="cta-title">
+      <div data-pixel-reveal><p>READY FOR PREMIUM?</p><h2 id="cta-title">下一段文字，<br>别从整理口述开始。</h2></div>
+      <div class="voice-cta__actions" data-pixel-reveal><a class="voice-button voice-button--light" href="account.html">查看账户与高级语音权益</a><a class="voice-button voice-button--ghost" href="index.html#release-downloads">下载 AutoClipboard</a><small>高级语音需登录且权益有效；实际可用状态以 AutoClipboard 内的账户与云端服务检查结果为准。</small></div>
+    </section>
+  </main>
+
+  <footer class="pixel-footer">
+    <div class="pixel-footer__brand"><span>ZKO</span><strong>AutoClipboard Voice Premium</strong><p>你负责表达，它负责成文。</p></div>
+    <nav aria-label="页脚导航"><a href="voice.html">语音首页</a><a href="voice-free.html">免费版</a><a href="index.html#release-downloads">下载</a><a href="account.html">账户与权益</a><a href="guide.html">使用说明</a><a href="shop.html">字库手柄</a><a data-purchase-link href="https://www.goofish.com/item?spm=a21ybx.personal.feeds.2.5a4e6ac2FqZlZf&amp;id=1065574393669&amp;categoryId=50023914" target="_blank" rel="noopener noreferrer">前往闲鱼购买</a></nav>
+    <div class="pixel-footer__status"><span><i></i> PREMIUM VOICE READY</span><small>具体能力、平台边界与服务状态以 AutoClipboard 当前版本为准。</small></div>
+    <p class="pixel-footer__bottom">MADE BY ZKO LAB // © 2026 ZKO 字库 // ALL RIGHTS RESERVED</p>
+  </footer>
+</body>
+</html>
