@@ -144,6 +144,19 @@
     }));
   }
 
+  async function updateAuthUsername(username) {
+    if (typeof auth.updateUser === 'function') {
+      const response = await auth.updateUser({ username });
+      if (response?.error) throw response.error;
+      return response?.data?.user || null;
+    }
+    if (typeof currentUser?.updateUsername === 'function') {
+      await currentUser.updateUsername(username);
+      return null;
+    }
+    throw new Error('username_update_unsupported');
+  }
+
   function initialFor(profile) {
     return String(profile?.username || currentUser?.email || 'Z').trim().slice(0, 1).toUpperCase() || 'Z';
   }
@@ -689,12 +702,7 @@
       if (username !== oldUsername) {
         const check = await callAccountApi({ action: 'checkUsername', username });
         if (!check.ok || !check.available) throw new Error(check.code || 'username_taken');
-        if (typeof currentUser.updateUsername === 'function') {
-          await currentUser.updateUsername(username);
-        } else {
-          const authResult = await auth.updateUser({ username });
-          if (authResult?.error) throw authResult.error;
-        }
+        await updateAuthUsername(username);
       }
       const response = await callAccountApi({
         action: 'updateProfile',

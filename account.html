@@ -15,7 +15,7 @@
   <script src="account-config.js?v=20260813-nav-consistency-v1" defer></script>
   <script src="script.js?v=20260816-account-username-v2" defer></script>
   <script src="pixel-preview.js?v=20260812-theme-deck-v1" defer></script>
-  <script src="account.js?v=20260816-account-username-v2" defer></script>
+  <script src="account.js?v=20260816-account-username-v3" defer></script>
 </head>
 <body class="pixel-site pixel-subpage page page--account">
   <a class="skip-link" href="#main-content">跳到主要内容</a>
@@ -74,7 +74,7 @@
 
         <form class="auth-form" data-auth-form="username" novalidate>
           <label class="field-label" for="auth-username">用户名</label>
-          <input class="account-input" id="auth-username" name="username" type="text" autocomplete="username" minlength="3" maxlength="32" pattern="(?=.*[a-z])[a-z0-9](?:[a-z0-9_-]{1,30}[a-z0-9])" placeholder="例如 zko_user" required data-login-username>
+          <input class="account-input" id="auth-username" name="username" type="text" autocomplete="username" minlength="5" maxlength="24" pattern="(?=.*[a-z])[a-z0-9](?:[a-z0-9_-]{3,22}[a-z0-9])" placeholder="例如 zko_user" required data-login-username>
           <label class="field-label" for="auth-password">密码</label>
           <input class="account-input" id="auth-password" name="password" type="password" autocomplete="current-password" minlength="8" required data-login-password>
           <button class="button auth-submit" type="submit" data-username-login>使用用户名登录</button>
@@ -86,7 +86,7 @@
           <label class="field-label" for="register-email">邮箱地址</label>
           <input class="account-input" id="register-email" name="email" type="email" inputmode="email" autocomplete="email" placeholder="name@example.com" required data-register-email>
           <label class="field-label" for="register-username">用户名</label>
-          <input class="account-input" id="register-username" name="username" type="text" autocomplete="username" minlength="3" maxlength="32" pattern="(?=.*[a-z])[a-z0-9](?:[a-z0-9_-]{1,30}[a-z0-9])" placeholder="3–32 位，例如 zko_user" required data-register-username>
+          <input class="account-input" id="register-username" name="username" type="text" autocomplete="username" minlength="5" maxlength="24" pattern="(?=.*[a-z])[a-z0-9](?:[a-z0-9_-]{3,22}[a-z0-9])" placeholder="5–24 位，例如 zko_user" required data-register-username>
           <p class="field-help">须包含字母；可使用小写字母、数字、短横线和下划线，符号不能位于首尾。</p>
           <label class="field-label" for="register-password">设置密码</label>
           <input class="account-input" id="register-password" name="password" type="password" autocomplete="new-password" minlength="8" maxlength="128" required data-register-password>
@@ -162,7 +162,7 @@
               <div class="avatar-editor__controls"><label class="button button--small button--light" for="profile-avatar">选择并裁剪头像</label><input id="profile-avatar" type="file" accept="image/png,image/jpeg,image/webp" hidden data-avatar-input><p>支持 JPG、PNG、WebP；拖动裁剪框调整范围，确认后会立即保存并替换右上角头像。</p><p class="form-status" role="status" aria-live="polite" data-avatar-message></p></div>
             </div>
             <div class="profile-fields">
-              <label><span>用户名</span><div class="input-prefix"><span>@</span><input class="account-input" type="text" minlength="3" maxlength="32" pattern="(?=.*[a-z])[a-z0-9](?:[a-z0-9_-]{1,30}[a-z0-9])" autocomplete="username" required data-profile-username-input></div><small>须包含字母；可使用小写字母、数字、短横线和下划线。保存后用于登录，并显示在网页和 AutoClipboard 中。</small></label>
+              <label><span>用户名</span><div class="input-prefix"><span>@</span><input class="account-input" type="text" minlength="5" maxlength="24" pattern="(?=.*[a-z])[a-z0-9](?:[a-z0-9_-]{3,22}[a-z0-9])" autocomplete="username" required data-profile-username-input></div><small>5–24 位且须包含字母；可使用小写字母、数字、短横线和下划线。保存后用于登录，并显示在网页和 AutoClipboard 中。</small></label>
             </div>
             <div class="form-actions"><button class="button" type="submit" data-save-profile>保存个人资料</button><p class="form-status" role="status" aria-live="polite" data-profile-message></p></div>
           </form>

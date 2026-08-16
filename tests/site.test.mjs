@@ -525,6 +525,7 @@ test('account page exposes complete registration, email and username login, prof
   assert.match(html, /data-auth-form/);
   assert.match(html, /data-profile-form/);
   assert.match(html, /data-avatar-input/);
+  assert.ok((html.match(/minlength="5" maxlength="24"/g) || []).length >= 3, 'username fields must match CloudBase Auth limits');
   assert.match(html, /用户名用于登录，也会显示在网页和 AutoClipboard 中/);
   assert.doesNotMatch(html, /data-profile-display-name|data-profile-full-name|data-register-display-name/);
   assert.doesNotMatch(html, />显示名称（选填）<|>姓名</);
@@ -588,7 +589,13 @@ test('account script keeps tokens out of desktop callbacks and fails closed arou
   assert.match(script, /validitySeconds\s*=\s*600/);
   assert.match(script, /还需要等待 \$\{resendRemaining\} 秒/);
   assert.match(script, /resetPasswordForEmail/);
-  assert.match(script, /updateUsername|auth\.updateUser/);
+  assert.match(script, /async function updateAuthUsername\(username\)/);
+  assert.match(script, /typeof auth\.updateUser === ['"]function['"][\s\S]*auth\.updateUser\(\{ username \}\)/);
+  assert.match(script, /typeof currentUser\?\.updateUsername === ['"]function['"]/);
+  assert.ok(
+    script.indexOf("typeof auth.updateUser === 'function'") < script.indexOf("typeof currentUser?.updateUsername === 'function'"),
+    'the supported Auth.updateUser API must be preferred over deprecated User.updateUsername',
+  );
   assert.match(script, /action:\s*['"]updateProfile['"]/);
   assert.doesNotMatch(script, /data-profile-display-name|data-profile-full-name|data-register-display-name/);
   assert.match(script, /name:\s*registered\.username/);
