@@ -589,14 +589,10 @@ test('account script keeps tokens out of desktop callbacks and fails closed arou
   assert.match(script, /validitySeconds\s*=\s*600/);
   assert.match(script, /还需要等待 \$\{resendRemaining\} 秒/);
   assert.match(script, /resetPasswordForEmail/);
-  assert.match(script, /async function updateAuthUsername\(username\)/);
-  assert.match(script, /typeof auth\.updateUser === ['"]function['"][\s\S]*auth\.updateUser\(\{ username \}\)/);
-  assert.match(script, /typeof currentUser\?\.updateUsername === ['"]function['"]/);
-  assert.ok(
-    script.indexOf("typeof auth.updateUser === 'function'") < script.indexOf("typeof currentUser?.updateUsername === 'function'"),
-    'the supported Auth.updateUser API must be preferred over deprecated User.updateUsername',
-  );
+  assert.doesNotMatch(script, /updateAuthUsername|auth\.updateUser\(\{ username \}\)|currentUser\?\.updateUsername/);
   assert.match(script, /action:\s*['"]updateProfile['"]/);
+  assert.match(script, /auth_username_update_failed/);
+  assert.doesNotMatch(script, /action:\s*['"]checkUsername['"][\s\S]{0,300}action:\s*['"]updateProfile['"]/);
   assert.doesNotMatch(script, /data-profile-display-name|data-profile-full-name|data-register-display-name/);
   assert.match(script, /name:\s*registered\.username/);
   assert.match(script, /verifyOtp/);

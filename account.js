@@ -121,6 +121,7 @@
     if (/invalid.*password|password.*invalid|wrong.*password/i.test(code)) return '用户名或密码不正确。';
     if (/email.*exist|already.*registered|user.*exist|target.*not.?user/i.test(code)) return '这个邮箱已经注册，请直接登录。';
     if (/username.*exist|username.*registered|username_taken|23505/i.test(code)) return '这个用户名已被使用。';
+    if (/auth_username_update_failed/i.test(code)) return '用户名暂时无法保存，请稍后重试。';
     if (/username/i.test(code)) return '用户名格式不正确，或该用户名暂不可用。';
     if (/email/i.test(code)) return '请输入有效的邮箱地址。';
     if (/avatar_invalid/i.test(code)) return '请选择不超过 5 MiB 的 JPG、PNG 或 WebP 图片。';
@@ -142,19 +143,6 @@
       data,
       parse: true,
     }));
-  }
-
-  async function updateAuthUsername(username) {
-    if (typeof auth.updateUser === 'function') {
-      const response = await auth.updateUser({ username });
-      if (response?.error) throw response.error;
-      return response?.data?.user || null;
-    }
-    if (typeof currentUser?.updateUsername === 'function') {
-      await currentUser.updateUsername(username);
-      return null;
-    }
-    throw new Error('username_update_unsupported');
   }
 
   function initialFor(profile) {
@@ -694,16 +682,10 @@
   async function saveProfile() {
     if (!profileForm.checkValidity()) return profileForm.reportValidity();
     const username = select('[data-profile-username-input]').value.trim().toLowerCase();
-    const oldUsername = currentProfile?.username || currentUser?.username || '';
     const saveButton = select('[data-save-profile]');
     saveButton.disabled = true;
     setMessage(select('[data-profile-message]'), '正在保存个人资料……');
     try {
-      if (username !== oldUsername) {
-        const check = await callAccountApi({ action: 'checkUsername', username });
-        if (!check.ok || !check.available) throw new Error(check.code || 'username_taken');
-        await updateAuthUsername(username);
-      }
       const response = await callAccountApi({
         action: 'updateProfile',
         username,
