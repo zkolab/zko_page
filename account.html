@@ -12,10 +12,10 @@
   <link rel="stylesheet" href="styles.css?v=20260817-password-reset-v1">
   <link rel="stylesheet" href="pixel-preview.css?v=20260813-docs-center-v1">
   <script src="assets/vendor/cloudbase-3.7.1.min.js" defer></script>
-  <script src="account-config.js?v=20260813-nav-consistency-v1" defer></script>
+  <script src="account-config.js?v=20260817-password-login-v2" defer></script>
   <script src="script.js?v=20260816-account-username-v2" defer></script>
   <script src="pixel-preview.js?v=20260812-theme-deck-v1" defer></script>
-  <script src="account.js?v=20260817-password-reset-v1" defer></script>
+  <script src="account.js?v=20260817-password-login-v2" defer></script>
 </head>
 <body class="pixel-site pixel-subpage page page--account">
   <a class="skip-link" href="#main-content">跳到主要内容</a>
@@ -68,19 +68,19 @@
         </div>
 
         <div class="auth-tabs" role="tablist" aria-label="账户操作">
-          <button type="button" role="tab" aria-selected="true" data-auth-tab="username">账号登录</button>
+          <button type="button" role="tab" aria-selected="true" data-auth-tab="password">密码登录</button>
           <button type="button" role="tab" aria-selected="false" data-auth-tab="register">注册账号</button>
-          <button type="button" role="tab" aria-selected="false" data-auth-tab="email">邮箱登录</button>
+          <button type="button" role="tab" aria-selected="false" data-auth-tab="email">验证码登录</button>
         </div>
 
-        <form class="auth-form" data-auth-form="username" novalidate>
-          <label class="field-label" for="auth-username">用户名</label>
-          <input class="account-input" id="auth-username" name="username" type="text" autocomplete="username" minlength="5" maxlength="24" pattern="(?=.*[a-z])[a-z0-9](?:[a-z0-9_-]{3,22}[a-z0-9])" placeholder="例如 zko_user" required data-login-username>
+        <form class="auth-form" data-auth-form="password" novalidate>
+          <label class="field-label" for="auth-identifier">邮箱 / 用户名 / 手机号</label>
+          <input class="account-input" id="auth-identifier" name="identifier" type="text" autocomplete="username" minlength="3" maxlength="254" spellcheck="false" placeholder="name@example.com、zko_user 或已绑定手机号" required data-login-identifier>
           <label class="field-label" for="auth-password">密码</label>
           <input class="account-input" id="auth-password" name="password" type="password" autocomplete="current-password" minlength="8" required data-login-password>
-          <button class="button auth-submit" type="submit" data-username-login>使用用户名登录</button>
-          <p class="field-help">还没有账户？切换到“注册账号”，一次设置邮箱、用户名和密码。</p>
-          <p class="form-status" role="status" aria-live="polite" data-username-auth-message></p>
+          <button class="button auth-submit" type="submit" data-password-login>使用密码登录</button>
+          <p class="field-help">邮箱和用户名均可直接登录；手机号需要先绑定到账户。没有密码或忘记密码时，可切换到“验证码登录”。</p>
+          <p class="form-status" role="status" aria-live="polite" data-password-auth-message></p>
         </form>
 
         <form class="auth-form" data-auth-form="register" hidden novalidate>
@@ -111,7 +111,7 @@
         <form class="auth-form" data-auth-form="email" hidden novalidate>
           <label class="field-label" for="auth-email">已注册邮箱</label>
           <input class="account-input" id="auth-email" name="email" type="email" inputmode="email" autocomplete="email" placeholder="name@example.com" required data-auth-email>
-          <p class="field-help">这是已有账户的免密码登录方式，不会自动注册新账户。</p>
+          <p class="field-help">这是已有账户的备用免密码登录方式，不会自动注册新账户。</p>
           <button class="button auth-submit" type="submit" data-send-code>获取登录验证码</button>
           <p class="verification-policy">验证码发送成功后有效期 600 秒；再次获取需要等待 60 秒。</p>
           <div class="verification-step" hidden data-verification-step>

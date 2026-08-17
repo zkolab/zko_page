@@ -375,7 +375,7 @@ test('pixel pages load the versioned account routing config', () => {
   for (const page of pixelPageFiles) {
     assert.match(
       read(page),
-      /<script\b[^>]*src="account-config\.js\?v=20260813-nav-consistency-v1"[^>]*>/i,
+      /<script\b[^>]*src="account-config\.js\?v=20260817-password-login-v2"[^>]*>/i,
       `${page} should bypass stale account routing config`,
     );
   }
@@ -625,7 +625,7 @@ test('documentation center exposes six complete areas and mirrored canonical sou
   assert.match(html, /docs\/en\/index\.md/);
 });
 
-test('account page exposes complete registration, email and username login, profile settings, billing, and desktop authorization', () => {
+test('account page exposes password login by email, username or phone plus OTP fallback and registration', () => {
   const html = stripHtmlComments(read('account.html'));
   const source = `${html}\n${read('account.js')}`;
   for (const phrase of [
@@ -634,10 +634,12 @@ test('account page exposes complete registration, email and username login, prof
     '注册账号',
     '设置密码',
     '发送注册验证码',
-    '邮箱登录',
+    '密码登录',
+    '邮箱 / 用户名 / 手机号',
+    '使用密码登录',
+    '验证码登录',
     '获取登录验证码',
     '验证并登录',
-    '账号登录',
     '个人资料',
     '选择头像',
     '安全与登录',
@@ -656,9 +658,12 @@ test('account page exposes complete registration, email and username login, prof
     assert.match(source, new RegExp(escapeRegExp(phrase)), `account page should mention ${phrase}`);
   }
   assert.match(html, /data-auth-form/);
+  assert.match(html, /data-auth-form="password"/);
+  assert.match(html, /data-login-identifier/);
+  assert.match(html, /data-password-login/);
   assert.match(html, /data-profile-form/);
   assert.match(html, /data-avatar-input/);
-  assert.ok((html.match(/minlength="5" maxlength="24"/g) || []).length >= 3, 'username fields must match CloudBase Auth limits');
+  assert.ok((html.match(/minlength="5" maxlength="24"/g) || []).length >= 2, 'registration and profile username fields must match CloudBase Auth limits');
   assert.match(html, /用户名用于登录，也会显示在网页和 AutoClipboard 中/);
   assert.doesNotMatch(html, /data-profile-display-name|data-profile-full-name|data-register-display-name/);
   assert.doesNotMatch(html, />显示名称（选填）<|>姓名</);
@@ -699,7 +704,7 @@ test('account configuration is public-only and pins the CloudBase integration co
   assert.match(config, /accountApi:\s*['"]zko-account-api['"]/);
   assert.match(config, /desktopAuthUrl:\s*['"]https:\/\/zkolab-dev-[^'"]+\/desktop-auth['"]/);
   assert.match(config, /hostedAccountUrl:\s*['"]https:\/\/zkolab-dev-[^'"]+\.tcloudbaseapp\.com\/account\.html['"]/);
-  assert.match(config, /hostedAccountVersion:\s*['"]20260813-nav-consistency-v1['"]/);
+  assert.match(config, /hostedAccountVersion:\s*['"]20260817-password-login-v2['"]/);
   assert.match(config, /hostedBridgeUrl:\s*['"]https:\/\/zkolab-dev-[^'"]+\.tcloudbaseapp\.com\/account-bridge\.html['"]/);
   assert.match(config, /websiteUrl:\s*['"]https:\/\/zkolab\.com\/['"]/);
   assert.match(config, /protocol:\s*['"]autoclipboard:['"]/);
@@ -712,6 +717,9 @@ test('account script keeps tokens out of desktop callbacks and fails closed arou
   const script = read('account.js');
   assert.match(script, /auth\.signInWithOtp\(/);
   assert.match(script, /auth\.signInWithPassword\(/);
+  assert.match(script, /return \{ email: value\.toLowerCase\(\), password \}/);
+  assert.match(script, /return \{ phone, password \}/);
+  assert.match(script, /return \{ username: value\.toLowerCase\(\), password \}/);
   assert.match(script, /auth\.getVerification\(/);
   assert.match(script, /auth\.verify\(/);
   assert.match(script, /auth\.signUp\(\{/);

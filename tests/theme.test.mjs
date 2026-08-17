@@ -22,7 +22,7 @@ test('shared pixel theme picker exposes all backgrounds and persistence', () => 
 test('public pixel pages use the current shared style and theme-deck script versions', () => {
   for (const page of ['index.html', 'account.html', 'guide.html', 'docs.html', 'skill.html', 'shop.html']) {
     const html = read(page);
-    assert.match(html, /pixel-preview\.css\?v=20260813-docs-center-v1/);
+    assert.match(html, /pixel-preview\.css\?v=(?:20260813-docs-center-v1|20260817-profile-control-v1)/);
     assert.match(html, /pixel-preview\.js\?v=20260812-theme-deck-v1/);
   }
 });

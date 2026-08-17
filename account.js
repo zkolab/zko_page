@@ -20,7 +20,7 @@
   const select = (selector) => document.querySelector(selector);
   const selectAll = (selector) => [...document.querySelectorAll(selector)];
   const emailForm = select('[data-auth-form="email"]');
-  const usernameForm = select('[data-auth-form="username"]');
+  const passwordForm = select('[data-auth-form="password"]');
   const registrationForm = select('[data-auth-form="register"]');
   const emailInput = select('[data-auth-email]');
   const verificationStep = select('[data-verification-step]');
@@ -30,7 +30,7 @@
   const resendButton = select('[data-resend-code]');
   const emailCodeTimer = select('[data-email-code-timer]');
   const emailMessage = select('[data-email-auth-message]');
-  const usernameMessage = select('[data-username-auth-message]');
+  const passwordMessage = select('[data-password-auth-message]');
   const registrationMessage = select('[data-register-message]');
   const registrationCodeTimer = select('[data-register-code-timer]');
   const authState = select('[data-auth-state]');
@@ -129,7 +129,7 @@
       return retryAfter > 0 ? `操作过于频繁，请 ${Math.ceil(retryAfter)} 秒后再试。${reference}` : `操作过于频繁，请稍后再试。${reference}`;
     }
     if (/invalid.*otp|verification|token/i.test(code)) return '验证码不正确或已过期，请重新输入。';
-    if (/invalid.*password|password.*invalid|wrong.*password/i.test(code)) return '用户名或密码不正确。';
+    if (/invalid.*password|password.*invalid|wrong.*password|invalid.*credentials/i.test(code)) return '账号或密码不正确。';
     if (/email.*exist|already.*registered|user.*exist|target.*not.?user/i.test(code)) return '这个邮箱已经注册，请直接登录。';
     if (/username.*exist|username.*registered|username_taken|23505/i.test(code)) return '这个用户名已被使用。';
     if (/auth_username_update_failed/i.test(code)) return '用户名暂时无法保存，请稍后重试。';
@@ -389,23 +389,31 @@
     }
   }
 
-  async function loginWithUsername() {
-    const usernameInput = select('[data-login-username]');
+  function passwordLoginCredentials(identifier, password) {
+    const value = identifier.trim();
+    if (value.includes('@')) return { email: value.toLowerCase(), password };
+    const phone = value.replace(/[\s()-]/g, '');
+    if (/^\+?\d{7,15}$/.test(phone)) return { phone, password };
+    return { username: value.toLowerCase(), password };
+  }
+
+  async function loginWithPassword() {
+    const identifierInput = select('[data-login-identifier]');
     const passwordInput = select('[data-login-password]');
-    const username = usernameInput.value.trim().toLowerCase();
-    if (!usernameForm.checkValidity()) return usernameForm.reportValidity();
-    setMessage(usernameMessage, '正在登录……');
-    select('[data-username-login]').disabled = true;
+    if (!passwordForm.checkValidity()) return passwordForm.reportValidity();
+    const credentials = passwordLoginCredentials(identifierInput.value, passwordInput.value);
+    setMessage(passwordMessage, '正在登录……');
+    select('[data-password-login]').disabled = true;
     try {
-      const response = await auth.signInWithPassword({ username, password: passwordInput.value });
+      const response = await auth.signInWithPassword(credentials);
       if (response?.error) throw response.error;
       passwordInput.value = '';
-      setMessage(usernameMessage, '登录成功。', 'success');
+      setMessage(passwordMessage, '登录成功。', 'success');
       await refreshUi({ autoHandoff: true });
     } catch (error) {
-      setMessage(usernameMessage, friendlyError(error, '用户名登录失败，请检查用户名和密码。'), 'error');
+      setMessage(passwordMessage, friendlyError(error, '密码登录失败，请检查账号和密码。'), 'error');
     } finally {
-      select('[data-username-login]').disabled = false;
+      select('[data-password-login]').disabled = false;
     }
   }
 
@@ -813,14 +821,14 @@
       const mode = tab.dataset.authTab;
       for (const candidate of selectAll('[data-auth-tab]')) candidate.setAttribute('aria-selected', String(candidate === tab));
       emailForm.hidden = mode !== 'email';
-      usernameForm.hidden = mode !== 'username';
+      passwordForm.hidden = mode !== 'password';
       registrationForm.hidden = mode !== 'register';
-      const focusTarget = mode === 'email' ? emailInput : mode === 'register' ? select('[data-register-email]') : select('[data-login-username]');
+      const focusTarget = mode === 'email' ? emailInput : mode === 'register' ? select('[data-register-email]') : select('[data-login-identifier]');
       focusTarget.focus();
     });
   }
   emailForm.addEventListener('submit', (event) => { event.preventDefault(); void sendCode(); });
-  usernameForm.addEventListener('submit', (event) => { event.preventDefault(); void loginWithUsername(); });
+  passwordForm.addEventListener('submit', (event) => { event.preventDefault(); void loginWithPassword(); });
   registrationForm.addEventListener('submit', (event) => { event.preventDefault(); void sendRegistrationCode(); });
   verifyButton.addEventListener('click', () => void verifyCode());
   resendButton.addEventListener('click', () => { resetOtp(); void sendCode(); });

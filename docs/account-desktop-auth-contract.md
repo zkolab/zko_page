@@ -16,9 +16,9 @@
 
 ## 网页登录与账户资料
 
-网页使用 CloudBase `signInWithOtp({ email, options: { shouldCreateUser: true } })` 发送验证码，再调用本次请求返回的 `verifyOtp({ token })` 完成登录或首次注册。匿名和手机号登录保持关闭。
+网页登录优先使用 CloudBase `signInWithPassword`，根据输入内容分别传入 `email`、`username` 或已绑定的 `phone`。已有用户的邮箱验证码备用入口使用 `signInWithOtp({ email, options: { shouldCreateUser: false } })`；首次注册仍通过邮箱验证后调用 `signUp` 创建账户，匿名登录保持关闭。
 
-邮箱验证码仍是首次注册和账户找回入口。用户登录后可绑定唯一用户名；修改密码时，网页调用 CloudBase `resetPasswordForEmail(email)` 获取验证码会话，再将用户输入的验证码和新密码交给该会话返回的 `updateUser({ nonce, password })` 完成修改。此后网页可使用 `signInWithPassword({ username, password })` 登录。密码、验证码和密码重置令牌始终由 CloudBase Auth 管理，不进入业务表。
+邮箱验证码仍是首次注册、免密码登录和账户找回入口。注册时设置的同一密码可用于 `signInWithPassword({ email, password })` 或 `signInWithPassword({ username, password })`；如果账户已绑定手机号，也可使用 `signInWithPassword({ phone, password })`。修改密码时，网页调用 CloudBase `resetPasswordForEmail(email)` 获取验证码会话，再将验证码和新密码交给该会话返回的 `updateUser({ nonce, password })` 完成修改。密码、验证码和密码重置令牌始终由 CloudBase Auth 管理，不进入业务表。
 
 业务账户单独保存：
 
