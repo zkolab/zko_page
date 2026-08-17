@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="ZKO 字库 AI 编程手柄：把实体宏键、语音输入、Agent 状态反馈与 AutoClipboard 软件握在手里。">
+  <meta name="description" content="ZKO 字库 AI 编程手柄：把实体宏键、语音输入、Agent 审批、四向导航与相对鼠标控制握在手里。">
   <meta name="theme-color" content="#302d67">
   <meta property="og:title" content="ZKO 字库 · PIXEL CONTROL DECK">
   <meta property="og:description" content="把 AI 工作流握在手里。">
@@ -13,7 +13,7 @@
   <link rel="icon" href="assets/favicon.ico?v=20260811-pixel">
   <link rel="icon" href="assets/favicon.svg?v=20260812-ziku" type="image/svg+xml">
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=20260811-pixel">
-  <link rel="stylesheet" href="pixel-preview.css?v=20260817-voice-home-v1">
+  <link rel="stylesheet" href="pixel-preview.css?v=20260817-profile-control-v1">
   <script src="account-config.js?v=20260813-nav-consistency-v1" defer></script>
   <script src="script.js?v=20260816-account-username-v2" defer></script>
   <script src="pixel-preview.js?v=20260812-theme-deck-v1" defer></script>
@@ -99,7 +99,7 @@
       <div class="pixel-hero__copy" data-pixel-reveal>
         <p class="pixel-kicker"><span>PLAYER_01</span> ZKO AI CODING HANDLE</p>
         <h1 id="pixel-title">把 AI 工作流<br><em>握在手里</em></h1>
-        <p class="pixel-hero__lead">实体确认、语音输入、宏键控制和 Agent 状态反馈，装进一只专为 Vibe Coding 打造的控制手柄。</p>
+        <p class="pixel-hero__lead">实体确认、语音输入、四向导航、Agent 审批和相对鼠标控制，装进一只专为 Vibe Coding 打造的控制手柄。</p>
         <p class="pixel-hero__disclaimer">麦克风仅作搭配示意，不随产品销售；图中白色 ZKO 标志为视觉合成，不代表该麦克风由 ZKO 生产。</p>
 
         <div class="pixel-actions">
@@ -159,6 +159,57 @@
       </a>
     </section>
 
+    <section class="pixel-profile-feature" id="profile-controls" aria-labelledby="profile-controls-title">
+      <header class="pixel-profile-feature__header" data-pixel-reveal>
+        <div>
+          <p class="pixel-kicker"><span>NEW / HANDLE MODES</span> GAUSS · COMPUTE · EINSTEIN</p>
+          <h2 id="profile-controls-title">离屏幕远一点，<br><em>也能只用手柄推进工作。</em></h2>
+        </div>
+        <p>四枚实体按键不再只负责复制粘贴。切换 Profile 后，它们可以承担方向导航、Agent 审批和真正的系统相对鼠标移动。</p>
+      </header>
+
+      <div class="pixel-profile-feature__grid">
+        <article class="pixel-profile-card" data-pixel-reveal>
+          <div class="pixel-profile-card__top"><span>PROFILE_01</span><strong>GAUSS</strong></div>
+          <h3>四向导航</h3>
+          <div class="pixel-profile-card__keys" aria-label="Gauss 默认按键">
+            <kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd>
+          </div>
+          <p>四枚按键对应上、下、左、右。离开键盘也能在列表、菜单、补全项和审批选项之间移动。</p>
+          <small>KEYBOARD HID / ALWAYS READY</small>
+        </article>
+
+        <article class="pixel-profile-card" data-pixel-reveal>
+          <div class="pixel-profile-card__top"><span>PROFILE_02</span><strong>COMPUTE</strong></div>
+          <h3>语音与审批</h3>
+          <div class="pixel-profile-card__keys pixel-profile-card__keys--labels" aria-label="Compute 默认按键">
+            <kbd>R.ALT</kbd><kbd>ENTER</kbd><kbd>ALLOW</kbd><kbd>REJECT</kbd>
+          </div>
+          <p>前两键继续负责语音输入与确认；后两键在 Agent 发出授权请求时接受或拒绝审批，没有请求时不会误触发。</p>
+          <small>PERMISSION AWARE / SAFE NO-OP</small>
+        </article>
+
+        <article class="pixel-profile-card pixel-profile-card--einstein" data-pixel-reveal>
+          <div class="pixel-profile-card__top"><span>PROFILE_03</span><strong>EINSTEIN</strong></div>
+          <h3>手柄变成相对鼠标</h3>
+          <div class="pixel-profile-card__keys pixel-profile-card__keys--labels" aria-label="Einstein 默认按键">
+            <kbd>R.ALT</kbd><kbd>ENTER</kbd><kbd>HOLD MOVE</kbd><kbd>L.CLICK</kbd>
+          </div>
+          <p>按住第三键作为离合器，转动手柄即可发送系统相对鼠标增量；第四键执行左键点击。松开后立即停止，不把手柄姿态硬映射到某个屏幕坐标。</p>
+          <div class="pixel-profile-card__guard" aria-label="Einstein 防漂移机制">
+            <span>逐帧重锚</span><span>双阈值死区</span><span>异常帧丢弃</span><span>无尾移</span>
+          </div>
+        </article>
+      </div>
+
+      <div class="pixel-profile-feature__status" data-pixel-reveal>
+        <span><i></i> RELATIVE_MOUSE ONLINE</span>
+        <strong>NO ABSOLUTE CURSOR WARP</strong>
+        <small>Einstein 与 Compute 的软件动作需要 AutoClipboard 保持运行；Gauss 四向键属于标准蓝牙键盘输入。</small>
+        <a href="guide.html#controls">查看按键表与使用方式 →</a>
+      </div>
+    </section>
+
     <section class="pixel-manifesto" aria-labelledby="manifesto-title">
       <div class="pixel-manifesto__index" aria-hidden="true">01 / 04</div>
       <div data-pixel-reveal>
@@ -178,7 +229,7 @@
       <div class="pixel-quest-grid">
         <article class="pixel-quest" data-pixel-reveal>
           <div class="pixel-quest__badge" aria-hidden="true">A</div>
-          <div><p>QUEST 01</p><h3>按键即指令</h3><span>四枚实体宏键映射确认、取消、发送与自定义动作，减少窗口之间的反复切换。</span></div>
+          <div><p>QUEST 01</p><h3>按键即指令</h3><span>四枚实体宏键可映射方向、语音、审批、相对鼠标与自定义动作，减少窗口之间的反复切换。</span></div>
           <strong>+40% FLOW</strong>
         </article>
         <article class="pixel-quest" data-pixel-reveal>

@@ -851,7 +851,7 @@ test('header logo is converted to a high-contrast light mark', () => {
 
 test('homepage presents flagship product storytelling', () => {
   const html = stripHtmlComments(read('index.html'));
-  for (const id of ['overview', 'voice-feature', 'manifesto-title', 'quests', 'gallery', 'release-downloads']) {
+  for (const id of ['overview', 'voice-feature', 'profile-controls', 'manifesto-title', 'quests', 'gallery', 'release-downloads']) {
     assert.match(html, new RegExp(`id=["']${id}["']`), `homepage should expose #${id}`);
   }
   assert.match(html, /把 AI 工作流握在手里/);
@@ -866,10 +866,46 @@ test('homepage presents flagship product storytelling', () => {
   assert.match(html, /href="voice\.html"/);
   assert.match(html, /href="voice-premium\.html"/);
   assert.match(html, /pixel-voice-feature__demo/);
+  assert.match(html, /GAUSS · COMPUTE · EINSTEIN/);
+  assert.match(html, /系统相对鼠标增量/);
+  assert.match(html, /NO ABSOLUTE CURSOR WARP/);
+  assert.match(html, /逐帧重锚/);
+  assert.match(html, /双阈值死区/);
   assert.match(html, /pixel-hero\.webp/);
   assert.match(html, /product-macros\.webp/);
   assert.match(html, /product-status\.webp/);
   assert.match(html, /old-page\.html/);
+});
+
+test('profile control update documents the shipped default mappings and drift guard', () => {
+  const home = stripHtmlComments(read('index.html'));
+  const guide = stripHtmlComments(read('guide.html'));
+  const css = read('pixel-preview.css');
+
+  for (const phrase of [
+    '四向导航',
+    '语音与审批',
+    '手柄变成相对鼠标',
+    'HOLD MOVE',
+    'L.CLICK',
+    'RELATIVE_MOUSE ONLINE',
+  ]) assert.match(home, new RegExp(escapeRegExp(phrase)));
+
+  for (const phrase of [
+    'Gauss、Compute 与 Einstein 的专用控制',
+    '接受审批',
+    '拒绝审批',
+    '按住移动鼠标',
+    '系统相对鼠标',
+    '不是演讲光圈',
+    '启动/停止双阈值',
+    '松开后立即停止',
+    '没有审批请求时会安全地不执行任何操作',
+  ]) assert.match(guide, new RegExp(escapeRegExp(phrase)));
+
+  assert.match(css, /\.pixel-profile-feature\s*\{/);
+  assert.match(css, /\.pixel-profile-card--einstein\s*\{/);
+  assert.match(css, /grid-template-columns:\s*repeat\(3,/);
 });
 
 test('current public surfaces use the ZKO 字库 brand name', () => {

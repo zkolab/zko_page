@@ -145,6 +145,11 @@
           <h3>默认 Vibe Coding Profile 的四枚宏按键</h3>
           <p>默认的 Vibe Coding Profile 将四枚按键设置为 Right Alt、Enter、Ctrl+V 和 Ctrl+Alt+0。这四个按键都可以在 AutoClipboard 中重新配置。</p>
           <figure class="guide-figure guide-figure--portrait" data-source-figure="12.png"><img src="assets/images/macros.webp" alt="默认 Vibe Coding Profile 的四枚可重新配置宏按键" width="1122" height="1402" loading="lazy"><figcaption>四枚实体宏按键的默认快捷键，可在 AutoClipboard 中按需要重新配置。</figcaption></figure>
+          <h3>Gauss、Compute 与 Einstein 的专用控制</h3>
+          <p>新版默认配置让三个 Profile 分别承担导航、审批和鼠标控制。Gauss 的四向键属于标准蓝牙键盘输入；Compute 与 Einstein 的审批和相对鼠标动作需要 AutoClipboard 保持运行。</p>
+          <div class="guide-table-wrap"><table><thead><tr><th>Profile</th><th>按键 1</th><th>按键 2</th><th>按键 3</th><th>按键 4</th></tr></thead><tbody><tr><td><strong>Gauss</strong></td><td>上</td><td>下</td><td>左</td><td>右</td></tr><tr><td><strong>Compute</strong></td><td>Right Alt / 语音</td><td>Enter</td><td>接受审批</td><td>拒绝审批</td></tr><tr><td><strong>Einstein</strong></td><td>Right Alt / 语音</td><td>Enter</td><td>按住移动鼠标</td><td>鼠标左键</td></tr></tbody></table></div>
+          <p class="plain-language-note"><strong>Einstein 移动的是系统相对鼠标，不是演讲光圈，也不是把姿态固定映射到绝对屏幕坐标。</strong>按住第三键相当于按下离合器：AutoClipboard 只计算相邻姿态帧的增量，并用启动/停止双阈值、逐帧重锚、重复帧与异常跳变丢弃来抑制漂移；松开后立即停止，不会继续滑行。第四键始终在鼠标当前位置执行左键点击。</p>
+          <p class="notice">Compute 的接受/拒绝按键只在 Agent 当前存在审批授权请求时生效；没有审批请求时会安全地不执行任何操作。</p>
         </section>
 
         <section id="software" data-reveal>
@@ -152,7 +157,7 @@
           <h2>宏键能用，不代表软件已经连接</h2>
           <p>系统把手柄当作蓝牙键盘后，四枚宏键就可以发送快捷键。AutoClipboard 使用另一条软件连接来读取状态、修改设置和显示 Agent 信息，所以两者可能一条正常、另一条还没有就绪。</p>
           <div class="guide-image-grid"><img src="assets/images/autoclipboard-main.webp" alt="AutoClipboard 主界面" width="1311" height="1062" loading="lazy"><img src="assets/images/autoclipboard-settings.webp" alt="AutoClipboard 设备设置界面" width="2082" height="1527" loading="lazy"></div>
-          <p class="plain-language-note"><strong>基础蓝牙宏不依赖 AutoClipboard。</strong>Agent 状态、Profile 快开、惯性测量单元（IMU）姿态预览、演讲光圈和深度设置需要 AutoClipboard 保持运行。这里的 Agent 状态连接配置，就是把编程助手的工作状态发送给 AutoClipboard，再显示到手柄上。</p>
+          <p class="plain-language-note"><strong>基础蓝牙宏不依赖 AutoClipboard。</strong>Agent 状态、Profile 快开、Compute 审批、Einstein 相对鼠标、惯性测量单元（IMU）姿态预览、演讲光圈和深度设置需要 AutoClipboard 保持运行。这里的 Agent 状态连接配置，就是把编程助手的工作状态发送给 AutoClipboard，再显示到手柄上。</p>
           <div class="download-panel"><div><h3>软件、完整说明和 Windows 驱动</h3><p>Windows 用户可直接下载 AutoClipboard v0.3.67；国内默认使用 Gitee，GitHub 作为备用。其他系统、完整使用指南和固件仍在发布仓库中提供。</p></div><div class="inline-actions"><a class="button button--dark" href="skill.html">AI 一键配置</a><a class="text-link" data-windows-download-link href="https://gitee.com/shan-yujun/Communist-Manifesto-Releases/releases/download/v0.3.67/AutoClipboardSetup-0.3.67.exe" download="AutoClipboardSetup-0.3.67.exe" rel="noopener noreferrer">Windows 直接下载</a><a class="text-link" data-windows-download-fallback href="https://github.com/Lijinzh/Communist-Manifesto-Releases/releases/download/v0.3.67/AutoClipboardSetup-0.3.67.exe" download="AutoClipboardSetup-0.3.67.exe" rel="noopener noreferrer">GitHub 备用</a><a class="text-link" data-gitee-release-link href="https://gitee.com/shan-yujun/Communist-Manifesto-Releases" target="_blank" rel="noopener noreferrer">其他系统与全部版本</a><a class="text-link" href="https://www.wch.cn/downloads/CH343SER_EXE.html" target="_blank" rel="noopener noreferrer">Windows CH343 官方驱动</a></div></div>
         </section>
 
